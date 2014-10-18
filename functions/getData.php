@@ -1612,7 +1612,7 @@ elseif ( isset($this->refresh_success) && $this->refresh_success == true )
 <div style="position:relative">
 <div id="maxspeed" style="width: 100%;height: 300px"></div>
 
-<div id="maxspeed_overview" style="width: 20%; eight: 100px; position: absolute; top: 10px; right: 10px; z-index: 1; background-color: #FAFAFA"></div>
+<div id="maxspeed_overview" style="width: 20%; height: 100px; position: absolute; top: 10px; right: 10px; z-index: 1; background-color: #FAFAFA"></div>
 <small id="flotversion"></small>
 <span><input type="checkbox" id="maxspeed_labels" checked="checked" /> <label for="maxspeed_labels"><?php echo Lang::l_('Show Stop Names');?></label></span>
 
