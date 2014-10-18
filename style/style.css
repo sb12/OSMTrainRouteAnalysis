@@ -1,0 +1,405 @@
+    /**
+    
+    OSMTrainRouteAnalyzer Copyright © 2014 sb12 osm.mapper999@gmail.com
+    
+    This file is part of OSMTrainRouteAnalyzer.
+    
+    OSMTrainRouteAnalyzer is free software: you can redistribute it 
+    and/or modify it under the terms of the GNU General Public License 
+    as published by the Free Software Foundation, either version 3 of 
+    the License, or (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+    
+    */
+    
+/**
+* general styling
+**/
+
+body
+{
+	padding: 0;
+	margin: 0;
+	background-color: #FAFAFA;
+	font-family: Verdana;
+	color: #111;
+	width: 100%;
+}
+
+h2
+{
+	font-size: 1.2em;
+	font-family: Arial;
+	font-weight: bold;
+}
+
+h3
+{
+	font-size: 1em;
+	font-family: Arial;
+	font-weight: bold;
+}
+
+#header
+{
+	background-color: #CCCCFF;
+	margin: 0;
+	width: 100%; 
+}
+
+#footer
+{
+	background-color: #CCCCFF;
+	margin: 0;
+	width: 100%;
+	top: 0px;
+}
+
+#header div, #footer div
+{
+	padding: 0.5em 1em;  
+}
+
+#main
+{
+	padding: 8;
+}
+
+
+/**
+* ref styling
+**/
+
+.ref_long_distance, .ref_regional, .ref_tram, .ref_light_rail
+{
+	display: inline-block;
+	background-color: #666;
+	color: #fff;
+	height: 1.2em;
+	min-width: 3em;
+	font-size: 0.9em;
+	text-align: center;
+	white-space: nowrap;
+	padding: 0.1em 0.3em;
+}
+
+.ref_long_distance, .ref_regional, .ref_light_rail 
+{
+	border-radius: 5px;
+}
+
+.ref_long_distance
+{
+	color: #F00;
+}
+
+/**
+* styling of factsheets on train route pages
+**/
+
+h3.factsheet_heading,h2.factsheet_heading
+{
+	width: 20em;
+	border: 1px solid #CCCCFF;
+	margin: 0;
+	margin-top: 1em;
+	padding: 1%;
+	border-collapse: collapse;
+	color: #666699;
+}
+
+div.factsheet
+{
+	width: 100%;
+	border: 1px solid #CCCCFF;
+	border-collapse: collapse;
+	margin-top: -1px;
+}
+
+.factsheet>div
+{
+	display: inline-block;
+	width: 47%;
+	margin: 0;
+	padding: 1%;
+	min-height: 2em;
+	vertical-align: top;
+}
+
+.factsheet div.long
+{
+	display: inline-block;
+	width: 97%;
+	margin: 0;
+	padding: 1%;
+	min-height: 2em;
+}
+
+#maxspeed
+{
+	border: 1px solid #CCCCFF;
+	border-collapse: collapse;
+	margin-top: -1px;
+}
+
+#map
+{
+	border: 1px solid #CCCCFF;
+	border-collapse: collapse;
+	height: 300px;
+	width: 50%;
+	margin: -1px;
+}
+
+/**
+* stations styling
+**/
+
+ul.stations
+{
+	display: inline-block;
+	margin-right: 16em; /* ca. cos(45°) * 25 - 1.25 */
+}
+
+ul.stations li
+{
+	display: inline-block;
+	width: 1.25em;
+	height: 20em;
+}
+	
+ul.stations li span
+{
+	height: 1.25 em;
+	width: 25em;
+	padding: 0.125 em;
+	margin: 0em;
+	margin-top: 5em;
+	margin-left: -3em;
+	vertical-align: middle;
+	display: block;
+	transform: rotate(-45deg);
+	font-size: 0.8em;
+}
+
+ul.stations li span a
+{
+	text-decoration: none;
+	white-space: nowrap;
+}
+
+ul.stations li img
+{
+	margin: 7em 0.1em;
+	display: block;
+	width: 1.313em
+}
+
+/**
+* styling for route overview tables
+**/
+
+.route_overview
+{
+	border-collapse: collapse;
+	margin-top: -1px;
+	width: 100%;
+}
+
+
+.route_overview td, .route_overview th
+{
+	border: 1px solid #CCCCFF;
+	border-collapse: collapse;
+	padding: 2px;
+	font-size: 0.9em;
+}
+
+.route_overview th
+{
+	background-color: #CCCCFF;
+}
+
+.route_overview th object
+{
+	margin: 2px;
+	color: #111;
+}
+
+.route_overview th a
+{
+	display: inline-block;
+	background-color: #CCCCFF;
+	width: 100%;
+	color: #111;
+	text-decoration: none;
+}
+
+.route_overview th a:hover
+{
+	color: #8888FF;
+}
+
+div.choose_route
+{    
+	width: 99%;
+	border: 1px solid #CCCCFF;
+	border-collapse: collapse;
+	margin-top: -1px;
+	padding: 0.5%;
+}
+
+/**
+* flot styling
+**/
+
+#flotversion
+{
+	display: block;
+	font-style: italic;
+	font-size: 0.7em;
+	float: right;
+	color: #CCCCFF;
+}
+
+/**
+* Pagination
+**/
+
+
+.pagination
+{
+	background-color: #CCCCFF;
+	text-align: center;
+}
+
+.pagination a
+{
+	display: inline-block;
+	height: 1.5em;
+	width: 3em;
+	background-color: #AAAAFF;
+	border: 1px solid #CCCCFF;
+	text-align: center;
+	text-decoration: none;
+	font-weight: bold;
+	color: #0000FF;
+}
+
+.pagination a:hover
+{
+	background-color: #8888FF;
+	color: #0000FF;
+}
+
+.pagination span.disabled
+{
+	display: inline-block;
+	height: 1.5em;
+	width: 3em;
+	background-color: #AAAAFF;
+	border: 1px solid #CCCCFF;
+	text-align: center;
+	text-decoration: none;
+	color: #CCCCFF;
+	font-weight: bold;
+}
+
+.pagination strong
+{
+	display: inline-block;
+	height: 1.5em;
+	width: 5em;
+	background-color: #AAAAFF;
+	border: 1px solid #CCCCFF;
+	text-align: center;
+}
+
+/**
+* error and success messages 
+**/
+
+.error
+{
+	color: #FF0000;
+	background-color: #FFCCCC;
+	border: 1px solid #FF0000;
+	border-radius: 5px;
+	padding: 5px;
+}
+.success
+{
+	color: #008000;
+	background-color: #CCFFCC;
+	border: 1px solid #008000;
+	border-radius: 5px;
+	padding: 5px;
+}
+
+/**
+* styling for about box
+**/
+
+#about_link
+{
+	position: absolute;
+	top: 0;
+	right: 1em;
+	background-color: #6666FF;
+	color: #CCCCFF;
+	border-radius: 0 0 5px 5px;
+	display: block;
+	padding: 0.4em;
+	text-decoration: none;
+	font-weight: bold;
+	font-size: 0.9em;
+}
+
+#about_link:hover, #about_link.selected
+{
+	background-color: #3333FF;
+}
+
+.about
+{
+	background-color: #FAFAFA;
+	padding: 1em;
+	font-size: 0.8em;
+}
+
+.about_box
+{
+	position: absolute;
+	width: 90%;
+	display: block;
+	border: 3px solid #6666FF;
+	border-radius: 10px;
+	top: 10%;
+	left: 5%;
+	z-index: 10;
+}
+
+.close
+{
+	position: relative;
+	float: right;
+	padding: 5px;
+	margin: -1em;
+	background-color: #6666FF;
+	color: #CCCCFF;
+	border-radius: 0 5px;
+	font-weight: bold;
+	text-decoration: none;
+}
+
+.close:hover
+{
+	color: #FFFFFF;
+}
