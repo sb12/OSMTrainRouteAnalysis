@@ -1,9 +1,9 @@
-OSMTrainRouteAnalyzer
+OSMTrainRouteAnalysis
 ==============
-A program to analyze Train Routes based on OpenStreetMap data.
+A program to analyse Train Routes based on OpenStreetMap data.
 ----------------------------------------------------------------------------------------
 
-**Train Route Analyzer http://osmtrainroutes.bplaced.net**
+**Train Route Analysis http://osmtrainroutes.bplaced.net**
 Copyright © 2014 sb12 osm.mapper999@gmail.com
 
 
