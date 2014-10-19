@@ -243,6 +243,18 @@ $tr_brake["BR111"] = 0.9;
 $tr_length["BR111"] = 0.017+5*0.027;
 $tr_image["BR111"] = "nWagenBR111.png";
 
+//DB BR 442.3 Talent 2 (Germany)
+$tr_name["BR442.3"] = "Talent 2 DB BR 442.3";
+$tr_type["BR442.3"] = "regional";
+$tr_maxspeed["BR442.3"] = 140; // km/h
+$tr_mass_empty["BR442.3"] = 160; // t
+$tr_power["BR442.3"] = 3030; // kW
+$tr_torque["BR442.3"] = 150; // kN
+$tr_seats["BR442.3"] = 223;
+$tr_acc["BR442.3"] = 1.1;
+$tr_brake["BR442.3"] = 0.9;
+$tr_length["BR442.3"] = 0.0884;
+$tr_image["BR442.3"] = "BR425.svg";
 
 //DB BR 425 (Germany)
 $tr_name["BR425"] = "DB Baureihe 425";
