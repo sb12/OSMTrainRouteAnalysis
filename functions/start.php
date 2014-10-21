@@ -318,7 +318,7 @@ function return_error($value, $type = "message", $dbcon = "")
 function log_error($msg)
 {
 	$fp = fopen("errors.log", "a");
-	fwrite($fp, "\n".date(YYYY-MM-DD)." ".$msg);
+	fwrite($fp, date("Y-m-d H:i") . " " . $msg . "\n");
 	fclose($fp);
 }
 
