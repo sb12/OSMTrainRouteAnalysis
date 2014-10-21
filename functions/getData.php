@@ -1752,6 +1752,28 @@ $this->showMap();
 			$i = 0;
 			foreach ( $this->relation_stops as $nr => $ref )
 			{
+
+				// node is not on way
+				if ( !isset($this->stop_node_distance[$ref]) )
+				{
+					$old_ref = $ref;
+					
+					// try to find nearest node on way 
+					// FIXME: only works for nodes
+					$ref = $this->get_nearest_node($ref);
+
+					// add new ref and move name and description to new ref
+					$this->relation_stops[$nr] = $ref;
+					if ( isset($this->node[$old_ref]["name"]) )
+					{
+						$this->node[$ref]["name"] = $this->node[$old_ref]["name"];
+					}
+					if ( isset($this->node[$old_ref]["description"]) )
+					{
+						$this->node[$ref]["description"] = $this->node[$old_ref]["description"];
+					}
+				}
+
 				if ( isset($this->stop_node_distance[$ref]) )
 				{
 					if ( isset($this->node[$ref]["lat"]) )
@@ -1762,7 +1784,7 @@ $this->showMap();
 					$this->stop_position[$i]["dis"] = $this->stop_node_distance[$ref];
 					$this->stop_position[$i]["ref"] = $ref;
 					$i++;
-				}				
+				}
 			}
 			
 			//sort stops in array
@@ -1781,9 +1803,9 @@ $this->showMap();
 		//enter stops into speed matrix
 		$i = 0;
 		while ( isset($this->stop_position[$i]["dis"]) )
-		{		
+		{
 			if ( isset($this->stop_position[$i]["dis"]) && $i > 0 )
-			{	
+			{
 				$this->way_length[$i] = $this->stop_position[$i]["dis"] - $this->stop_position[$i-1]["dis"];
 				$s = $this->way_length[$i];
 				$a = ( $this->train->brake * 12960 + $this->train->acceleration($this->train->mass_empty, $this->train->torque, $this->train->power, 200, 0, 200) ) / 2;
@@ -1863,7 +1885,7 @@ $this->showMap();
 			$savemaxarray[$i] = $exmaxarray[$i];
 			if ( $exmaxarray[$i][0] < 0 )
 			{
-				log_error("WARNING: negative Way. Relation ID:" . $this->id . "|Way ID:" . $i);
+				log_error("WARNING: negative Way. Relation ID: " . $this->id . " | Maxspeed array position: " . $i);
 			}
 			$i++;
 		}
@@ -2441,6 +2463,50 @@ $this->showMap();
 			}
 		}
 		return Array($maxspeed, $maxspeed_min, $maxspeed_max);
+	}
+	
+	/**
+	 * get nearest node to node
+	 * @param int $ref
+	 * @return int id of nearest node
+	 */
+	function get_nearest_node($ref)
+	{
+		if ( !isset($this->node[$ref]) )
+		{
+			return $ref;
+		}
+		
+		foreach ( $this->node as $nodeid => $node)
+		{
+			// distance between nodes
+			$node_diff = $this->getDistance($node["lat"], $node["lon"], $this->node[$ref]["lat"], $this->node[$ref]["lon"]);
+
+			// only use nodes that are less than 500m away
+			if ( $node_diff < 0.5 && $node_diff > 0 )
+			{
+				// use this node when it is a stop position
+				if ( isset($this->node[$nodeid]["public_transport"]) && $this->node[$nodeid]["public_transport"] == "stop_position" )
+				{
+					return $nodeid;
+				}
+				
+				// add node to array
+				$nodes_dis[$nodeid] = $node_diff;
+			}
+		}
+		
+		//sort array
+		asort($nodes_dis);
+		
+		//use nearest node
+		foreach ( $nodes_dis as $nodeid => $nodedis )
+		{
+			$id = $nodeid;
+			break;
+		}
+		
+		return $id;
 	}
 }
 ?>
