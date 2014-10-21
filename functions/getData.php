@@ -974,7 +974,7 @@ Class Route
 		}		
 		else
 		{
-			$traffic_mode_string = LANG::l_('N/A')." (100 %)";
+			$trafficmode_string = LANG::l_('N/A')." (100 %)";
 		}
 		
 		// calculate electrified distances
