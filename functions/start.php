@@ -198,8 +198,33 @@ function loadFooter()
 <div id="footer">
 <div>
 <small><?php echo Lang::l_('Route Data');?> © <a href="http://www.openstreetmap.org/copyright" title="OpenStreetMap Lizenz">OpenStreetMap</a><?php echo Lang::l_(' contributors');?></small>
+
+<small class="support">
+<?php 
+/** Flattr-Button, feel free to add your own flattr username or delete it **/
+?>
+<script id='fbcr6gj'>(function(i){var f,s=document.getElementById(i);f=document.createElement('iframe');f.src='//api.flattr.com/button/view/?uid=sb89&button=compact&url='+encodeURIComponent(document.URL);f.title='Flattr';f.height=20;f.width=110;f.style.borderWidth=0;s.parentNode.insertBefore(f,s);})('fbcr6gj');</script>
+
+<?php 
+/** Gratipay-Button, feel free to add your own gratipay username or delete it **/
+?>
+<script data-gratipay-username="mapper999"
+        data-gratipay-widget="button"
+        src="//grtp.co/v1.js"></script>
+
+<?php 
+/** Github-Button, feel free to add your own github repository or delete it **/
+?>       
+<!-- Place this tag where you want the button to render. -->
+<a data-count-api="/repos/sb12/OSMTrainRouteAnalysis#stargazers_count" data-count-href="/sb12/OSMTrainRouteAnalysis/stargazers" data-icon="octicon-star" href="https://github.com/sb12/OSMTrainRouteAnalysis" class="github-button">Star</a> 
+ 
+</small>
+
 </div>
 </div>
+<!-- Place this tag right after the last button or just before your close body tag. -->
+<script async defer id="github-bjs" src="https://buttons.github.io/buttons.js"></script>
+
 	<?php 
 }
 

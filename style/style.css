@@ -403,3 +403,14 @@ div.choose_route
 {
 	color: #FFFFFF;
 }
+
+/**
+ footer styling
+ **/
+ 
+small.support
+{
+    display:inline-block;
+    margin-right:10px;
+    float:right;
+}
