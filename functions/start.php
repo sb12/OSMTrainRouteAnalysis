@@ -60,14 +60,15 @@ function enterID()
 	?>
 <h2 class="factsheet_heading"><?php echo Lang::l_('Choose Route');?>:</h2>
 <div class="choose_route">
-	<form action="index.php" method="get">
+	<form action="index.php" method="get" id="osmid">
 	
 	<label for="id">OSM-ID:</label> <input type="text" name="id">
 	
 	<?php echo Lang::l_('Train');?>: <?php echo $train->changeTrain();?><input type="submit"/>
 	</form>
 </div>
-	<?php 
+	<?php
+	Search::showSearchBox(); 
 	
 }
 

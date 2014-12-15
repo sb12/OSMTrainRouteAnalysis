@@ -51,8 +51,8 @@ Class Lang
 		$poparser = new PoParser();
 
 		// path to lang file
-		$filePath["en"] = "lang/en.po";
-		$filePath["de"] = "lang/de.po";
+		$filePath["en"] = PATH . "lang/en.po";
+		$filePath["de"] = PATH . "lang/de.po";
 		
 		// set default language if language is not available
 		if ( !isset($filePath[$lang]) )
