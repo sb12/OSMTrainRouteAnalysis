@@ -106,6 +106,7 @@ $(function()
 			select($('#search'));      
 			set[1]=true;
 		}
+		$("#search")[0].scrollIntoView( true )
 		$('#searchcontent').text("Daten werden geladen...");
 		$.get('ajax/search.php?' + $( this ).serialize(), function(data){
 			$('#searchcontent').html(data);

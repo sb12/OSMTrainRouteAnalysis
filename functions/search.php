@@ -67,31 +67,31 @@ Class Search
 		$link = "http://overpass-api.de/api/interpreter?data=%3Cquery%20type%3D%22relation%22%3E";
 
 		// reference number
-		if ( isset($this->variables["ref"]) )
+		if ( $this->variables["ref"] )
 		{
 			$link .= "%3Chas-kv%20k%3D%22ref%22%20regv%3D%22" . urlencode( htmlentities($this->variables["ref"]) ) . "%22%2F%3E";
 		}
 
 		// network
-		if ( isset($this->variables["network"]) )
+		if ( $this->variables["network"] )
 		{
 			$link .= "%3Chas-kv%20k%3D%22network%22%20regv%3D%22" . urlencode( htmlentities($this->variables["network"]) ) . "%22%2F%3E";
 		}
 
 		// operator
-		if ( isset($this->variables["operator"]) )
+		if ( $this->variables["operator"] )
 		{
 			$link .= "%3Chas-kv%20k%3D%22operator%22%20regv%3D%22" . urlencode( htmlentities($this->variables["operator"]) ) . "%22%2F%3E";
 		}
 
 		// to
-		if ( isset($this->variables["to"]) )
+		if ( $this->variables["to"] )
 		{
 			$link .= "%3Chas-kv%20k%3D%22to%22%20regv%3D%22" . urlencode( htmlentities($this->variables["to"]) ) . "%22%2F%3E";
 		}
 
 		// from
-		if ( isset($this->variables["from"]) )
+		if ( $this->variables["from"] )
 		{
 			$link .= "%3Chas-kv%20k%3D%22from%22%20regv%3D%22" . urlencode( htmlentities($this->variables["from"]) ) . "%22%2F%3E";
 		}
@@ -232,16 +232,76 @@ Class Search
 
 		//build html output
 		
-			$html = "<div class=\"search_result\">\n";
-
-			$html .= "<h4><a href=\"?id=".$row["id"]."\">";
-			if ( isset($row["id"]) )
+			//build ref style
+			$css_ref_style = "";
+			if ( isset($row["color"]) )
 			{
-				$html .= $row["ref"];
+				$css_ref_style .= "background-color:" . $row["color"] . ";";
+			}
+			elseif ( isset($row["colour"]) )
+			{
+				$css_ref_style .= "background-color:" . $row["colour"] . ";";
+			}
+			if ( isset($row["text_color"]) )
+			{
+				$css_ref_style .= "color:" . $row["text_color"] . ";";
+			}
+			elseif ( isset($row["text_colour"]) )
+			{
+				$css_ref_style .= "color:" . $row["text_colour"] . ";";
+			}
+			elseif ( isset($row["colour:text"]) )
+			{
+				$css_ref_style .= "color:" . $row["colour:text"] . ";";
+			}
+			
+			if ( $row["route"] == "tram")
+			{
+				$route_html = $route_type["tram"];
+				$css_ref_class = "ref_tram";
+			}
+			elseif ( $row["route"] == "light_rail")
+			{
+				$route_html = $route_type["light_rail"];
+				$css_ref_class = "ref_light_rail";
+			}
+			elseif ( $row["route"] == "subway")
+			{
+				$route_html = $route_type["subway"];
+				$css_ref_class = "ref_light_rail";
 			}
 			else
 			{
-				$html .= Lang::l("Unknown");
+				if ( isset($row["service"]) && isset($route_type[$row["service"]]) )
+				{
+					$route_html = $route_type[$row["service"]];
+					if ( $row["service"] == "regional" || $row["service"] == "commuter" )
+					{
+						$css_ref_class = "ref_regional";
+					}
+					else
+					{
+			
+						$css_ref_class = "ref_long_distance";
+					}
+				}
+				else
+				{
+					$route_html = $route_type["unknown"];
+					$css_ref_class = "ref_regional";
+				}
+			}
+			
+			$html = "<div class=\"search_result\">\n";
+
+			$html .= "<h4><a href=\"?id=".$row["id"]."&train=".urlencode(htmlentities($this->variables["train"]))."\">";
+			if ( isset($row["id"]) )
+			{
+				$html .= '<span class="' . $css_ref_class . '" style="' . $css_ref_style . '">' . $row["ref"] . '</span>';
+			}
+			else
+			{
+				$html .= '<span class="' . $css_ref_class . '">' . Lang::l_("Unknown") . '</span>';
 			}
 			if ( isset($row["from"]) )
 			{
@@ -255,32 +315,10 @@ Class Search
 			{
 				$html .= " " . Lang::l_("via") . " " . $row["via"];
 			}
-			$html.="</a></h4>\n";
-			$html.="<span>";
+			$html .= "</a></h4>\n";
+			$html .= "<span>";
 
-			if ( $row["route"] == "tram")
-			{
-				$html.=$route_type["tram"];
-			}
-			elseif ( $row["route"] == "light_rail")
-			{
-				$html.=$route_type["light_rail"];
-			}
-			elseif ( $row["route"] == "subway")
-			{
-				$html.=$route_type["subway"];
-			}
-			else
-			{
-				if ( isset($row["service"]) && isset($route_type[$row["service"]]) )
-				{
-					$html.=$route_type[$row["service"]];
-				}
-				else
-				{
-					$html.=$route_type["unknown"];					
-				}
-			}
+			$html .= $route_html;
 			if ( isset($row["network"]) )
 			{
 				$html .= " / " . $row["network"];
@@ -303,19 +341,69 @@ Class Search
 	 */
 	static function showSearchBox()
 	{
+		$train = new Train();
 		?>
 		
 		<div class="choose_route">
-			<form method="get" id="searchform">
-				
-				<label for="ref">Ref:</label> <input type="text" name="ref">
-				<label for="operator">Operator:</label> <input type="text" name="operator">
-				<label for="network">Network:</label> <input type="text" name="network"> <br />
-				<label for="from">From:</label> <input type="text" name="from">
-				<label for="to">To:</label> <input type="text" name="to">
-				
-				<input type="submit"/>
-			</form>
+		<h4><?php echo Lang::l_("By route information:");?></h4>
+		
+		<form method="get" id="searchform">
+		<table>
+		<tr>
+			<td>				
+				<label for="ref"><?php echo Lang::l_("Line");?>:</label>
+			</td>
+			<td>
+				<input type="text" name="ref">
+			</td>
+		</tr>
+		<tr>
+			<td>
+				<label for="operator"><?php echo Lang::l_("Operator");?>:</label>
+			</td>
+			<td>
+				<input type="text" name="operator">
+			</td>
+		</tr>
+		<tr>
+			<td>
+				<label for="network"><?php echo Lang::l_("Network");?>:</label>
+			</td>
+			<td>	
+				<input type="text" name="network">
+			</td>
+		</tr>
+		<tr>
+			<td>
+				<label for="from"><?php echo Lang::l_("Origin");?>:</label>
+			</td>
+			<td>
+				<input type="text" name="from">
+			</td>
+		</tr>
+		<tr>
+			<td>
+				<label for="to"><?php echo Lang::l_("Destination");?>:</label>
+			</td>
+			<td>
+				<input type="text" name="to">
+			</td>
+		</tr>
+		<tr>
+			<td>
+				<?php echo Lang::l_('Train');?>:
+			</td>
+			<td>
+				<?php echo $train->changeTrain();?>
+			</td>
+		</tr>
+		<tr>
+			<td colspan="2">
+				<input type="submit" value="<?php echo Lang::l_("Search route");?>"/>
+			</td>
+		</tr>
+		</table>
+		</form>
 		</div>		
 		<?php
 	}
