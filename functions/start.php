@@ -60,14 +60,35 @@ function enterID()
 	?>
 <h2 class="factsheet_heading"><?php echo Lang::l_('Choose Route');?>:</h2>
 <div class="choose_route">
-	<form action="index.php" method="get">
-	
-	<label for="id">OSM-ID:</label> <input type="text" name="id">
-	
-	<?php echo Lang::l_('Train');?>: <?php echo $train->changeTrain();?><input type="submit"/>
+<h4><?php echo Lang::l_("By the OpenStreetMap relation id:");?></h4>
+	<form action="index.php" method="get" id="osmid">
+	<table>
+	<tr>
+		<td>
+			<label for="id"><?php echo Lang::l_('OpenStreetMap id');?>:</label>
+		</td>
+		<td>
+			<input type="text" name="id">
+		</td>
+	</tr>
+	<tr>
+		<td>
+			<?php echo Lang::l_('Train');?>:
+		</td>
+		<td>
+			<?php echo $train->changeTrain();?>
+		</td>
+	</tr>
+	<tr>
+		<td colspan="2">
+			<input type="submit" value="<?php echo Lang::l_("Load route");?>"/>
+		</td>
+	</tr>
+	</table>
 	</form>
 </div>
-	<?php 
+	<?php
+	Search::showSearchBox(); 
 	
 }
 
@@ -137,7 +158,9 @@ function showRoutes($amount = 50)
 		}
 	}
 	?>
-<h2 class="factsheet_heading"><?php echo Lang::l_('Route Overview');?></h2>
+	<div class="choose_route">	
+		<h4> <?php echo Lang::l_("By choosing a route from the list:");?></h4>
+	</div>
 <table class="route_overview">
 		<tr>
 			<th><a href="?order_by=ref&page=<?php echo $page;?>&dir=<?php echo $dir_order_by["ref"];?>"><?php echo $img_order_by["ref"].Lang::l_('Line');?></a></th>

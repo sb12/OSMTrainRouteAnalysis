@@ -38,17 +38,18 @@
 <script type="text/javascript" src="javascript/functions.js"></script>
 <?php
 //turn off error_reports
-error_reporting(0);
+//error_reporting(0);
 include "functions/train_details.php";
 include "functions/getData.php";
 include "functions/lang.php";
 include "functions/start.php";
 include "functions/train.php";
+include "functions/search.php";
 include "po_parser/src/Sepia/PoParser.php";
 //include "lang/lang_de.php"; //FIXME: add possibility to change language
 
 // define path to home directory 
-define("PATH", "../../../");
+define("PATH", "");
 
 Lang::defineLanguage();
 //route id is defined -> get route 
@@ -69,6 +70,7 @@ if(isset($_GET["id"]))
 else 
 {
 	start();
+	Search::showSearchResult();
 	showAbout();
 }
 	?>

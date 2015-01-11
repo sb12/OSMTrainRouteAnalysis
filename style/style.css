@@ -414,3 +414,23 @@ small.support
     margin-right:10px;
     float:right;
 }
+
+/**
+ search styling
+**/
+
+
+.search
+{
+	position: absolute;
+	background-color: #FAFAFA;
+	padding: 1em;
+	font-size: 0.8em;
+	width: 90%;
+	display: block;
+	border: 3px solid #6666FF;
+	border-radius: 10px;
+	top: 10%;
+	left: 5%;
+	z-index: 10;
+}

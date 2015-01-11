@@ -22,16 +22,56 @@
 
 /** functions for about box **/
 
+
+/**
+ * define elements that can be shown in box
+ */
+
+var set = new Array();
+var element = new Array();
+var button = new Array();
+
+element[0]=$('.about');
+element[1]=$('#search');
+
+set[0]=false;
+set[1]=false;
+
+
 /**
  * deselect link
  * @param e element
- */
+ */ 
+
 function deselect(e) 
 {
-	e.removeClass('selected');
-  	$('.about').slideFadeToggle();
+	e.fadeOut();
+	fadeInBackground();
 }
 
+/**
+ * select link
+ * @param e element
+ */ 
+
+function select(e) 
+{
+	$('#search').fadeOut();
+	$('.about').fadeOut();
+	set[$('#search')]=false;
+	set[$('.about')]=false;
+	e.fadeIn();
+	fadeOutBackground();
+}
+
+function close()
+{
+	$('#search').fadeOut();
+	$('.about').fadeOut();
+	set[0]=false;
+	set[1]=false;
+	fadeInBackground();
+}
 /**
  * initialize onclick function for button
  */
@@ -39,43 +79,61 @@ $(function()
 {
 	$('#about_link').on('click', function() 
 	{
-		if($(this).hasClass('selected')) 
+		if(set[0])
 		{
-			deselect($(this));               
+			deselect($('.about'));      
+			set[0]=false;
 		} 
 		else 
 		{
-			$(this).addClass('selected');
-			$('.about').slideFadeToggle();
+			select($('.about'));        
+			set[0]=true;
 		}
 		return false;
 	});
 
 	$('.close').on('click', function() 
 	{
-		deselect($('#about_link'));
+		close();
 		return false;
 	});
+
+	$( '#searchform' ).on('submit', function( event ) 
+	{
+		event.preventDefault();
+		if(!set[1])
+		{
+			select($('#search'));      
+			set[1]=true;
+		}
+		$("#search")[0].scrollIntoView( true )
+		$('#searchcontent').text("Daten werden geladen...");
+		$.get('ajax/search.php?' + $( this ).serialize(), function(data){
+			$('#searchcontent').html(data);
+			
+			});
+
+		});
 });
 
 /*
- * animation for window and background
+ * animation for background
  */
-$.fn.slideFadeToggle = function(easing, callback) 
+function fadeOutBackground() 
 {
-	if($('#about_link').hasClass('selected'))
-	{
-		var opacity = 0.2;
-	}
-	else
-	{
-		var opacity = 1.0;
-	}
-	$('#header').animate({ opacity: opacity}, 'fast', easing, callback);
-	$('#main').animate({ opacity: opacity}, 'fast', easing, callback);
-	$('#footer').animate({ opacity: opacity}, 'fast', easing, callback);
-  	return this.animate({ opacity: 'toggle', height: 'toggle' }, 'fast', easing, callback);
-};
+	var opacity = 0.2;
+	$('#header').animate({ opacity: opacity}, 'fast');
+	$('#main').animate({ opacity: opacity}, 'fast');
+	$('#footer').animate({ opacity: opacity}, 'fast');
+}
+function fadeInBackground() 
+{
+	var opacity = 1;
+	$('#header').animate({ opacity: opacity}, 'fast');
+	$('#main').animate({ opacity: opacity}, 'fast');
+	$('#footer').animate({ opacity: opacity}, 'fast');
+}
+
 
 /**
  * hide element and add class when loading page.
@@ -84,4 +142,6 @@ $( document ).ready(function()
 {
 	$('.about').hide();
 	$('.about').addClass('about_box');
+	
+	$('#search').hide();
 });
