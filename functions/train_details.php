@@ -243,18 +243,31 @@ $tr_brake["BR111"] = 0.9;
 $tr_length["BR111"] = 0.017+5*0.027;
 $tr_image["BR111"] = "nWagenBR111.png";
 
-//DB BR 442.3 Talent 2 (Germany)
-$tr_name["BR442.3"] = "Talent 2 DB BR 442.3";
-$tr_type["BR442.3"] = "regional";
-$tr_maxspeed["BR442.3"] = 140; // km/h
-$tr_mass_empty["BR442.3"] = 160; // t
-$tr_power["BR442.3"] = 3030; // kW
-$tr_torque["BR442.3"] = 150; // kN
-$tr_seats["BR442.3"] = 223;
-$tr_acc["BR442.3"] = 1.1;
-$tr_brake["BR442.3"] = 0.9;
-$tr_length["BR442.3"] = 0.0884;
-$tr_image["BR442.3"] = "BR425.svg";
+//DB BR 422 (Germany)
+$tr_name["BR422"] = "DB Baureihe 422";
+$tr_type["BR422"] = "regional";
+$tr_maxspeed["BR422"] = 140; // km/h
+$tr_mass_empty["BR422"] = 112; // t
+$tr_power["BR422"] = 2350; // kW
+$tr_torque["BR422"] = 145; // kN
+$tr_seats["BR422"] = 192;
+$tr_acc["BR422"] = 1;
+$tr_brake["BR422"] = 0.9;
+$tr_length["BR422"] = 0.069;
+$tr_image["BR422"] = "BR422.svg";
+
+//DB BR 423 (Germany)
+$tr_name["BR423"] = "DB Baureihe 423";
+$tr_type["BR423"] = "regional";
+$tr_maxspeed["BR423"] = 140; // km/h
+$tr_mass_empty["BR423"] = 105; // t
+$tr_power["BR423"] = 2350; // kW
+$tr_torque["BR423"] = 145; // kN
+$tr_seats["BR423"] = 192;
+$tr_acc["BR423"] = 1;
+$tr_brake["BR423"] = 0.9;
+$tr_length["BR423"] = 0.069;
+$tr_image["BR423"] = "BR423.svg";
 
 //DB BR 425 (Germany)
 $tr_name["BR425"] = "DB Baureihe 425";
@@ -268,6 +281,32 @@ $tr_acc["BR425"] = 1;
 $tr_brake["BR425"] = 0.9;
 $tr_length["BR425"] = 0.068;
 $tr_image["BR425"] = "BR425.svg";
+
+//DB BR 430 (Germany)
+$tr_name["BR430"] = "DB Baureihe 430";
+$tr_type["BR430"] = "regional";
+$tr_maxspeed["BR430"] = 140; // km/h
+$tr_mass_empty["BR430"] = 119; // t
+$tr_power["BR430"] = 2350; // kW
+$tr_torque["BR430"] = 145; // kN
+$tr_seats["BR430"] = 184;
+$tr_acc["BR430"] = 1;
+$tr_brake["BR430"] = 0.9;
+$tr_length["BR430"] = 0.068;
+$tr_image["BR430"] = "BR430.svg";
+
+//DB BR 442.3 Talent 2 (Germany)
+$tr_name["BR442.3"] = "DB Baureihe 442.3 Bombardier Talent 2 5-teilig";
+$tr_type["BR442.3"] = "regional";
+$tr_maxspeed["BR442.3"] = 140; // km/h
+$tr_mass_empty["BR442.3"] = 160; // t
+$tr_power["BR442.3"] = 3030; // kW
+$tr_torque["BR442.3"] = 150; // kN
+$tr_seats["BR442.3"] = 223;
+$tr_acc["BR442.3"] = 1.1;
+$tr_brake["BR442.3"] = 0.9;
+$tr_length["BR442.3"] = 0.0884;
+$tr_image["BR442.3"] = "BR425.svg";
 
 
 //DB BR 628.4 (Germany)
