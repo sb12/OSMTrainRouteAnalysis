@@ -36,6 +36,21 @@
         ]]>
       </description>
     </item>
+    <item>
+      <title>v0.3 January 23, 2015</title>
+      <link>http://osmtrainroutes.bplaced.net/#about</link>
+      <description><![CDATA[
+            <ul>
+			<li>Search for routes by number, operator, network, origin and destination</li>
+			<li>Additional trains</li>
+			<li>Support of stop nodes that are not directly on the way of the route </li>
+            <li>Minor tweaks and bugfixes</li>
+        </ul>
+        ]]>
+      </description>
+    </item>
 
+
+            
  </channel>
 </rss>

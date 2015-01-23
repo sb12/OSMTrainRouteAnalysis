@@ -441,6 +441,13 @@ function showAbout()
 			<li>New About page</li>
             <li>Minor tweaks and bugfixes</li>
 		</ul>
+		<h3>v0.3 January 23, 2015</h3>
+		<ul>
+			<li>Search for routes by number, operator, network, origin and destination</li>
+			<li>Additional trains</li>
+			<li>Support of stop nodes that are not directly on the way of the route </li>
+            <li>Minor tweaks and bugfixes</li>
+		</ul>
 		<a type="application/rss+xml" href="changelog.rss">Complete Changelog</a>
 	</div>
 	<?php
