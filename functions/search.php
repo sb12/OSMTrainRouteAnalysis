@@ -164,7 +164,7 @@ Class Search
 	 *
 	 * This function sorts the search results
 	 */
-	function sortResult($orderby="id")
+	function sortResult($orderby="ref")
 	{
 		//result is empty
 		if(!isset($this->result))
@@ -180,6 +180,10 @@ Class Search
 			if ( isset($row["ref"]) )
 			{
 				$ref[$key] = $row['ref'];
+			}
+			else
+			{
+				$ref[$key] = "";
 			}
 		}
 		
@@ -295,7 +299,7 @@ Class Search
 			$html = "<div class=\"search_result\">\n";
 
 			$html .= "<h4><a href=\"?id=".$row["id"]."&train=".urlencode(htmlentities($this->variables["train"]))."\">";
-			if ( isset($row["id"]) )
+			if ( isset($row["ref"]) )
 			{
 				$html .= '<span class="' . $css_ref_class . '" style="' . $css_ref_style . '">' . $row["ref"] . '</span>';
 			}
