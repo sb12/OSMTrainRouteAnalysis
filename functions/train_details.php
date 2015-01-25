@@ -323,6 +323,20 @@ $tr_length["BR628"] = 0.046; //in Einzeltraktion
 $tr_image["BR628"] = "regional.svg"; //FIXME
 
 
+//DB BR 642 (Germany)
+$tr_name["BR642"] = "DB Baureihe 642 Siemens Desiro Classic";
+$tr_type["BR642"] = "regional";
+$tr_maxspeed["BR642"] = 120; // km/h
+$tr_mass_empty["BR642"] = 69; // t
+$tr_power["BR642"] = 550; // kW
+$tr_torque["BR642"] = 50; // estimated
+$tr_seats["BR642"] = 110;
+$tr_acc["BR642"] = 1.2; // m/s²
+$tr_brake["BR642"] = 1; // m/s²
+$tr_length["BR642"] = 0.042; //in Einzeltraktion
+$tr_image["BR642"] = "BR642.svg";
+
+
 //Stadler Regioshuttle RS1
 $tr_name["RS1"] = "Stadler Regioshuttle RS1";
 $tr_type["RS1"] = "regional";
