@@ -301,24 +301,28 @@ Class Search
 			$html .= "<h4><a href=\"?id=".$row["id"]."&train=".urlencode(htmlentities($this->variables["train"]))."\">";
 			if ( isset($row["ref"]) )
 			{
-				$html .= '<span class="' . $css_ref_class . '" style="' . $css_ref_style . '">' . $row["ref"] . '</span>';
+				$html .= '<span class="' . $css_ref_class . '" style="' . $css_ref_style . '">' . $row["ref"] . '</span> ';
 			}
 			else
 			{
-				$html .= '<span class="' . $css_ref_class . '">' . Lang::l_("Unknown") . '</span>';
+				$html .= '<span class="' . $css_ref_class . '">' . Lang::l_("Unknown") . '</span> ';
 			}
-			if ( isset($row["from"]) )
+
+			if ( !isset($row["from"]) )
 			{
-				$html .= " " . Lang::l_("from") . " " . $row["from"];
+				$row["from"] = "";
 			}
-			if ( isset($row["to"]) )
+			if ( !isset($row["to"]) )
 			{
-				$html .= " " . Lang::l_("to") . " " . $row["to"];
+				$row["to"] = "";
 			}
-			if ( isset($row["via"]) )
+			if ( !isset($row["via"]) )
 			{
-				$html .= " " . Lang::l_("via") . " " . $row["via"];
+				$row["via"] = "";
 			}
+			
+			$html .= Route::showfromviato($row["to"],$row["from"],$row["via"]);
+			
 			$html .= "</a></h4>\n";
 			$html .= "<span>";
 

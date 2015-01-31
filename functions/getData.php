@@ -1176,10 +1176,14 @@ Class Route
 		{
 			$this->relation_tags["to"] = Lang::l_('Unknown');
 		}
+		if ( !isset($this->relation_tags["via"]))
+		{
+			$this->relation_tags["via"] = "";
+		}
 
 		//title
 		?>
-	<title><?php echo LANG::l_("Train Analysis: ") . $this->relation_tags["ref"]; ?> von <?php echo $this->relation_tags["from"]; ?> nach <?php echo $this->relation_tags["to"]; ?></title>
+	<title><?php echo LANG::l_("Train Analysis: ") . $this->relation_tags["ref"]; ?> <?php echo Route::showfromviato($this->relation_tags["to"], $this->relation_tags["from"], $this->relation_tags["via"]); ?></title>
 		<?php 
 		//javascript for speed profile
 		?>
@@ -1545,7 +1549,7 @@ var startData = [[0,0],<?php
 </div>
 </div>
 <div id="main">
-<h2><span class="<?php echo $css_ref_class;?>" style="<?php echo $css_ref_style;?>"><?php echo $this->relation_tags["ref"];?></span> <?php echo $this->relation_tags["from"];?> <?php echo Lang::l_("to");?> <?php echo $this->relation_tags["to"];?></h2>
+<h2><span class="<?php echo $css_ref_class;?>" style="<?php echo $css_ref_style;?>"><?php echo $this->relation_tags["ref"];?></span> <?php echo Route::showfromviato($this->relation_tags["to"], $this->relation_tags["from"], $this->relation_tags["via"]);?></h2>
 <a href="index.php" title="<?php echo Lang::l_("Back to Overview");?>"><?php echo Lang::l_("Back to Route Overview");?></a>
 <?php 
 if ( isset($this->refresh_success) && $this->refresh_success == false )
@@ -2530,6 +2534,38 @@ $this->showMap();
 		}
 		
 		return $id;
+	}
+	
+	/**
+	 * Function to show destination, origin and via stations of route in nice format
+	 * @param string $to destination
+	 * @param string $from origin
+	 * @param string $via via stations
+	 * @return string result
+	 */
+	static function showfromviato($to="",$from="",$via="")
+	{
+		$result = "";
+		
+		if($from)
+		{
+			$result .= $from;
+		}
+		
+		if($via)
+		{
+			$a_via = explode ( ";", $via );
+			foreach($a_via as $v_via)
+			{
+				$result .= " &#8594 " . $v_via;
+			}
+		}
+		if($to)
+		{
+			$result .= " &#8594 " . $to;
+		}
+
+		return $result;
 	}
 }
 ?>
