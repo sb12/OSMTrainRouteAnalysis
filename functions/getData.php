@@ -645,7 +645,7 @@ Class Route
 				
 				
 			// check if way is railway
-			if ( !isset($this->way_tags[$b]["railway"]) || ( $this->way_tags[$b]["railway"] != "rail" && $this->way_tags[$b]["railway"] != "light_rail" && $this->way_tags[$b]["railway"] != "tram" && $this->way_tags[$b]["railway"] != "narrow_gauge") && $this->way_tags[$b]["railway"] != "subway" )
+			if ( !isset($this->way_tags[$b]["railway"]) || ( $this->way_tags[$b]["railway"] != "rail" && $this->way_tags[$b]["railway"] != "light_rail" && $this->way_tags[$b]["railway"] != "tram" && $this->way_tags[$b]["railway"] != "narrow_gauge") && $this->way_tags[$b]["railway"] != "miniature" && $this->way_tags[$b]["railway"] != "subway" )
 			{
 				continue;
 			}
@@ -1112,6 +1112,11 @@ Class Route
 						$route_type = "commuter";
 					}
 				}
+				elseif ( $this->relation_tags["service"] == "tourism")
+				{
+					$css_ref_class = "ref_tourism";
+					$route_type = "tourism";
+				}
 			}
 			else
 			{
@@ -1122,16 +1127,31 @@ Class Route
 		{
 			$css_ref_class = "ref_light_rail";
 			$route_type = "light_rail";
+			if ( $this->relation_tags["service"] == "tourism")
+			{
+				$css_ref_class = "ref_tourism";
+				$route_type = "tourism";
+			}
 		}
 		elseif ( isset($this->relation_tags["route"]) && $this->relation_tags["route"] == "subway" )
 		{
 			$css_ref_class = "ref_light_rail";
 			$route_type = "subway";
+			if ( $this->relation_tags["service"] == "tourism")
+			{
+				$css_ref_class = "ref_tourism";
+				$route_type = "tourism";
+			}
 		}
 		else
 		{
 			$css_ref_class = "ref_tram";
 			$route_type = "tram";
+			if ( $this->relation_tags["service"] == "tourism")
+			{
+				$css_ref_class = "ref_tourism_tram";
+				$route_type = "tourism_tram";
+			}
 		}
 		if ( !isset($route_type) )
 		{
@@ -1599,6 +1619,8 @@ elseif ( isset($this->refresh_success) && $this->refresh_success == true )
 		$route_type_de["light_rail"] = Lang::l_('Light Rail');
 		$route_type_de["tram"] = Lang::l_('Tram');
 		$route_type_de["subway"] = Lang::l_('Subway');
+		$route_type_de["tourism"] = Lang::l_('Tourist train');
+		$route_type_de["tourism_tram"] = Lang::l_('Tourist tram');
 		$route_type_de["unknown"] = Lang::l_('N/A');
 
 		//calculate travel time
@@ -2424,6 +2446,13 @@ $this->showMap();
 				$maxspeed_max = 120;
 				$maxspeed_min = 30;
 			}
+		}
+		// miniature
+		elseif ( isset($this->way_tags[$id]["railway"]) && $this->way_tags[$id]["railway"] == "miniature" )
+		{
+			$maxspeed = 10;
+			$maxspeed_max = 30;
+			$maxspeed_min = 5;
 		} // highspeed lines
 		elseif ( isset($this->way_tags[$id]["highspeed"]) && $this->way_tags[$id]["highspeed"] == "yes" )
 		{

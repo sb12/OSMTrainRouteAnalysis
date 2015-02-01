@@ -77,7 +77,7 @@ h3
 * ref styling
 **/
 
-.ref_long_distance, .ref_regional, .ref_tram, .ref_light_rail
+.ref_long_distance, .ref_regional, .ref_tram, .ref_light_rail, .ref_tourism, .ref_tourism_tram
 {
 	display: inline-block;
 	background-color: #666;
@@ -90,7 +90,7 @@ h3
 	padding: 0.1em 0.3em;
 }
 
-.ref_long_distance, .ref_regional, .ref_light_rail 
+.ref_long_distance, .ref_regional, .ref_light_rail, .ref_tourism
 {
 	border-radius: 5px;
 }
@@ -98,6 +98,11 @@ h3
 .ref_long_distance
 {
 	color: #F00;
+}
+.ref_tourism, .ref_tourism_tram
+{
+	background-color:#633a34;
+	color: #FFFFFF;
 }
 
 /**

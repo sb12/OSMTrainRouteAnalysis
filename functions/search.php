@@ -228,6 +228,8 @@ Class Search
 		$route_type["light_rail"] = Lang::l_('Light Rail');
 		$route_type["tram"] = Lang::l_('Tram');
 		$route_type["subway"] = Lang::l_('Subway');
+		$route_type["tourism"] = Lang::l_('Tourist train');
+		$route_type["tourism_tram"] = Lang::l_('Tourist tram');
 		$route_type["unknown"] = Lang::l_('N/A');
 
 		// Obtain a list of columns
@@ -263,6 +265,11 @@ Class Search
 			{
 				$route_html = $route_type["tram"];
 				$css_ref_class = "ref_tram";
+				if ( isset($row["service"]) && $row["service"] == "tourism")
+				{
+					$route_html = $route_type["tourism_tram"];
+					$css_ref_class = "ref_tourism_tram";
+				}
 			}
 			elseif ( $row["route"] == "light_rail")
 			{
@@ -282,6 +289,10 @@ Class Search
 					if ( $row["service"] == "regional" || $row["service"] == "commuter" )
 					{
 						$css_ref_class = "ref_regional";
+					}
+					elseif ( $row["service"] == "tourism")
+					{
+						$css_ref_class = "ref_tourism";
 					}
 					else
 					{
