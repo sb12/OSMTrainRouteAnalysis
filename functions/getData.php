@@ -1300,6 +1300,8 @@ var startData = [[0,0],<?php
 	    			{
 	    				$stop_name[$nr] = $this->node[$ref]["description"];
 	    			}
+	    			//mask '-sign:
+	    			$stop_name[$nr] = str_replace("'","\'",$stop_name[$nr]);
 	    			//write stop into matrix
 	    			echo "[" . $this->stop_position[$stop_i]["dis"] . ",0,'" . $stop_name[$nr] . "'],";
 	    			$j++; 
