@@ -28,12 +28,20 @@ $(function()
 	$( '#searchform' ).on('submit', function( event ) 
 	{
 		event.preventDefault();
-		$('#searchcontent').html("<span class=\"list-group-item\">Daten werden geladen...</span>");
+		$('#searchcontent').html("<span class=\"list-group-item\">Daten werden geladen...</span>");//FIXME: German
 		$.get('ajax/search.php?' + $( this ).serialize(), function(data){
 			$('#searchcontent').html(data);
 			$(window).trigger('resize');
-			
-			});
-
 		});
+	});
+	
+	$( '#josmLink' ).on('click', function( event ) 
+	{
+		event.preventDefault();
+		var jqxhr = $.get($('#josmLink').attr('href'))
+		.fail(function()
+		{
+			$('#josmErrorDialog').modal(show=true);
+		})
+	});
 });

@@ -1794,7 +1794,7 @@ elseif ( isset($this->refresh_success) && $this->refresh_success == true )
 </div>
     <nav class="navbar" id=footer>
 		<div class="container">
-			<small><strong><?php echo Lang::l_('Data date');?>:</strong> <?php echo  date ("F d Y H:i:s", $this->filemtime);?> (<a href="?id=<?php echo $this->id?>&train=<?php echo $this->train->ref?>&rf=1" title="<?php echo Lang::l_('Update data');?>"><?php echo Lang::l_('Update data');?></a>) | <?php echo Lang::l_('Route Data');?> © <a href="http://www.openstreetmap.org/copyright" title="OpenStreetMap <?php echo Lang::l_('licence');?>">OpenStreetMap</a><?php echo Lang::l_(' contributors');?> | <a href="http://127.0.0.1:8111/import?url=http://api.openstreetmap.org/api/0.6/relation/<?php echo $this->id;?>/full"><?php echo Lang::l_('Load relation in JOSM');?></a></small>
+			<small><strong><?php echo Lang::l_('Data date');?>:</strong> <?php echo  date ("F d Y H:i:s", $this->filemtime);?> (<a href="?id=<?php echo $this->id?>&train=<?php echo $this->train->ref?>&rf=1" title="<?php echo Lang::l_('Update data');?>"><?php echo Lang::l_('Update data');?></a>) | <?php echo Lang::l_('Route Data');?> © <a href="http://www.openstreetmap.org/copyright" title="OpenStreetMap <?php echo Lang::l_('licence');?>">OpenStreetMap</a><?php echo Lang::l_(' contributors');?> | <a id="josmLink" href="http://127.0.0.1:8111/load_object?objects=r<?php echo $this->id;?>&relation_members=true" data-editor="remote"><?php echo Lang::l_('Load relation in JOSM');?></a></small>
 			<div class="navbar-right">
 <?php 
 /** Flattr-Button, feel free to add your own flattr username or delete it **/
@@ -1821,6 +1821,19 @@ elseif ( isset($this->refresh_success) && $this->refresh_success == true )
 <div class="" role="tooltip" id="tooltip_wrapper" style="display:none;position:absolute">
 	<div class="tooltip-arrow" id="tooltip_arrow"></div>
 	<div id='tooltip' class='tooltip-inner'></div>
+</div>
+
+<div class="modal fade" id="josmErrorDialog" tabindex="-1" role="dialog" aria-labelledby="aboutLabel" aria-hidden="true">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-body">
+				<p id="josmError" class="text-danger"><?php echo Lang::l_('Loading relation to the editor failed - make sure JOSM or Merkaartor is loaded and the remote control option is enabled.');?></p>
+	        </div>
+			<div class="modal-footer">
+			    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+	        </div>
+		</div>
+	</div>
 </div>
 <!-- Place this tag right after the last button or just before your close body tag. -->
 <script async defer id="github-bjs" src="https://buttons.github.io/buttons.js"></script>
