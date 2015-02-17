@@ -2327,8 +2327,16 @@ elseif ( isset($this->refresh_success) && $this->refresh_success == true )
 		<script type="text/javascript">
 
 		/* define bounds */
-		var map = L.map('map').fitBounds([[<?php echo $this->min_lat_bounds;?>, <?php echo $this->min_lon_bounds;?>], [<?php echo $this->max_lat_bounds;?>, <?php echo $this->max_lon_bounds;?>]]);
+		var map = L.map('map', {
+			scrollWheelZoom: false
+		}).fitBounds([[<?php echo $this->min_lat_bounds;?>, <?php echo $this->min_lon_bounds;?>], [<?php echo $this->max_lat_bounds;?>, <?php echo $this->max_lon_bounds;?>]]);
 
+		/*activate scrollWhellZoom after first focus on the map */
+		map.once('focus', function() 
+		{
+			map.scrollWheelZoom.enable(); 
+		});
+		
 		/* define map layers */
 		var transport = L.tileLayer('http://{s}.tile.thunderforest.com/transport/{z}/{x}/{y}.png', {
 		    attribution: 'Map © <a href="http://www.thunderforest.com/">Thunderforest</a>. Map data <a href="http://www.openstreetmap.org/copyright">© OpenStreetMap contributers, ODbL</a>',
