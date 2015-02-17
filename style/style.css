@@ -23,43 +23,20 @@
 * general styling
 **/
 
-body
-{
-	padding: 0;
-	margin: 0;
-	background-color: #FAFAFA;
-	font-family: Verdana;
-	color: #111;
-	width: 100%;
-}
-
-h2
-{
-	font-size: 1.2em;
-	font-family: Arial;
-	font-weight: bold;
-}
-
-h3
-{
-	font-size: 1em;
-	font-family: Arial;
-	font-weight: bold;
-}
-
 #header
 {
-	background-color: #CCCCFF;
-	margin: 0;
-	width: 100%; 
+	background-color: #337ab7;
+	color: #ffffff;
 }
 
 #footer
 {
-	background-color: #CCCCFF;
+	border-top: 2px solid #337ab7;
 	margin: 0;
 	width: 100%;
 	top: 0px;
+	border-radius:0;
+	color:#337ab7;
 }
 
 #header div, #footer div
@@ -67,11 +44,33 @@ h3
 	padding: 0.5em 1em;  
 }
 
-#main
-{
-	padding: 8;
+.navbar-za{
+	background-color:#ffffff;
+	border-bottom: 2px solid #337ab7;
+	color: #337ab7;
 }
 
+h5{
+	font-weight:bold;
+}
+
+h6{
+	font-style:italic;
+}
+
+h2.panel-title
+{
+	font-weight:bold;
+}
+
+.modal-body.list-group{
+	padding:0;
+	margin:0;
+}
+
+.modal-body.list-group > .list-group-item{
+	border-radius:0;
+}
 
 /**
 * ref styling
@@ -81,13 +80,14 @@ h3
 {
 	display: inline-block;
 	background-color: #666;
-	color: #fff;
-	height: 1.2em;
-	min-width: 3em;
+	color: #F4F4F4;
 	font-size: 0.9em;
 	text-align: center;
 	white-space: nowrap;
 	padding: 0.1em 0.3em;
+	vertical-align:middle;
+	border: 1px solid #F4F4F4;
+	font-weight: bold;
 }
 
 .ref_long_distance, .ref_regional, .ref_light_rail, .ref_tourism
@@ -98,69 +98,80 @@ h3
 .ref_long_distance
 {
 	color: #F00;
+	border-color: #F00;
 }
+
 .ref_tourism, .ref_tourism_tram
 {
 	background-color:#633a34;
-	color: #FFFFFF;
+	/*color: #F4F4F4;*/
 }
 
 /**
-* styling of factsheets on train route pages
+* maxspeed and map styling
 **/
-
-h3.factsheet_heading,h2.factsheet_heading
-{
-	width: 20em;
-	border: 1px solid #CCCCFF;
-	margin: 0;
-	margin-top: 1em;
-	padding: 1%;
-	border-collapse: collapse;
-	color: #666699;
-}
-
-div.factsheet
-{
-	width: 100%;
-	border: 1px solid #CCCCFF;
-	border-collapse: collapse;
-	margin-top: -1px;
-}
-
-.factsheet>div
-{
-	display: inline-block;
-	width: 47%;
-	margin: 0;
-	padding: 1%;
-	min-height: 2em;
-	vertical-align: top;
-}
-
-.factsheet div.long
-{
-	display: inline-block;
-	width: 97%;
-	margin: 0;
-	padding: 1%;
-	min-height: 2em;
-}
 
 #maxspeed
 {
-	border: 1px solid #CCCCFF;
-	border-collapse: collapse;
-	margin-top: -1px;
+	border: 1px solid #337ab7;
+	z-index:2;
+}
+#maxspeed_overview
+{
+	border: 1px solid #337ab7;
+	z-index:3;
+	width: 20%; 
+	height: 100px; 
+	min-width:200px; 
+	position: absolute; 
+	top: 10px; 
+	right: 10px; 
+	background-color: #FAFAFA;
 }
 
 #map
 {
-	border: 1px solid #CCCCFF;
-	border-collapse: collapse;
+	border: 1px solid #337ab7;
 	height: 300px;
-	width: 50%;
-	margin: -1px;
+	border-radius:4px;
+}
+
+/**
+* tooltip styling
+**/
+
+#tooltip_wrapper
+{
+	position: absolute;
+	display: none;
+	opacity: 0.80;	
+}
+
+#tooltip_wrapper > .tooltip-inner
+{
+	background-color: #337ab7;
+	border-color:#337ab7;
+}
+
+#tooltip_wrapper.bottom > .tooltip-arrow
+{
+	border-bottom-color:#337ab7;
+}
+
+#tooltip_wrapper.top > .tooltip-arrow
+{
+	border-top-color:#337ab7;
+}
+
+#tooltip_wrapper > .tooltip-arrow.right
+{
+	right: 4px;
+	left: auto;
+}
+
+#tooltip_wrapper > .tooltip-arrow.left
+{
+	left: 8px;
 }
 
 /**
@@ -211,54 +222,33 @@ ul.stations li img
 * styling for route overview tables
 **/
 
-.route_overview
+.route_overview > thead > tr > th
 {
-	border-collapse: collapse;
-	margin-top: -1px;
-	width: 100%;
+	padding:0px;
 }
-
-
-.route_overview td, .route_overview th
-{
-	border: 1px solid #CCCCFF;
-	border-collapse: collapse;
-	padding: 2px;
-	font-size: 0.9em;
-}
-
-.route_overview th
-{
-	background-color: #CCCCFF;
-}
-
-.route_overview th object
-{
-	margin: 2px;
-	color: #111;
-}
-
 .route_overview th a
 {
 	display: inline-block;
-	background-color: #CCCCFF;
-	width: 100%;
+	margin:0px;
+	padding:5px;
+	width: 100%;/*
 	color: #111;
-	text-decoration: none;
+	text-decoration: none;*/
 }
 
 .route_overview th a:hover
 {
-	color: #8888FF;
+	/*color: #8888FF;*/
+	background-color: #DDDDDD;
 }
 
-div.choose_route
-{    
-	width: 99%;
-	border: 1px solid #CCCCFF;
-	border-collapse: collapse;
-	margin-top: -1px;
-	padding: 0.5%;
+table.route_overview > tbody > tr > td 
+{
+	vertical-align: middle;
+}
+table.route_overview > tbody > tr > td.nowrap
+{
+	white-space: nowrap;
 }
 
 /**
@@ -278,164 +268,13 @@ div.choose_route
 * Pagination
 **/
 
-
 .pagination
 {
-	background-color: #CCCCFF;
+	display:block;
+	/*background-color: #CCCCFF;*/
 	text-align: center;
-}
-
-.pagination a
-{
-	display: inline-block;
-	height: 1.5em;
-	width: 3em;
-	background-color: #AAAAFF;
-	border: 1px solid #CCCCFF;
-	text-align: center;
-	text-decoration: none;
-	font-weight: bold;
-	color: #0000FF;
-}
-
-.pagination a:hover
-{
-	background-color: #8888FF;
-	color: #0000FF;
-}
-
-.pagination span.disabled
-{
-	display: inline-block;
-	height: 1.5em;
-	width: 3em;
-	background-color: #AAAAFF;
-	border: 1px solid #CCCCFF;
-	text-align: center;
-	text-decoration: none;
-	color: #CCCCFF;
-	font-weight: bold;
-}
-
-.pagination strong
-{
-	display: inline-block;
-	height: 1.5em;
-	width: 5em;
-	background-color: #AAAAFF;
-	border: 1px solid #CCCCFF;
-	text-align: center;
-}
-
-/**
-* error and success messages 
-**/
-
-.error
-{
-	color: #FF0000;
-	background-color: #FFCCCC;
-	border: 1px solid #FF0000;
-	border-radius: 5px;
-	padding: 5px;
-}
-.success
-{
-	color: #008000;
-	background-color: #CCFFCC;
-	border: 1px solid #008000;
-	border-radius: 5px;
-	padding: 5px;
-}
-
-/**
-* styling for about box
-**/
-
-#about_link
-{
-	position: absolute;
-	top: 0;
-	right: 1em;
-	background-color: #6666FF;
-	color: #CCCCFF;
-	border-radius: 0 0 5px 5px;
-	display: block;
-	padding: 0.4em;
-	text-decoration: none;
-	font-weight: bold;
-	font-size: 0.9em;
-}
-
-#about_link:hover, #about_link.selected
-{
-	background-color: #3333FF;
-}
-
-.about
-{
-	background-color: #FAFAFA;
-	padding: 1em;
-	font-size: 0.8em;
-}
-
-.about_box
-{
-	position: absolute;
-	width: 90%;
-	display: block;
-	border: 3px solid #6666FF;
-	border-radius: 10px;
-	top: 10%;
-	left: 5%;
-	z-index: 10;
-}
-
-.close
-{
-	position: relative;
-	float: right;
-	padding: 5px;
-	margin: -1em;
-	background-color: #6666FF;
-	color: #CCCCFF;
-	border-radius: 0 5px;
-	font-weight: bold;
-	text-decoration: none;
-}
-
-.close:hover
-{
-	color: #FFFFFF;
-}
-
-/**
- footer styling
- **/
- 
-small.support
-{
-    display:inline-block;
-    margin-right:10px;
-    float:right;
-}
-
-/**
- search styling
-**/
-
-
-.search
-{
-	position: absolute;
-	background-color: #FAFAFA;
-	padding: 1em;
-	font-size: 0.8em;
-	width: 90%;
-	display: block;
-	border: 3px solid #6666FF;
-	border-radius: 10px;
-	top: 10%;
-	left: 5%;
-	z-index: 10;
+	margin:0px;
+	margin-left:auto;
+	margin-right:auto;
+	width:250px;
 }

@@ -1147,7 +1147,7 @@ Class Route
 		{
 			$css_ref_class = "ref_tram";
 			$route_type = "tram";
-			if ( $this->relation_tags["service"] == "tourism")
+			if ( isset($this->relation_tags["service"]) && $this->relation_tags["service"] == "tourism")
 			{
 				$css_ref_class = "ref_tourism_tram";
 				$route_type = "tourism_tram";
@@ -1210,6 +1210,7 @@ Class Route
 <!-- flot implementation -->
 <script type="text/javascript" src="flot/jquery.flot.js"></script>
 <script type="text/javascript" src="flot/jquery.flot.selection.js"></script>
+<script type="text/javascript" src="flot/jquery.flot.resize.js"></script>
 
   
 <script type="text/javascript">
@@ -1310,18 +1311,17 @@ var startData = [[0,0],<?php
 
 	for ( var i = 0; stationData[i]; i++ )
 	{
- 		$("<div id='station" + i + "'></div>").css({	
+ 		$("<div id='station" + i + "' class='hidden-xs'></div>").css({	
 	 		position: "absolute",
 	 		border: "none",
 	 		padding: "2px",
-	 		"z-index": 2,
 	 		opacity: 0.80,
 	 		width: 300,
 	 		"border-radius": "2px",
 		 	"transform": "rotate(-90deg)",
 		 	"font-size": "0.6em",
 		 	height:20,
-		 	"z-index": "-1"
+		 	"z-index": "1"
  		}).appendTo("body");
 	}
 	var stations = new Array();
@@ -1373,19 +1373,6 @@ var startData = [[0,0],<?php
 	}],
 	 options);
 
- 	$("<div id='tooltip'></div>").css(
- 	{
- 		position: "absolute",
- 		display: "none",
- 		border: "1px solid #33f",
- 		padding: "2px",
- 		"background-color": "#eef",
- 		"z-index": 2,
- 		opacity: 0.90,
- 		width: "13em",
- 		"border-radius": "2px",
- 		"font-size": "0.8em"
- 	}).appendTo("body");
 
 	$("#maxspeed").bind("plothover", function (event, pos, item) 
 	{
@@ -1397,25 +1384,43 @@ var startData = [[0,0],<?php
 	 		var offset_top = $("#maxspeed").offset().top;
 
 	 		//default
-	 		var postop = item.pageY - 30;
-	 		var posleft = item.pageX + 5;
+	 		var postop = item.pageY - 33;
+	 		var posleft = item.pageX - $("#tooltip_wrapper").width()/2;
+			var className="top";
+			var classNameArrow="";
 	 		// right border
-	 		if ( ( offset_left - posleft ) < 100 )
+	 		if ( ( offset_left - posleft ) <  $("#tooltip_wrapper").width() )
 	 		{
- 				var posleft = item.pageX - 200;
+ 				 posleft = item.pageX - $("#tooltip_wrapper").width()+7;
+ 				 var classNameArrow="right";	 
+	 		}
+	 		// left border
+	 		if ( posleft <  $("#tooltip_wrapper").width()/2 )
+	 		{
+ 				 posleft = item.pageX - 7;
+ 				 var classNameArrow="left";	 
 	 		}
 			// top border
 			if ( ( postop - offset_top ) < 30 )
  			{
 					var postop = item.pageY + 5;
+					var className="bottom";
  			}	
 	 		$("#tooltip").html("km " + x + ": " + y + " km/h")
-	 		.css({top: postop, left: posleft})
-	 		.fadeIn(200);
+ 			$("#tooltip_wrapper")
+ 			.removeClass("top")
+ 			.removeClass("bottom")
+ 			.addClass("tooltip "+className)
+ 		 	.css({top: postop, left: posleft})
+			.fadeIn(200);
+ 			$("#tooltip_arrow")
+ 			.removeClass("right")
+ 			.removeClass("left")
+ 			.addClass("tooltip-arrow "+classNameArrow)
 	 	} 
 	 	else 
 	  	{
-	 		$("#tooltip").hide();
+	 		$("#tooltip_wrapper").hide();
 	 	}
 	});
 	 
@@ -1552,6 +1557,17 @@ var startData = [[0,0],<?php
 		}
 			
 	});
+	$( window ).resize(function(event,ranges) {
+		updateLabels(plot, stationData, stations);
+		});
+
+	// update labels when alerts are closed
+	if($('#alert'))
+	{
+		$('#alert').on('closed.bs.alert', function () {
+			updateLabels(plot, stationData, stations);
+		})
+	}
 	
 	// Add the Flot version string 
 
@@ -1562,38 +1578,50 @@ var startData = [[0,0],<?php
 
 </head>
 <body>
-<div id="header">
-<div>
-<h1><?php echo Lang::l_("Train Analysis");?></h1>
-<p> <?php echo Lang::l_("Analysis of Train Routes Based on OpenStreetMap Data");?></p>
-</div>
-</div>
-<div id="main">
+<?php top_nav();?>
+<div id="header" class="page-header">
+	<div class="container">
+		<header>
 <h2><span class="<?php echo $css_ref_class;?>" style="<?php echo $css_ref_style;?>"><?php echo $this->relation_tags["ref"];?></span> <?php echo Route::showfromviato($this->relation_tags["to"], $this->relation_tags["from"], $this->relation_tags["via"]);?></h2>
-<a href="index.php" title="<?php echo Lang::l_("Back to Overview");?>"><?php echo Lang::l_("Back to Route Overview");?></a>
+				</header>
+	</div>
+</div>
+<div class="container-fluid panel-group">
 <?php 
 if ( isset($this->refresh_success) && $this->refresh_success == false )
 {
 	?>
-	<p class="error"><?php echo Lang::l_("Route Data could not be updated from Overpass API.")?></p>
+	<div class="alert alert-danger alert-dismissable fade in" role="alert" id="alert">
+		<?php echo Lang::l_("Route Data could not be updated from Overpass API.")?>
+		<button type="button" class="close" data-dismiss="alert" aria-label="Close">
+  			<span aria-hidden="true">&times;</span>
+		</button>
+	</div>
 	<?php 
 } 
 elseif ( isset($this->refresh_success) && $this->refresh_success == true )
 {
 	?>
-	<p class="success"><?php echo Lang::l_("Route Data was successfully updated from Overpass API.")?></p>
+	<div class="alert alert-success alert-dismissable fade in" role="alert" id="alert">
+		<?php echo Lang::l_("Route Data was successfully updated from Overpass API.")?>
+		<button type="button" class="close" data-dismiss="alert" aria-label="Close">
+  			<span aria-hidden="true">&times;</span>
+		</button>
+	</div>
 	<?php 
 }
 ?>
-<h3 class="factsheet_heading">
-	<?php echo Lang::l_("Route Details");?>
-</h3>
-<div class="factsheet">
+
+	<div class="panel panel-primary">
+		<div class="panel-heading">
+			<h4 class="panel-title"><?php echo Lang::l_('Route Details');?>:</h4>
+		</div>
+		<div class="panel-body">
 		<?php 
 		if ( isset($this->relation_tags["operator"]) ) //check if operator is known
 		{
 			?>	
-		<div><b><?php echo Lang::l_("Operator:");?></b> <?php echo $this->relation_tags["operator"];?></div>
+			<div class="col-md-6"><b><?php echo Lang::l_("Operator:");?></b> <?php echo $this->relation_tags["operator"];?></div>
 			<?php 
 		}
 		else
@@ -1628,39 +1656,59 @@ elseif ( isset($this->refresh_success) && $this->refresh_success == true )
 		//calculate average speed		
 		$average_speed = $this->real_average_speed / $this->relation_distance;
 		?>
-<div><b><?php echo Lang::l_('Train Type');?>:</b> <?php echo $route_type_de[$route_type];?></div> 
-<div><b><?php echo Lang::l_('Route Length');?>:</b> <?php echo $relation_distance_show;?> km</div> 
-<div><b><?php echo Lang::l_('Travel Time');?>:</b> <?php echo round($travel_time);?> min</div> 
-<div><b><?php echo Lang::l_('Average Speed');?>:</b> <?php echo round($average_speed);?> km/h</div>
-<div><b><?php echo Lang::l_('Maximum Speed');?>:</b> <?php echo $this->maxspeed_max;?> km/h</div>
-</div>
-<h3 class="factsheet_heading"><?php echo Lang::l_('Speed Profile');?>:</h3>
-<div style="position:relative">
-<div id="maxspeed" style="width: 100%;height: 300px"></div>
-
-<div id="maxspeed_overview" style="width: 20%; height: 100px; position: absolute; top: 10px; right: 10px; z-index: 1; background-color: #FAFAFA"></div>
-<small id="flotversion"></small>
-<span><input type="checkbox" id="maxspeed_labels" checked="checked" /> <label for="maxspeed_labels"><?php echo Lang::l_('Show Stop Names');?></label></span>
-
-</div>
-<div><small><b><?php echo Lang::l_('Please note');?>:</b> <?php echo Lang::l_('note_maxspeed');?></small></div>
-
-<h3 class="factsheet_heading"><?php echo Lang::l_('Railway details');?>:</h3>
-<div class="factsheet">
-<div class="long"><b><?php echo Lang::l_('Railway Operators');?>:</b> <?php echo $operator_string;?></div>
-<div class="long"><b><?php echo Lang::l_('Railway Users');?>:</b> <?php echo $trafficmode_string;?></div>
-<div class="long"><b><?php echo Lang::l_('Electrification');?>:</b> <?php echo $electrified_string;?></div>
-<div class="long"><b><?php echo Lang::l_('Structures');?>:</b> <?php echo $building_string;?></div>
-<div><b><?php echo Lang::l_('Gaps in Route');?>:</b> <?php echo $this -> count_holes;?></div>
-</div>
-
-<h3 class="factsheet_heading"><?php echo Lang::l_('Map of Route and Stops');?>:</h3>
-<div class="factsheet">
-<?php 
-$this->getStopNames();
-$this->showMap();
-?>
-<ul class="stations">
+			<div class="col-md-6"><b><?php echo Lang::l_('Train Type');?>:</b> <?php echo $route_type_de[$route_type];?></div> 
+			<div class="col-md-6"><b><?php echo Lang::l_('Route Length');?>:</b> <?php echo $relation_distance_show;?> km</div> 
+			<div class="col-md-6"><b><?php echo Lang::l_('Travel Time');?>:</b> <?php echo round($travel_time);?> min</div> 
+			<div class="col-md-6"><b><?php echo Lang::l_('Average Speed');?>:</b> <?php echo round($average_speed);?> km/h</div>
+			<div class="col-md-6"><b><?php echo Lang::l_('Maximum Speed');?>:</b> <?php echo $this->maxspeed_max;?> km/h</div>
+		</div>
+	</div>
+	
+	<div class="panel panel-primary">
+		<div class="panel-heading">
+			<h4 class="panel-title"><?php echo Lang::l_('Speed Profile');?>:</h4>
+		</div>
+		<div class="panel-body">
+			<div style="position:relative" style="height:300px;width:100%;max-height:20%;">
+				<div class="table-responsive">
+					<div id="maxspeed" style="height:300px;width:100%;min-width:600px"></div>
+				</div>
+				<div id="maxspeed_overview"></div>
+			</div>
+			<small id="flotversion"></small>
+			<div class="btn-group hidden-xs">
+				<span class="input-group-addon">
+				<input type="checkbox" id="maxspeed_labels" checked="checked" aria-label="..."/>
+				</span>
+				<label for="maxspeed_labels" class="input-group-addon"><?php echo Lang::l_('Show Stop Names');?></label>
+			</div>
+			<div class="row"><small class="col-md-12"><b><?php echo Lang::l_('Please note');?>:</b> <?php echo Lang::l_('note_maxspeed');?></small></div>
+		</div>
+	</div>
+	
+	<div class="panel panel-primary">
+		<div class="panel-heading">
+			<h4 class="panel-title"><?php echo Lang::l_('Railway details');?>:</h4>
+		</div>
+		<div class="panel-body">
+			<div class="col-md-12"><b><?php echo Lang::l_('Railway Operators');?>:</b> <?php echo $operator_string;?></div>
+			<div class="col-md-12"><b><?php echo Lang::l_('Railway Users');?>:</b> <?php echo $trafficmode_string;?></div>
+			<div class="col-md-12"><b><?php echo Lang::l_('Electrification');?>:</b> <?php echo $electrified_string;?></div>
+			<div class="col-md-12"><b><?php echo Lang::l_('Structures');?>:</b> <?php echo $building_string;?></div>
+			<div class="col-md-12"><b><?php echo Lang::l_('Gaps in Route');?>:</b> <?php echo $this -> count_holes;?></div>
+		</div>
+	</div>
+	
+	<div class="panel panel-primary">
+		<div class="panel-heading">
+			<h4 class="panel-title"><?php echo Lang::l_('Map of Route and Stops');?>:</h4>
+		</div>
+		<div class="panel-body">
+		<?php 
+		$this->getStopNames();
+		$this->showMap();
+		?>
+			<ul class="stations col-lg-6">
 		<?php
 		if ( isset($this->relation_stops[0]) )
 		{
@@ -1685,14 +1733,14 @@ $this->showMap();
 		else
 		{
 			?>
-			<li><?php echo Lang::l_('N/A');?></li>
+				<li><?php echo Lang::l_('N/A');?></li>
 			<?php 
 		}
 		?>
-
-</ul>
-</div>
-
+	
+			</ul>
+		</div>
+	</div>
 		<?php 
 		//train types
 		$train_type_de = Array(
@@ -1706,37 +1754,48 @@ $this->showMap();
 			"freight"       => Lang::l_('Freight train'),
 		);
 		?>
-<form action="index.php" method="get"><input type="hidden" name="id" value="<?php echo $this->id;?>">
-<h3 class="factsheet_heading"><?php echo Lang::l_('Train details');?></h3>
-<div class="factsheet">
+		
+	<div class="panel panel-primary">
+		<div class="panel-heading">
+			<h4 class="panel-title"><?php echo Lang::l_('Train details');?>:</h4>
+		</div>
+		<div class="panel-body">
+			<form action="index.php" method="get"><input type="hidden" name="id" value="<?php echo $this->id;?>">
 		<?php 
 		//show image for train if available
 		if(isset($this->train->image))
 		{
 			?>
-		<div class="long"><img src="img/trains/<?php echo $this->train->image?>" style="max-height: 50px;max-width: 100%"></div>
+			<div class="col-md-12"><img src="img/trains/<?php echo $this->train->image?>" style="max-height: 50px;max-width: 100%"></div>
 			<?php 
 		}
 		?>
-<div><b><?php echo Lang::l_('Train name');?>:</b> <?php echo $this->train->name;?></div>
-<div><b><?php echo Lang::l_('Train type');?>:</b> <?php echo $train_type_de[$this->train->type];?></div>
-<div><b><?php echo Lang::l_('Maximum speed');?>: </b><?php echo $this->train->maxspeed;?> km/h</div>
-<div><b><?php echo Lang::l_('Weight empty');?>:</b> <?php echo $this->train->mass_empty / 12960;?> t</div>
-<div><b><?php echo Lang::l_('Power');?>:</b> <?php echo $this->train->power / 12960;?> kW</div>
-<div><b><?php echo Lang::l_('Maximum torque');?>:</b> <?php echo $this->train->torque / 12960;?> Nm</div>
-<div><b><?php echo Lang::l_('Maximum brake');?>:</b> <?php echo $this->train->brake / 12960;?> m/s²</div>
-<div><b><?php echo Lang::l_('Length');?>:</b> <?php echo $this->train->length * 1000;?> m</div>
-<div><b><?php echo Lang::l_('Seats');?>:</b> <?php echo $this->train->seats;?></div>
-
-<div class="long"> <?php echo Lang::l_('Change train');?>: <?php echo $this->train->changeTrain();?> <input type="submit"/></div>
+			<div class="col-md-4"><b><?php echo Lang::l_('Train name');?>:</b> <?php echo $this->train->name;?></div>
+			<div class="col-md-4"><b><?php echo Lang::l_('Train type');?>:</b> <?php echo $train_type_de[$this->train->type];?></div>
+			<div class="col-md-4"><b><?php echo Lang::l_('Maximum speed');?>: </b><?php echo $this->train->maxspeed;?> km/h</div>
+			<div class="col-md-4"><b><?php echo Lang::l_('Weight empty');?>:</b> <?php echo $this->train->mass_empty / 12960;?> t</div>
+			<div class="col-md-4"><b><?php echo Lang::l_('Power');?>:</b> <?php echo $this->train->power / 12960;?> kW</div>
+			<div class="col-md-4"><b><?php echo Lang::l_('Maximum torque');?>:</b> <?php echo $this->train->torque / 12960;?> Nm</div>
+			<div class="col-md-4"><b><?php echo Lang::l_('Maximum brake');?>:</b> <?php echo $this->train->brake / 12960;?> m/s²</div>
+			<div class="col-md-4"><b><?php echo Lang::l_('Length');?>:</b> <?php echo $this->train->length * 1000;?> m</div>
+			<div class="col-md-4"><b><?php echo Lang::l_('Seats');?>:</b> <?php echo $this->train->seats;?></div>
+			
+			<div class="col-md-12"> 
+				<div class="form-group">
+					<label for="train"><?php echo Lang::l_('Change train');?>:</label> 
+					<?php echo $this->train->changeTrain();?>
+					<button class="btn btn-default" type="submit"><?php echo Lang::l_('Change train');?></button>
+    			</div>
+    		</div>
+			</form>
+		</div>
+	</div>
 </div>
-</form>
 </div>
-<div id="footer">
-<div>
-<small><strong><?php echo Lang::l_('Data date');?>:</strong> <?php echo  date ("F d Y H:i:s", $this->filemtime);?> (<a href="?id=<?php echo $this->id?>&train=<?php echo $this->train->ref?>&rf=1" title="<?php echo Lang::l_('Update data');?>"><?php echo Lang::l_('Update data');?></a>) | <?php echo Lang::l_('Route Data');?> © <a href="http://www.openstreetmap.org/copyright" title="OpenStreetMap <?php echo Lang::l_('licence');?>">OpenStreetMap</a><?php echo Lang::l_(' contributors');?> | <a href="http://127.0.0.1:8111/import?url=http://api.openstreetmap.org/api/0.6/relation/<?php echo $this->id;?>/full"><?php echo Lang::l_('Load relation in JOSM');?></a>
-</small>
-<small class="support">
+    <nav class="navbar" id=footer>
+		<div class="container">
+			<small><strong><?php echo Lang::l_('Data date');?>:</strong> <?php echo  date ("F d Y H:i:s", $this->filemtime);?> (<a href="?id=<?php echo $this->id?>&train=<?php echo $this->train->ref?>&rf=1" title="<?php echo Lang::l_('Update data');?>"><?php echo Lang::l_('Update data');?></a>) | <?php echo Lang::l_('Route Data');?> © <a href="http://www.openstreetmap.org/copyright" title="OpenStreetMap <?php echo Lang::l_('licence');?>">OpenStreetMap</a><?php echo Lang::l_(' contributors');?> | <a href="http://127.0.0.1:8111/import?url=http://api.openstreetmap.org/api/0.6/relation/<?php echo $this->id;?>/full"><?php echo Lang::l_('Load relation in JOSM');?></a></small>
+			<div class="navbar-right">
 <?php 
 /** Flattr-Button, feel free to add your own flattr username or delete it **/
 ?>
@@ -1755,8 +1814,13 @@ $this->showMap();
 <!-- Place this tag where you want the button to render. -->
 <a data-count-api="/repos/sb12/OSMTrainRouteAnalysis#stargazers_count" data-count-href="/sb12/OSMTrainRouteAnalysis/stargazers" data-icon="octicon-star" href="https://github.com/sb12/OSMTrainRouteAnalysis" class="github-button">Star</a> 
  
-</small>
+			</div>
+		</div>
+	</nav>
 </div>
+<div class="" role="tooltip" id="tooltip_wrapper" style="display:none;position:absolute">
+	<div class="tooltip-arrow" id="tooltip_arrow"></div>
+	<div id='tooltip' class='tooltip-inner'></div>
 </div>
 <!-- Place this tag right after the last button or just before your close body tag. -->
 <script async defer id="github-bjs" src="https://buttons.github.io/buttons.js"></script>
@@ -2244,7 +2308,7 @@ $this->showMap();
 	function showMap()
 	{
 		?>
-		<div id="map"></div>
+		<div id="map" class="col-lg-6"></div>
 		<script type="text/javascript">
 
 		/* define bounds */

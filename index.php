@@ -20,22 +20,36 @@
     
     */
 ?>
+<!DOCTYPE html>
 <html>
 <head>
 
 <meta charset='utf-8'> 
 
+<script src="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.js"></script>
+
+<!-- include bootstrap -->
+ <!-- Latest compiled and minified CSS -->
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">
+
+<!-- Optional theme -->
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap-theme.min.css">
+ 
+<!-- load jquery -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+
+<!-- Latest compiled and minified JavaScript -->
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"></script>
+
+
+<!-- load javascript functions -->
+<script type="text/javascript" src="javascript/functions.js"></script>
+
+
 <link rel="stylesheet" type="text/css" href="style/style.css">
 <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.css" />
 <link rel="alternate" type="application/rss+xml" href="changelog.rss" title="Changelog">
 
-<script src="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.js"></script>
- 
-<!-- load jquery -->
-<script type="text/javascript" src="flot/jquery.js"></script>
-
-<!-- load javascript functions -->
-<script type="text/javascript" src="javascript/functions.js"></script>
 <?php
 //turn off error_reports
 //error_reporting(0);

@@ -233,7 +233,7 @@ Class Train
 	{
 		include "train_details.php";
 		?>
-		<select name="train">
+		<select name="train" style="max-width:100%" id="train">
 		<?php 
 		foreach ( $tr_name as $ref => $name )
 		{

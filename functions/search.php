@@ -307,9 +307,9 @@ Class Search
 				}
 			}
 			
-			$html = "<div class=\"search_result\">\n";
+			$html = "<a href=\"?id=".$row["id"]."&train=".urlencode(htmlentities($this->variables["train"]))."\" class=\"list-group-item\">\n";
 
-			$html .= "<h4><a href=\"?id=".$row["id"]."&train=".urlencode(htmlentities($this->variables["train"]))."\">";
+			$html .= "<h4>";
 			if ( isset($row["ref"]) )
 			{
 				$html .= '<span class="' . $css_ref_class . '" style="' . $css_ref_style . '">' . $row["ref"] . '</span> ';
@@ -334,7 +334,7 @@ Class Search
 			
 			$html .= Route::showfromviato($row["to"],$row["from"],$row["via"]);
 			
-			$html .= "</a></h4>\n";
+			$html .= "</h4>\n";
 			$html .= "<span>";
 
 			$html .= $route_html;
@@ -347,7 +347,7 @@ Class Search
 				$html .= " / " . $row["operator"];
 			}
 			
-			$html .= "</span>\n</div>";
+			$html .= "</span>\n</a>";
 			
 			//write html
 			echo $html;
@@ -363,66 +363,55 @@ Class Search
 		$train = new Train();
 		?>
 		
-		<div class="choose_route">
-		<h4><?php echo Lang::l_("By route information:");?></h4>
-		
-		<form method="get" id="searchform">
-		<table>
-		<tr>
-			<td>				
-				<label for="ref"><?php echo Lang::l_("Line");?>:</label>
-			</td>
-			<td>
-				<input type="text" name="ref">
-			</td>
-		</tr>
-		<tr>
-			<td>
-				<label for="operator"><?php echo Lang::l_("Operator");?>:</label>
-			</td>
-			<td>
-				<input type="text" name="operator">
-			</td>
-		</tr>
-		<tr>
-			<td>
-				<label for="network"><?php echo Lang::l_("Network");?>:</label>
-			</td>
-			<td>	
-				<input type="text" name="network">
-			</td>
-		</tr>
-		<tr>
-			<td>
-				<label for="from"><?php echo Lang::l_("Origin");?>:</label>
-			</td>
-			<td>
-				<input type="text" name="from">
-			</td>
-		</tr>
-		<tr>
-			<td>
-				<label for="to"><?php echo Lang::l_("Destination");?>:</label>
-			</td>
-			<td>
-				<input type="text" name="to">
-			</td>
-		</tr>
-		<tr>
-			<td>
-				<?php echo Lang::l_('Train');?>:
-			</td>
-			<td>
-				<?php echo $train->changeTrain();?>
-			</td>
-		</tr>
-		<tr>
-			<td colspan="2">
-				<input type="submit" value="<?php echo Lang::l_("Search route");?>"/>
-			</td>
-		</tr>
-		</table>
-		</form>
+	<div class="panel panel-primary">
+		<div class="panel-heading" data-toggle="collapse" href="#searchForm" aria-expanded="false" aria-controls="searchForm">
+			<h3 class="panel-title"><a data-toggle="collapse" href="#searchForm" aria-expanded="false" aria-controls="searchForm"><?php echo Lang::l_("By route information:");?></a></h3>
+		</div>
+		<div class="panel-body collapse" id="searchForm">
+			<form method="get" id="searchform" class=".form-horizontal">
+				<div class="form-group">
+					<label for="ref" class="col-sm-2 control-label"><?php echo Lang::l_("Line");?>:</label>
+					<div class="col-sm-10">
+						<input type="text" name="ref" class="form-control">
+					</div>
+				</div>	
+				<div class="form-group">
+					<label for="operator" class="col-sm-2 control-label"><?php echo Lang::l_("Operator");?>:</label>
+					<div class="col-sm-10">
+						<input type="text" name="operator" class="form-control">
+					</div>
+				</div>	
+				<div class="form-group">
+					<label for="network" class="col-sm-2 control-label"><?php echo Lang::l_("Network");?>:</label>
+					<div class="col-sm-10">
+						<input type="text" name="network" class="form-control">
+					</div>
+				</div>	
+				<div class="form-group">
+					<label for="from" class="col-sm-2 control-label"><?php echo Lang::l_("Origin");?>:</label>
+					<div class="col-sm-10">
+						<input type="text" name="from" class="form-control">
+					</div>
+				</div>	
+				<div class="form-group">
+					<label for="to" class="col-sm-2 control-label"><?php echo Lang::l_("Destination");?>:</label>
+					<div class="col-sm-10">
+						<input type="text" name="to" class="form-control">
+					</div>
+				</div>										
+				<div class="form-group">
+					<label for="id" class="col-sm-2 control-label"><?php echo Lang::l_('Train');?>:</label>
+					<div class="col-sm-10">
+						<?php echo $train->changeTrain();?>
+					</div>
+				</div>
+				<div class="form-group">
+					<div class="col-sm-offset-2 col-sm-10">
+						<button type="submit" class="btn btn-default" data-toggle="modal" data-target="#search"><?php echo Lang::l_("Search route");?></button>
+					</div>
+				</div>
+			</form>
+		</div>
 		</div>		
 		<?php
 	}
@@ -433,10 +422,22 @@ Class Search
 	static function showSearchResult()
 	{
 		?>
-		<div class="search" id="search">
-		<a class="close" href="#">X</a>
-		<div id="searchcontent"></div>
+<!-- Modal -->
+<div class="modal fade" id="search" tabindex="-1" role="dialog" aria-labelledby="searchLabel" aria-hidden="true">
+	<div class="modal-dialog modal-lg">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+	        	<h4 class="modal-title" id="searchLabel"><?php echo Lang::l_("Search Results"); ?></h4>
+			</div>
+			<div class="modal-body list-group" id="searchcontent">
+			</div>      
+			<div class="modal-footer">
+        		<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+      		</div>
 		</div>
+	</div>
+</div>
 		<?php
 	}
 }

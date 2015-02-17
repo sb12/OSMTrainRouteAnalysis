@@ -19,8 +19,7 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
     
     */
-?>
-<?php
+
 /**
  * loads parts of overview index page
  */
@@ -41,16 +40,63 @@ function loadHeader()
 <title><?php echo Lang::l_('Choose Route');?> - <?php echo Lang::l_('Train Analysis');?></title>
 </head>
 <body>
-<div id="header">
-<div>
-<h1><?php echo Lang::l_('Train Analysis');?></h1>
-<p> <?php echo Lang::l_('Analysis of Train Routes Based on OpenStreetMap Data');?></p>
-</div>
+
+<?php top_nav("index");?>
+    
+<div id="header" class="page-header">
+	<div class="container">
+		<header>
+			<h1><?php echo Lang::l_('Train Analysis');?></h1>
+			<p> <?php echo Lang::l_('Analysis of Train Routes Based on OpenStreetMap Data');?></p>
+		</header>
+	</div>
 </div>
 <div id="main">
 	<?php
 }
 
+/**
+ * generates top navigation
+ */
+function top_nav($page="")
+{
+	?>
+	<!-- Fixed navbar -->
+    <nav class="navbar navbar-default navbar-fixed-top navbar-za">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="index.php"><?php echo Lang::l_('Train Analysis');?></a>
+        </div>
+        <div id="navbar" class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+	<?php 
+	if($page=="index")
+	{
+		?>
+            <li class="active"><a href="#">Routenübersicht</a></li>
+		<?php 
+	}
+	else
+	{
+		?>
+            <li><a href="index.php">Routenübersicht</a></li>
+		<?php 
+	}
+	?>
+          </ul>
+          	<span class="navbar-right"><button type="button" class="btn btn-default navbar-btn" data-toggle="modal" data-target="#about"><?php echo Lang::l_("About This Service");?></button></span>
+        </div><!--/.nav-collapse -->
+      </div>
+    </nav>
+    <?php 
+	
+}
 /**
  * generates form to choose route id and train
  */
@@ -58,35 +104,41 @@ function enterID()
 {
 	$train = new Train();
 	?>
-<h2 class="factsheet_heading"><?php echo Lang::l_('Choose Route');?>:</h2>
-<div class="choose_route">
-<h4><?php echo Lang::l_("By the OpenStreetMap relation id:");?></h4>
-	<form action="index.php" method="get" id="osmid">
-	<table>
-	<tr>
-		<td>
-			<label for="id"><?php echo Lang::l_('OpenStreetMap id');?>:</label>
-		</td>
-		<td>
-			<input type="text" name="id">
-		</td>
-	</tr>
-	<tr>
-		<td>
-			<?php echo Lang::l_('Train');?>:
-		</td>
-		<td>
-			<?php echo $train->changeTrain();?>
-		</td>
-	</tr>
-	<tr>
-		<td colspan="2">
-			<input type="submit" value="<?php echo Lang::l_("Load route");?>"/>
-		</td>
-	</tr>
-	</table>
-	</form>
-</div>
+<div class="panel-group container-fluid">
+
+	<div class="panel panel-primary">
+		<div class="panel-heading">
+			<h2 class="panel-title"><?php echo Lang::l_('Choose Route');?>:</h2>
+		</div>
+	</div>
+	
+	<div class="panel panel-primary">
+		<div class="panel-heading" data-toggle="collapse" href="#idForm" aria-expanded="false" aria-controls="idForm">
+			<h3 class="panel-title"><a data-toggle="collapse" href="#idForm" aria-expanded="false" aria-controls="idForm"><?php echo Lang::l_("By the OpenStreetMap relation id:");?></a></h3>
+		</div>
+		<div class="panel-body collapse" id="idForm">
+			<form action="index.php" method="get" id="osmid" class=".form-horizontal">
+				<div class="form-group">
+					<label for="id" class="col-sm-2 control-label"><?php echo Lang::l_('OpenStreetMap id');?>:</label>
+					<div class="col-sm-10">
+						<input type="number" name="id" class="form-control">
+					</div>
+				</div>		
+				<div class="form-group">
+					<label for="id" class="col-sm-2 control-label"><?php echo Lang::l_('Train');?>:</label>
+					<div class="col-sm-10">
+						<?php echo $train->changeTrain();?>
+					</div>
+				</div>
+				<div class="form-group">
+					<div class="col-sm-offset-2 col-sm-10">
+						<button type="submit" class="btn btn-default"><?php echo Lang::l_("Load route");?></button>
+					</div>
+				</div>
+		
+			</form>
+		</div>
+	</div>
 	<?php
 	Search::showSearchBox(); 
 	
@@ -142,12 +194,12 @@ function showRoutes($amount = 50)
 		{
 			if ( $dir == "ASC" )
 			{
-				$img_order_by[$order] = '<object type="image/svg+xml" data="img/arrow_desc.svg"></object>';
+				$img_order_by[$order] = '<object type="image/svg+xml" data="img/arrow_desc.svg"></object> ';
 				$dir_order_by[$order] = "DESC";
 			}
 			else
 			{
-				$img_order_by[$order] = '<object type="image/svg+xml" data="img/arrow_asc.svg"></object>';
+				$img_order_by[$order] = '<object type="image/svg+xml" data="img/arrow_asc.svg"></object> ';
 				$dir_order_by[$order] = "ASC";
 			}
 		}
@@ -158,24 +210,30 @@ function showRoutes($amount = 50)
 		}
 	}
 	?>
-	<div class="choose_route">	
-		<h4> <?php echo Lang::l_("By choosing a route from the list:");?></h4>
-	</div>
-<table class="route_overview">
-		<tr>
-			<th><a href="?order_by=ref&page=<?php echo $page;?>&dir=<?php echo $dir_order_by["ref"];?>"><?php echo $img_order_by["ref"].Lang::l_('Line');?></a></th>
-			<th><a href="?order_by=from&page=<?php echo $page;?>&dir=<?php echo $dir_order_by["from"];?>"><?php echo $img_order_by["from"].Lang::l_('Origin');?></a></th>
-			<th><a href="?order_by=to&page=<?php echo $page;?>&dir=<?php echo $dir_order_by["to"];?>"><?php echo $img_order_by["to"].Lang::l_('Destination');?></a></th>
-			<th><a href="?order_by=operator&page=<?php echo $page;?>&dir=<?php echo $dir_order_by["operator"];?>"><?php echo $img_order_by["operator"].Lang::l_('Operator');?></a></th>
-			<th><a href="?order_by=length&page=<?php echo $page;?>&dir=<?php echo $dir_order_by["length"];?>"><?php echo $img_order_by["length"].Lang::l_('Route Length');?></a></th>
-			<th><a href="?order_by=time&page=<?php echo $page;?>&dir=<?php echo $dir_order_by["time"];?>"><?php echo $img_order_by["time"].Lang::l_('Duration');?></a></th>
-			<th><a href="?order_by=ave_speed&page=<?php echo $page;?>&dir=<?php echo $dir_order_by["ave_speed"];?>"><?php echo $img_order_by["ave_speed"];?>v<sub>&#x2300;</sub></a></th>
-			<th><a href="?order_by=max_speed&page=<?php echo $page;?>&dir=<?php echo $dir_order_by["max_speed"];?>"><?php echo $img_order_by["max_speed"];?>v<sub>max</sub></a></th>
-			<th><a href="?order_by=train&page=<?php echo $page;?>&dir=<?php echo $dir_order_by["train"];?>"><?php echo $img_order_by["train"].Lang::l_('Train');?></a></th>
-		</tr>
-		<tr>
-			<td colspan="9" class="pagination"><?php pagination($page, $lastpage, $order_by, $dir);?></td>
-		</tr>
+	<div class="panel panel-primary choose_route_save">
+		<div class="panel-heading" data-toggle="collapse" href="#table" aria-expanded="false" aria-controls="table">
+			<h3 class="panel-title"><a data-toggle="collapse" href="#table" aria-expanded="false" aria-controls="table"><?php echo Lang::l_("By choosing a route from the list:");?></a></h4>
+		</div>
+		<div id="table" class="collapse in">
+			<div class="panel-body">
+				<?php pagination($page, $lastpage, $order_by, $dir);?>
+			</div>
+			<div class="table-responsive">
+				<table class="route_overview table table-striped table-condensed">
+					<thead>
+					<tr>
+						<th><a href="?order_by=ref&page=<?php echo $page;?>&dir=<?php echo $dir_order_by["ref"];?>#table"><?php echo $img_order_by["ref"].Lang::l_('Line');?></a></th>
+						<th><a href="?order_by=from&page=<?php echo $page;?>&dir=<?php echo $dir_order_by["from"];?>#table"><?php echo $img_order_by["from"].Lang::l_('Origin');?></a></th>
+						<th><a href="?order_by=to&page=<?php echo $page;?>&dir=<?php echo $dir_order_by["to"];?>#table"><?php echo $img_order_by["to"].Lang::l_('Destination');?></a></th>
+						<th><a href="?order_by=operator&page=<?php echo $page;?>&dir=<?php echo $dir_order_by["operator"];?>#table"><?php echo $img_order_by["operator"].Lang::l_('Operator');?></a></th>
+						<th><a href="?order_by=length&page=<?php echo $page;?>&dir=<?php echo $dir_order_by["length"];?>#table"><?php echo $img_order_by["length"].Lang::l_('Route Length');?></a></th>
+						<th><a href="?order_by=time&page=<?php echo $page;?>&dir=<?php echo $dir_order_by["time"];?>#table"><?php echo $img_order_by["time"].Lang::l_('Duration');?></a></th>
+						<th><a href="?order_by=ave_speed&page=<?php echo $page;?>&dir=<?php echo $dir_order_by["ave_speed"];?>#table"><?php echo $img_order_by["ave_speed"];?>v<sub>&#x2300;</sub></a></th>
+						<th><a href="?order_by=max_speed&page=<?php echo $page;?>&dir=<?php echo $dir_order_by["max_speed"];?>#table"><?php echo $img_order_by["max_speed"];?>v<sub>max</sub></a></th>
+						<th><a href="?order_by=train&page=<?php echo $page;?>&dir=<?php echo $dir_order_by["train"];?>#table"><?php echo $img_order_by["train"].Lang::l_('Train');?></a></th>
+					</tr>
+					</thead>
+					<tbody>
 	<?php 
 
 	//generate and execute query
@@ -190,24 +248,28 @@ function showRoutes($amount = 50)
 		unset($train);
 		$train = new Train($row["train"]);
 		?>
-		<tr>
-			<td><a href="?id=<?php echo $row["id"];?>&train=<?php echo $train->ref;?>" title="<?php echo Lang::l_('Show Route');?>"><?php echo $row["ref"];?></a></td>
-			<td><?php echo $row["from"];?></td>
-			<td><?php echo $row["to"];?></td>
-			<td><?php echo $row["operator"];?></td>
-			<td><?php echo round($row["length"], 1);?> km</td>
-			<td><?php echo round($row["time"], 0);?> min</td>
-			<td><?php echo round($row["ave_speed"]);?> km/h</td>
-			<td><?php echo round($row["max_speed"]);?> km/h</td>
-			<td style="width:150px"><div style="height:50px;width:150px;display:inline-block;background-image:url('img/trains/<?php echo $train->image;?>');background-repeat:no-repeat;background-position:right;background-size:auto 50px" title="<?php echo $train->name;?>"></div></td>
-		</tr>
+						<tr>
+							<td><a href="?id=<?php echo $row["id"];?>&train=<?php echo $train->ref;?>" title="<?php echo Lang::l_('Show Route');?>"><?php echo $row["ref"];?></a></td>
+							<td><?php echo $row["from"];?></td>
+							<td><?php echo $row["to"];?></td>
+							<td><?php echo $row["operator"];?></td>
+							<td class="nowrap"><?php echo round($row["length"], 1);?> km</td>
+							<td class="nowrap"><?php echo round($row["time"], 0);?> min</td>
+							<td class="nowrap"><?php echo round($row["ave_speed"]);?> km/h</td>
+							<td class="nowrap"><?php echo round($row["max_speed"]);?> km/h</td>
+							<td style="width:150px"><div style="height:50px;width:150px;display:inline-block;background-image:url('img/trains/<?php echo $train->image;?>');background-repeat:no-repeat;background-position:right;background-size:auto 50px" title="<?php echo $train->name;?>"></div></td>
+						</tr>
 		<?php 
 	}
 	?>
-		<tr>
-			<td colspan="9" class="pagination"><?php pagination($page, $lastpage, $order_by, $dir);?></td>
-		</tr>
-	</table>
+					</tbody>
+				</table>
+			</div>
+			<div class="panel-body">
+				<?php pagination($page, $lastpage, $order_by, $dir);?>
+			</div>
+		</div>
+	</div>
 	<?php 
 }
 
@@ -218,11 +280,11 @@ function loadFooter()
 {
 	?>
 </div>
-<div id="footer">
-<div>
-<small><?php echo Lang::l_('Route Data');?> © <a href="http://www.openstreetmap.org/copyright" title="OpenStreetMap Lizenz">OpenStreetMap</a><?php echo Lang::l_(' contributors');?></small>
+    <nav class="navbar" id=footer>
+      <div class="container">
+		<small><?php echo Lang::l_('Route Data');?> © <a href="http://www.openstreetmap.org/copyright" title="OpenStreetMap Lizenz">OpenStreetMap</a><?php echo Lang::l_(' contributors');?></small>
 
-<small class="support">
+		<small class="navbar-right">
 <?php 
 /** Flattr-Button, feel free to add your own flattr username or delete it **/
 ?>
@@ -244,7 +306,7 @@ function loadFooter()
 </small>
 
 </div>
-</div>
+</nav>
 <!-- Place this tag right after the last button or just before your close body tag. -->
 <script async defer id="github-bjs" src="https://buttons.github.io/buttons.js"></script>
 
@@ -258,29 +320,47 @@ function loadFooter()
  */
 function pagination($page = 1, $lastpage = 1, $order_by = "" , $dir = "" )
 {
+	?>
+	<nav>
+<ul class="pagination">
+    <?php 
 	$previouspage = $page - 1;
 	$nextpage = $page + 1;
 	if ( $page > 1 )
 	{
 		?>
-	<a href="?order_by=<?php echo $order_by;?>&page=1&dir=<?php echo $dir;?>" title="<?php echo Lang::l_("First");?>">&lt;&lt;</a><a href="?order_by=<?php echo $order_by;?>&page=<?php echo $previouspage;?>&dir=<?php echo $dir;?>" title="<?php echo Lang::l_("Previous");?>">&lt;</a><?php 
+	<li><a href="?order_by=<?php echo $order_by;?>&page=1&dir=<?php echo $dir;?>#table" title="<?php echo Lang::l_("First");?>" aria-label="First"><span aria-hidden="true">&lt;&lt;</a></li>
+	<li><a href="?order_by=<?php echo $order_by;?>&page=<?php echo $previouspage;?>&dir=<?php echo $dir;?>#table" title="<?php echo Lang::l_("Previous");?>" aria-label="Previous"><span aria-hidden="true">&lt;</a></li>
+		<?php 
 	}
 	else
 	{
 		?>
-	<span class="disabled" title="<?php echo Lang::l_("First");?>">&lt;&lt;</span><span class="disabled" title="<?php echo Lang::l_("Previous");?>">&lt;</span><?php
+	<li class="disabled" title="<?php echo Lang::l_("First");?>"><span aria-hidden="true">&lt;&lt;</li>
+	<li class="disabled" title="<?php echo Lang::l_("Previous");?>"><span aria-hidden="true">&lt;</li>
+		<?php
 	}
-	?><strong><?php echo $page.Lang::l_(" of ").$lastpage;?></strong><?php 
+	?>
+	<li class="active"><span aria-hidden="true"><?php echo $page.Lang::l_(" of ").$lastpage;?></li>
+	<?php 
 	if ( $page < $lastpage )
 	{
-		?><a href="?order_by=<?php echo $order_by;?>&page=<?php echo $nextpage;?>&dir=<?php echo $dir;?>" title="<?php echo Lang::l_("Next");?>">&gt;</a><a href="?order_by=<?php echo $order_by;?>&page=<?php echo $lastpage;?>&dir=<?php echo $dir;?>" title="<?php echo Lang::l_("Last");?>">&gt;&gt;</a>
+		?>
+	<li><a href="?order_by=<?php echo $order_by;?>&page=<?php echo $nextpage;?>&dir=<?php echo $dir;?>#table" title="<?php echo Lang::l_("Next");?>" aria-label="Next"><span aria-hidden="true">&gt;</a></li>
+	<li><a href="?order_by=<?php echo $order_by;?>&page=<?php echo $lastpage;?>&dir=<?php echo $dir;?>#table" title="<?php echo Lang::l_("Last");?>" aria-label="Last"><span aria-hidden="true">&gt;&gt;</a></li>
+	
 		<?php
 	}
 	else
 	{
-		?><span class="disabled" title="<?php echo Lang::l_("Next");?>">&gt;</span><span class="disabled" title="<?php echo Lang::l_("Last");?>">&gt;&gt;</span>
+		?>
+	<li class="disabled" title="<?php echo Lang::l_("Next");?>"><span aria-hidden="true">&gt;</a></li>
+	<li class="disabled" title="<?php echo Lang::l_("Last");?>"><span aria-hidden="true">&gt;&gt;</a></li>
 		<?php
 	}
+	?>
+</ul></nav>
+	<?php 
 }
 
 /**
@@ -373,83 +453,95 @@ function log_error($msg)
 function showAbout()
 {
 	?>
-	<a id="about_link" href="#about"><?php echo Lang::l_("About This Service");?></a>
-	<div class="about" id="about">
-	<a class="close" href="#">X</a>
-		<h2><?php echo Lang::l_("What is this?"); ?></h2>
-		<p><?php echo Lang::l_("What is this? text"); ?></p>
-		<h2><?php echo Lang::l_("How do I choose a route?"); ?></h2>
-		<p><?php echo Lang::l_("How do I choose a route? text"); ?></p>
-		<h2><?php echo Lang::l_("Where does the data come from and is it up to date?"); ?></h2>
-		<p><?php echo Lang::l_("Where does the data come from and is it up to date? text"); ?></p>
-		<h2><?php echo Lang::l_("Which data is used?"); ?></h2>
-		<p><?php echo Lang::l_("used_data_relations"); ?></p>
-		<ul>
-			<li><a href="http://wiki.openstreetmap.org/wiki/OpenRailwayMap/Tagging#Train_Route">ref</a></li>
-			<li><a href="http://wiki.openstreetmap.org/wiki/OpenRailwayMap/Tagging#Train_Route">operator</a></li>
-			<li><a href="http://wiki.openstreetmap.org/wiki/OpenRailwayMap/Tagging#Train_Route">route=rail|train|light_rail|tram|subway</a></li>
-			<li><a href="http://wiki.openstreetmap.org/wiki/OpenRailwayMap/Tagging#Train_Route">service=high_speed|long_distance|night|car|car_shuttle|regional|commuter</a></li>
-			<li><a href="http://wiki.openstreetmap.org/wiki/OpenRailwayMap/Tagging#Train_Route">color|colour</a></li>
-			<li><a href="http://wiki.openstreetmap.org/wiki/OpenRailwayMap/Tagging#Train_Route">text_color|text_colour|colour:text</a></li>
-			<li><a href="http://wiki.openstreetmap.org/wiki/OpenRailwayMap/Tagging#Train_Route">from</a></li>
-			<li><a href="http://wiki.openstreetmap.org/wiki/OpenRailwayMap/Tagging#Train_Route">to</a></li>
-		</ul>
-		<p><?php echo Lang::l_("used_data_ways"); ?></p>
-		<ul>
-			<li><a href="http://wiki.openstreetmap.org/wiki/OpenRailwayMap/Tagging#Tracks">railway=rail|light_rail|tram|narrow_gauge|subway</a></li>
-			<li><a href="http://wiki.openstreetmap.org/wiki/OpenRailwayMap/Tagging#Tracks">maxspeed</a></li>
-			<li><a href="http://wiki.openstreetmap.org/wiki/OpenRailwayMap/Tagging#Tracks">maxspeed:forward</a></li>
-			<li><a href="http://wiki.openstreetmap.org/wiki/OpenRailwayMap/Tagging#Tracks">maxspeed:backward</a></li>
-			<li><a href="http://wiki.openstreetmap.org/wiki/OpenRailwayMap/Tagging#Tracks">operator</a></li>
-			<li><a href="http://wiki.openstreetmap.org/wiki/OpenRailwayMap/Tagging#Tracks">railway:traffic_mode</a></li>
-			<li><a href="http://wiki.openstreetmap.org/wiki/OpenRailwayMap/Tagging#Tracks">electrified</a></li>
-			<li><a href="http://wiki.openstreetmap.org/wiki/OpenRailwayMap/Tagging#Tracks">voltage</a></li>
-			<li><a href="http://wiki.openstreetmap.org/wiki/OpenRailwayMap/Tagging#Tracks">frequency</a></li>
-			<li><a href="http://wiki.openstreetmap.org/wiki/OpenRailwayMap/Tagging#Tracks">bridge</a></li>
-			<li><a href="http://wiki.openstreetmap.org/wiki/OpenRailwayMap/Tagging#Tracks">tunnel</a></li>
-			<li><a href="http://wiki.openstreetmap.org/wiki/OpenRailwayMap/Tagging#Tracks">embankment</a></li>
-			<li><a href="http://wiki.openstreetmap.org/wiki/OpenRailwayMap/Tagging#Tracks">cutting</a></li>
-		</ul>
-		<p><?php echo Lang::l_("used_data_maxspeed"); ?></p>
-		<ul>
-			<li><a href="http://wiki.openstreetmap.org/wiki/OpenRailwayMap/Tagging#Tracks">service</a></li>
-			<li><a href="http://wiki.openstreetmap.org/wiki/OpenRailwayMap/Tagging#Tracks">railway:pzb</a></li>
-			<li><a href="http://wiki.openstreetmap.org/wiki/OpenRailwayMap/Tagging#Tracks">railway:lzb</a></li>
-			<li><a href="http://wiki.openstreetmap.org/wiki/OpenRailwayMap/Tagging#Tracks">railway:imu</a></li>
-			<li><a href="http://wiki.openstreetmap.org/wiki/OpenRailwayMap/Tagging#Tracks">railway:ects</a></li>
-			<li><a href="http://wiki.openstreetmap.org/wiki/OpenRailwayMap/Tagging#Tracks">railway:selcab</a></li>
-			<li><a href="http://wiki.openstreetmap.org/wiki/OpenRailwayMap/Tagging#Tracks">highspeed</a></li>
-			<li><a href="http://wiki.openstreetmap.org/wiki/OpenRailwayMap/Tagging#Tracks">usage=main|branch</a></li>
-		</ul>
-		<p><?php echo Lang::l_("used_data_stops"); ?></p>
-		<ul>
-			<li>name</li>
-			<li>description</li>
-		</ul>
-		<h2><?php echo Lang::l_("I have a suggestion. / I found an error"); ?></h2>
-		<p><?php echo Lang::l_("suggestion_error_text"); ?></p>
-		<h2><?php echo Lang::l_("Changelog"); ?></h2>
-		<h3>v0.1 October 5, 2014</h3>
-		<ul>
-			<li>Initial version as preview for railway mappers</li>
-		</ul>
-		<h3>v0.2 October 18, 2014</h3>
-		<ul>
-			<li>Better error handling</li>
-			<li>Additional trains and generic trains</li>
-			<li>Support of maxspeed in mph</li>
-			<li>New About page</li>
-            <li>Minor tweaks and bugfixes</li>
-		</ul>
-		<h3>v0.3 January 23, 2015</h3>
-		<ul>
-			<li>Search for routes by number, operator, network, origin and destination</li>
-			<li>Additional trains</li>
-			<li>Support of stop nodes that are not directly on the way of the route </li>
-            <li>Minor tweaks and bugfixes</li>
-		</ul>
-		<a type="application/rss+xml" href="changelog.rss">Complete Changelog</a>
+<!-- Modal -->
+<div class="modal fade" id="about" tabindex="-1" role="dialog" aria-labelledby="aboutLabel" aria-hidden="true">
+	<div class="modal-dialog  modal-lg">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+	        	<h4 class="modal-title" id="aboutLabel"><?php echo Lang::l_("About This Service"); ?></h4>
+			</div>
+			<div class="modal-body">
+				<h5><?php echo Lang::l_("What is this?"); ?></h5>
+				<p><?php echo Lang::l_("What is this? text"); ?></p>
+				<h5><?php echo Lang::l_("How do I choose a route?"); ?></h5>
+				<p><?php echo Lang::l_("How do I choose a route? text"); ?></p>
+				<h5><?php echo Lang::l_("Where does the data come from and is it up to date?"); ?></h5>
+				<p><?php echo Lang::l_("Where does the data come from and is it up to date? text"); ?></p>
+				<h5><?php echo Lang::l_("Which data is used?"); ?></h5>
+				<p><?php echo Lang::l_("used_data_relations"); ?></p>
+				<ul>
+					<li><a href="http://wiki.openstreetmap.org/wiki/OpenRailwayMap/Tagging#Train_Route">ref</a></li>
+					<li><a href="http://wiki.openstreetmap.org/wiki/OpenRailwayMap/Tagging#Train_Route">operator</a></li>
+					<li><a href="http://wiki.openstreetmap.org/wiki/OpenRailwayMap/Tagging#Train_Route">route=rail|train|light_rail|tram|subway</a></li>
+					<li><a href="http://wiki.openstreetmap.org/wiki/OpenRailwayMap/Tagging#Train_Route">service=high_speed|long_distance|night|car|car_shuttle|regional|commuter</a></li>
+					<li><a href="http://wiki.openstreetmap.org/wiki/OpenRailwayMap/Tagging#Train_Route">color|colour</a></li>
+					<li><a href="http://wiki.openstreetmap.org/wiki/OpenRailwayMap/Tagging#Train_Route">text_color|text_colour|colour:text</a></li>
+					<li><a href="http://wiki.openstreetmap.org/wiki/OpenRailwayMap/Tagging#Train_Route">from</a></li>
+					<li><a href="http://wiki.openstreetmap.org/wiki/OpenRailwayMap/Tagging#Train_Route">to</a></li>
+				</ul>
+				<p><?php echo Lang::l_("used_data_ways"); ?></p>
+				<ul>
+					<li><a href="http://wiki.openstreetmap.org/wiki/OpenRailwayMap/Tagging#Tracks">railway=rail|light_rail|tram|narrow_gauge|subway</a></li>
+					<li><a href="http://wiki.openstreetmap.org/wiki/OpenRailwayMap/Tagging#Tracks">maxspeed</a></li>
+					<li><a href="http://wiki.openstreetmap.org/wiki/OpenRailwayMap/Tagging#Tracks">maxspeed:forward</a></li>
+					<li><a href="http://wiki.openstreetmap.org/wiki/OpenRailwayMap/Tagging#Tracks">maxspeed:backward</a></li>
+					<li><a href="http://wiki.openstreetmap.org/wiki/OpenRailwayMap/Tagging#Tracks">operator</a></li>
+					<li><a href="http://wiki.openstreetmap.org/wiki/OpenRailwayMap/Tagging#Tracks">railway:traffic_mode</a></li>
+					<li><a href="http://wiki.openstreetmap.org/wiki/OpenRailwayMap/Tagging#Tracks">electrified</a></li>
+					<li><a href="http://wiki.openstreetmap.org/wiki/OpenRailwayMap/Tagging#Tracks">voltage</a></li>
+					<li><a href="http://wiki.openstreetmap.org/wiki/OpenRailwayMap/Tagging#Tracks">frequency</a></li>
+					<li><a href="http://wiki.openstreetmap.org/wiki/OpenRailwayMap/Tagging#Tracks">bridge</a></li>
+					<li><a href="http://wiki.openstreetmap.org/wiki/OpenRailwayMap/Tagging#Tracks">tunnel</a></li>
+					<li><a href="http://wiki.openstreetmap.org/wiki/OpenRailwayMap/Tagging#Tracks">embankment</a></li>
+					<li><a href="http://wiki.openstreetmap.org/wiki/OpenRailwayMap/Tagging#Tracks">cutting</a></li>
+				</ul>
+				<p><?php echo Lang::l_("used_data_maxspeed"); ?></p>
+				<ul>
+					<li><a href="http://wiki.openstreetmap.org/wiki/OpenRailwayMap/Tagging#Tracks">service</a></li>
+					<li><a href="http://wiki.openstreetmap.org/wiki/OpenRailwayMap/Tagging#Tracks">railway:pzb</a></li>
+					<li><a href="http://wiki.openstreetmap.org/wiki/OpenRailwayMap/Tagging#Tracks">railway:lzb</a></li>
+					<li><a href="http://wiki.openstreetmap.org/wiki/OpenRailwayMap/Tagging#Tracks">railway:imu</a></li>
+					<li><a href="http://wiki.openstreetmap.org/wiki/OpenRailwayMap/Tagging#Tracks">railway:ects</a></li>
+					<li><a href="http://wiki.openstreetmap.org/wiki/OpenRailwayMap/Tagging#Tracks">railway:selcab</a></li>
+					<li><a href="http://wiki.openstreetmap.org/wiki/OpenRailwayMap/Tagging#Tracks">highspeed</a></li>
+					<li><a href="http://wiki.openstreetmap.org/wiki/OpenRailwayMap/Tagging#Tracks">usage=main|branch</a></li>
+				</ul>
+				<p><?php echo Lang::l_("used_data_stops"); ?></p>
+				<ul>
+					<li>name</li>
+					<li>description</li>
+				</ul>
+				<h5><?php echo Lang::l_("I have a suggestion. / I found an error"); ?></h5>
+				<p><?php echo Lang::l_("suggestion_error_text"); ?></p>
+				<h5><?php echo Lang::l_("Changelog"); ?></h5>
+				<h6>v0.1 October 5, 2014</h6>
+				<ul>
+					<li>Initial version as preview for railway mappers</li>
+				</ul>
+				<h6>v0.2 October 18, 2014</h6>
+				<ul>
+					<li>Better error handling</li>
+					<li>Additional trains and generic trains</li>
+					<li>Support of maxspeed in mph</li>
+					<li>New About page</li>
+		            <li>Minor tweaks and bugfixes</li>
+				</ul>
+				<h6>v0.3 January 23, 2015</h6>
+				<ul>
+					<li>Search for routes by number, operator, network, origin and destination</li>
+					<li>Additional trains</li>
+					<li>Support of stop nodes that are not directly on the way of the route </li>
+		            <li>Minor tweaks and bugfixes</li>
+				</ul>
+				<a type="application/rss+xml" href="changelog.rss">Complete Changelog</a>
+			</div>      
+			<div class="modal-footer">
+        		<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+      		</div>
+		</div>
 	</div>
+</div>
 	<?php
 }
 ?>
