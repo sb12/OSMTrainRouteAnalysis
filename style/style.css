@@ -132,8 +132,46 @@ h2.panel-title
 #map
 {
 	border: 1px solid #337ab7;
-	height: 300px;
+	height: 400px;
 	border-radius:4px;
+}
+
+/**
+* style leaflet tooltip to look similar to bootstrap tooltips
+*/
+
+.leaflet-popup-content-wrapper{
+	background-color: #337ab7;
+	border-color:#337ab7;
+	border-radius: 4px;
+	color: #FFF;
+	padding:3px 8px;
+	text-align:center;
+	margin-top: -40px;
+	opacity:0.8;
+}
+
+.leaflet-popup-content{
+	margin: 0;
+}
+.leaflet-popup-close-button{
+	display:none;
+}
+.leaflet-popup-tip-container{
+	border-color: transparent;
+	border-top-color: #337ab7;
+	border-width: 5px 5px 0;
+	left: 50%;
+	margin-left: -5px;
+	top: -17px;
+	border-style: solid;
+	height:0;
+	position:absolute;
+	width:0;
+	opacity:0.8;
+}
+.leaflet-popup-tip{
+	display:none;
 }
 
 /**
@@ -180,42 +218,29 @@ h2.panel-title
 
 ul.stations
 {
-	display: inline-block;
-	margin-right: 16em; /* ca. cos(45°) * 25 - 1.25 */
+	list-style-type: none;
+	padding: 0px;
+	margin: 0px;
 }
 
 ul.stations li
 {
-	display: inline-block;
-	width: 1.25em;
-	height: 20em;
+    background-repeat: no-repeat;
+    background-position: 0px center;
+    padding-left: 25px;
+	height: 21px;
 }
-	
-ul.stations li span
+ul.stations li.default
 {
-	height: 1.25 em;
-	width: 25em;
-	padding: 0.125 em;
-	margin: 0em;
-	margin-top: 5em;
-	margin-left: -3em;
-	vertical-align: middle;
-	display: block;
-	transform: rotate(-45deg);
-	font-size: 0.8em;
+    background-image: url(../img/station.svg);
 }
-
-ul.stations li span a
+ul.stations li.first
 {
-	text-decoration: none;
-	white-space: nowrap;
+    background-image: url(../img/station_first.svg);
 }
-
-ul.stations li img
+ul.stations li.last
 {
-	margin: 7em 0.1em;
-	display: block;
-	width: 1.313em
+    background-image: url(../img/station_last.svg);
 }
 
 /**

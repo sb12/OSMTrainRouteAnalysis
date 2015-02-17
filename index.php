@@ -46,8 +46,10 @@
 <script type="text/javascript" src="javascript/functions.js"></script>
 
 
-<link rel="stylesheet" type="text/css" href="style/style.css">
 <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.css" />
+
+
+<link rel="stylesheet" type="text/css" href="style/style.css">
 <link rel="alternate" type="application/rss+xml" href="changelog.rss" title="Changelog">
 
 <?php

@@ -1708,37 +1708,39 @@ elseif ( isset($this->refresh_success) && $this->refresh_success == true )
 		$this->getStopNames();
 		$this->showMap();
 		?>
-			<ul class="stations col-lg-6">
+			<div class="col-lg-6">
+				<ul class="stations">
 		<?php
 		if ( isset($this->relation_stops[0]) )
 		{
 			//go through all stations
 			foreach ( $this->relation_stops as $nr => $ref )
 			{
-				/* get image that should be used */
-				$stop_image = "station.svg";
+				/* get class that should be used */
+				$class = "default";
 				if ( $nr == 0)
 				{
-					$stop_image = "station_first.svg";
+					$class = "first";
 				}
 				elseif ( !isset($this->relation_stops[$nr + 1]) )
 				{
-					$stop_image = "station_last.svg";
+					$class = "last";
 				}
 				
 				// show stops 
-				echo '<li><span><a href="#map" onClick="railway_stops[' . $nr . '].openPopup();" onMouseOver="railway_stops[' . $nr . '].togglePopup();">' . $this->stop_name[$nr] . '</a></span><img src="img/' . $stop_image . '" style="width:1.313em"></li>';
+				echo '<li class="'.$class.'"><span><a href="#map" onClick="railway_stops[' . $nr . '].openPopup();" onMouseOver="railway_stops[' . $nr . '].togglePopup();">' . $this->stop_name[$nr] . '</a></span></li>';
 			}
 		}
 		else
 		{
 			?>
-				<li><?php echo Lang::l_('N/A');?></li>
+					<li><?php echo Lang::l_('N/A');?></li>
 			<?php 
 		}
 		?>
 	
-			</ul>
+				</ul>
+			</div>
 		</div>
 	</div>
 		<?php 
@@ -2383,14 +2385,15 @@ elseif ( isset($this->refresh_success) && $this->refresh_success == true )
 		
 		/* define icon for railway stations */
 		var railwayIcon = L.icon({
-		    iconUrl: 'leaflet/images/railway_station.png',
-		    iconSize:     [14, 21], // size of the icon
-		    iconAnchor:   [7, 10], // point of the icon which will correspond to marker's location
+		    iconUrl: 'img/station_map.svg',
+		    iconSize:     [21, 21], // size of the icon
+		    iconAnchor:   [10.5, 10.5], // point of the icon which will correspond to marker's location
 		    popupAnchor:  [0, 0] // point from which the popup should open relative to the iconAnchor
 		});
 
 		/* add stops */
 		var railway_stops = new Array();
+		var railway_popups = new Array();
 		<?php
 		if ( isset($this->relation_stops[0]) )
 		{
@@ -2402,6 +2405,7 @@ elseif ( isset($this->refresh_success) && $this->refresh_success == true )
 				{
 					?>
 		railway_stops[<?php echo $j;?>] = L.marker([<?php echo $this->node[$ref]["lat"];?>, <?php echo $this->node[$ref]["lon"];?>], {icon: railwayIcon}).bindPopup("<?php echo $this->stop_name[$nr];?>");
+		railway_stops[<?php echo $j;?>].on('mouseover', railway_stops[<?php echo $j;?>].togglePopup);
 					<?php
 					$j++; 
 				}
