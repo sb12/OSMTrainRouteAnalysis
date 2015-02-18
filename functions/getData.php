@@ -1697,7 +1697,22 @@ elseif ( isset($this->refresh_success) && $this->refresh_success == true )
 			<div class="col-md-12"><b><?php echo Lang::l_('Railway Users');?>:</b> <?php echo $trafficmode_string;?></div>
 			<div class="col-md-12"><b><?php echo Lang::l_('Electrification');?>:</b> <?php echo $electrified_string;?></div>
 			<div class="col-md-12"><b><?php echo Lang::l_('Structures');?>:</b> <?php echo $building_string;?></div>
-			<div class="col-md-12"><b><?php echo Lang::l_('Gaps in Route');?>:</b> <?php echo $this -> count_holes;?></div>
+			<div class="col-md-12"><b><?php echo Lang::l_('Gaps in Route');?>:</b> 
+		<?php 
+		if( $this->count_holes > 0 )
+		{
+			?>
+			<span class="text-danger"><?php echo $this->count_holes; ?></span> (<a href="http://ra.osmsurround.org/analyzeRelation?relationId=<?php echo $this->id; ?>&noCache=true&_noCache=on" title="<?php echo Lang::l_('Analyze route with OSM Relation Analyzer'); ?>"><?php echo Lang::l_('Analyze route'); ?></a>)</span>
+			<?php  
+		}
+		else
+		{
+			?>
+			<span class="text-success"><?php echo $this->count_holes; ?></span>
+			<?php 
+		}
+		?>	
+			</div>
 		</div>
 	</div>
 	
