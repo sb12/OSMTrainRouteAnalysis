@@ -271,7 +271,7 @@ Class Route
 		if ( !isset($_GET["id"]) ) 
 		{
 			// show error
-			return_error("no_id");
+			return_error("no_id", "full");
 			die();
 		}
 		// get route id
@@ -587,6 +587,7 @@ Class Route
 			$con = connectToDB();
 			// delete id from database
 			@mysqli_query($con, "DELETE FROM osm_train_details WHERE `id` = ".mysqli_real_escape_string($con,$this->id)) or print(mysqli_error($con) );
+
 			// show error
 			return_error("no_route", "full");
 			die();

@@ -369,7 +369,7 @@ function pagination($page = 1, $lastpage = 1, $order_by = "" , $dir = "" )
 function connectToDB()
 {
 	//load settings
-	require_once 'functions/mysql_settings.php';
+	require 'functions/mysql_settings.php';
 	
 	//open connection
 	$con = mysqli_connect($mysql_host, $mysql_user, $mysql_password, $mysql_database) or return_error("mysql", "message", $con);
@@ -409,33 +409,37 @@ function return_error($value, $type = "message", $dbcon = "")
 	
 	// do not show header for mesaage
 	if ( $type == "full" )
-	{
+	{			
+		loadHeader();
 		?>
-		<title><?php echo Lang::l_("error_title"); ?></title>
-	</head>
-	<body>
-		<h1><?php echo Lang::l_("error_heading"); ?></h1>
+	<div class="container-fluid">
 		<?php
 	}
 	?>
-		<p class="error"><?php echo $errormsg[$value]; ?></p>
+		<p class="alert alert-danger alert-dismissable fade in">
+			<?php echo $errormsg[$value]; ?> 
+			<button type="button" class="close" data-dismiss="alert" aria-label="Close">
+  				<span aria-hidden="true">&times;</span>
+			</button>
 	<?php 
-	if ( $type == "full" || $value == "mysql" )
+	//show link to update route if necessary
+	if ( $value == "invalid_xml_file" )
 	{
 		?>
-		<a href="index.php" title="<?php echo Lang::l_("Back to Overview");?>"><?php echo Lang::l_("Back to Route Overview");?></a>
-		<?php
-		//show link to update route if necessary
-		if ( $value == "invalid_xml_file" )
-		{
-			?>
-		<a href="?id=<?php echo $route->id;?>&train=<?php echo $route->train->ref;?>&rf=1"><?php echo Lang::l_("Update data");?></a>
-			<?php 	
-		}
+			<a href="?id=<?php echo $route->id;?>&train=<?php echo $route->train->ref;?>&rf=1"><?php echo Lang::l_("Update data");?></a>
+		<?php 	
+	}
+	?>
+		</p>
+	<?php
+	if ( $type == "full")
+	{
 		?>
-	</body>
-</html>
-		<?php
+	</div>
+		<?php			
+		enterID();
+		showRoutes();
+		loadFooter();
 	}
 }
 
