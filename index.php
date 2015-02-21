@@ -50,7 +50,7 @@
 
 
 <link rel="stylesheet" type="text/css" href="style/style.css">
-<link rel="alternate" type="application/rss+xml" href="changelog.rss" title="Changelog">
+<link rel="alternate" type="application/rss+xml" href="changelog.php" title="Changelog">
 
 <?php
 //turn off error_reports

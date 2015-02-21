@@ -45,4 +45,11 @@ $(function()
 			$('#josmErrorDialog').modal(show=true);
 		})
 	});
+	
+	$( '#changelog' ).on('shown.bs.collapse', function () {
+		$(window).trigger('resize');
+	});	
+	$( '#changelog' ).on('hidden.bs.collapse', function () {
+		$(window).trigger('resize');
+	});
 });

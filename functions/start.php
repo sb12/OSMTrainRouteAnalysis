@@ -518,26 +518,48 @@ function showAbout()
 				<h5><?php echo Lang::l_("I have a suggestion. / I found an error"); ?></h5>
 				<p><?php echo Lang::l_("suggestion_error_text"); ?></p>
 				<h5><?php echo Lang::l_("Changelog"); ?></h5>
-				<h6>v0.1 October 5, 2014</h6>
-				<ul>
-					<li>Initial version as preview for railway mappers</li>
-				</ul>
-				<h6>v0.2 October 18, 2014</h6>
-				<ul>
-					<li>Better error handling</li>
-					<li>Additional trains and generic trains</li>
-					<li>Support of maxspeed in mph</li>
-					<li>New About page</li>
-		            <li>Minor tweaks and bugfixes</li>
-				</ul>
-				<h6>v0.3 January 23, 2015</h6>
-				<ul>
-					<li>Search for routes by number, operator, network, origin and destination</li>
-					<li>Additional trains</li>
-					<li>Support of stop nodes that are not directly on the way of the route </li>
-		            <li>Minor tweaks and bugfixes</li>
-				</ul>
-				<a type="application/rss+xml" href="changelog.rss">Complete Changelog</a>
+	<?php 
+	$changelog = parseChangelog();
+	$changelog_size = count($changelog);
+	if($changelog_size>2)
+	{
+		?>		
+				<div class="collapse" id="changelog">
+		<?php
+	}
+	$i = 1;
+	foreach($changelog as $changelogi)
+	{
+		if($i>$changelog_size-2)
+		{
+			?>
+				</div>
+				<div>
+			<?php 
+		}
+		?>
+					<h6><?php echo $changelogi["heading"];?></h6>
+					<ul>
+		<?php 
+		foreach($changelogi["content"] as $changelogcontent)
+		{
+			?>
+						<li><?php echo $changelogcontent;?></li>
+			<?php 
+		}
+		?>
+					</ul>
+		<?php
+		$i++;
+	}
+	if($changelog_size>2)
+	{
+		?>		
+				</div>
+				<button class="btn btn-default" type="button" data-toggle="collapse" data-target="#changelog" aria-expanded="false" aria-controls="changelog">See complete Changelog</button>
+		<?php
+	}
+	?>
 			</div>      
 			<div class="modal-footer">
         		<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
@@ -546,5 +568,24 @@ function showAbout()
 	</div>
 </div>
 	<?php
+}
+function parseChangelog()
+{
+	$i=0;
+	$fileContent = file("CHANGELOG.md");
+	
+	foreach ($fileContent as $line)
+	{
+		if(substr($line,0,2)=="##")
+		{
+			$i++;
+			$changelog[$i]["heading"]= substr($line,3);
+		}
+		elseif(substr($line,0,1)=="*")
+		{
+			$changelog[$i]["content"][]= substr($line,2);
+		}
+	}
+	return $changelog;
 }
 ?>
