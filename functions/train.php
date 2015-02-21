@@ -101,6 +101,12 @@ Class Train
 	public $image;
 	
 	/**
+	 * Name of train type
+	 * @var Array[ref]
+	 */
+	public static $train_type; 
+	
+	/**
 	 * initializes train
 	 * @param string $train ref of train
 	 */
@@ -229,22 +235,55 @@ Class Train
 	/**
 	 * generates form to change the train
 	 */
-	function changeTrain()
+	static function changeTrain($trainref="")
 	{
 		include "train_details.php";
+		$type="";
 		?>
-		<select name="train" style="max-width:100%" id="train">
+		<select name="train" style="max-width:100%" id="train" required>
 		<?php 
-		foreach ( $tr_name as $ref => $name )
+		if( !$trainref)
 		{
 			?>
-			<option <?php if ( $ref == $this->ref ){ echo 'selected="selected"'; } ?>value="<?php echo $ref; ?>"><?php echo $name; ?></option>
+			<option selected="selected" value=""><?php echo Lang::l_('Please choose a train'); ?></option>
+			<?php
+		}
+		foreach ( $tr_name as $ref => $name )
+		{
+			if( $tr_type[$ref] != $type )
+			{
+				if($type)
+				{
+					?>
+			</optgroup>
+					<?php 
+				}
+				?>
+			<optgroup label="<?php echo self::$train_type[$tr_type[$ref]]; ?>">
+				<?php
+				$type = $tr_type[$ref];
+			}
+			?>
+				<option <?php if ( $ref == $trainref ){ echo 'selected="selected"'; } ?>value="<?php echo $ref; ?>"><?php echo $name; ?></option>
 			<?php 
 		}
 		?>
+			</optgroup>
 		</select>
 		<?php 
 		
 	}
 }
+
+//define Train types
+Train::$train_type = Array(
+		"highspeed"     => Lang::l_('Highspeed train'),
+		"long_distance" => Lang::l_('Long distance train'),
+		"night"         => Lang::l_('Night train'),
+		"regional"      => Lang::l_('Regional train'),
+		"light_rail"    => Lang::l_('Light rail'),
+		"tram"          => Lang::l_('Tram'),
+		"subway"        => Lang::l_('Subway'),
+		"freight"       => Lang::l_('Freight train')
+);
 ?>

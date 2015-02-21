@@ -101,7 +101,7 @@ $tr_image["ICE3V"] = "ICE3Velaro.png";
 
 // DB ICE T 7-teilig (Germany)
 $tr_name["ICE-T7"] = "DB ICE T 7-teilig";
-$tr_type["ICE-T7"] = "long_distance";
+$tr_type["ICE-T7"] = "highspeed";
 $tr_maxspeed["ICE-T7"] = 230; // km/h
 $tr_mass_empty["ICE-T7"] = 368; // t
 $tr_power["ICE-T7"] = 4000; // kW

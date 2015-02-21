@@ -360,9 +360,7 @@ Class Search
 	 */
 	static function showSearchBox()
 	{
-		$train = new Train();
 		?>
-		
 	<div class="panel panel-primary">
 		<div class="panel-heading" data-toggle="collapse" href="#searchForm" aria-expanded="false" aria-controls="searchForm">
 			<h3 class="panel-title"><a data-toggle="collapse" href="#searchForm" aria-expanded="false" aria-controls="searchForm"><?php echo Lang::l_("By route information:");?></a></h3>
@@ -402,7 +400,7 @@ Class Search
 				<div class="form-group">
 					<label for="id" class="col-sm-2 control-label"><?php echo Lang::l_('Train');?>:</label>
 					<div class="col-sm-10">
-						<?php echo $train->changeTrain();?>
+						<?php echo Train::changeTrain();?>
 					</div>
 				</div>
 				<div class="form-group">

@@ -1760,19 +1760,6 @@ elseif ( isset($this->refresh_success) && $this->refresh_success == true )
 			</div>
 		</div>
 	</div>
-		<?php 
-		//train types
-		$train_type_de = Array(
-			"highspeed"     => Lang::l_('Highspeed train'),
-			"long_distance" => Lang::l_('Long distance train'),
-			"night"         => Lang::l_('Night train'),
-			"regional"      => Lang::l_('Regional train'),
-			"light_rail"    => Lang::l_('Light rail'),
-			"tram"          => Lang::l_('Tram'),
-			"subway"        => Lang::l_('Subway'),
-			"freight"       => Lang::l_('Freight train'),
-		);
-		?>
 		
 	<div class="panel panel-primary">
 		<div class="panel-heading">
@@ -1790,7 +1777,7 @@ elseif ( isset($this->refresh_success) && $this->refresh_success == true )
 		}
 		?>
 			<div class="col-md-4"><b><?php echo Lang::l_('Train name');?>:</b> <?php echo $this->train->name;?></div>
-			<div class="col-md-4"><b><?php echo Lang::l_('Train type');?>:</b> <?php echo $train_type_de[$this->train->type];?></div>
+			<div class="col-md-4"><b><?php echo Lang::l_('Train type');?>:</b> <?php echo Train::$train_type[$this->train->type];?></div>
 			<div class="col-md-4"><b><?php echo Lang::l_('Maximum speed');?>: </b><?php echo $this->train->maxspeed;?> km/h</div>
 			<div class="col-md-4"><b><?php echo Lang::l_('Weight empty');?>:</b> <?php echo $this->train->mass_empty / 12960;?> t</div>
 			<div class="col-md-4"><b><?php echo Lang::l_('Power');?>:</b> <?php echo $this->train->power / 12960;?> kW</div>
@@ -1802,7 +1789,7 @@ elseif ( isset($this->refresh_success) && $this->refresh_success == true )
 			<div class="col-md-12"> 
 				<div class="form-group">
 					<label for="train"><?php echo Lang::l_('Change train');?>:</label> 
-					<?php echo $this->train->changeTrain();?>
+					<?php echo Train::changeTrain($this->train->ref);?>
 					<button class="btn btn-default" type="submit"><?php echo Lang::l_('Change train');?></button>
     			</div>
     		</div>

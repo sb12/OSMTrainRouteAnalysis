@@ -102,7 +102,6 @@ function top_nav($page="")
  */
 function enterID()
 {
-	$train = new Train();
 	?>
 <div class="panel-group container-fluid">
 
@@ -127,7 +126,7 @@ function enterID()
 				<div class="form-group">
 					<label for="id" class="col-sm-2 control-label"><?php echo Lang::l_('Train');?>:</label>
 					<div class="col-sm-10">
-						<?php echo $train->changeTrain();?>
+						<?php echo Train::changeTrain();?>
 					</div>
 				</div>
 				<div class="form-group">
