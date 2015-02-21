@@ -120,7 +120,7 @@ function enterID()
 				<div class="form-group">
 					<label for="id" class="col-sm-2 control-label"><?php echo Lang::l_('OpenStreetMap id');?>:</label>
 					<div class="col-sm-10">
-						<input type="number" name="id" class="form-control">
+						<input type="number" name="id" class="form-control" required>
 					</div>
 				</div>		
 				<div class="form-group">

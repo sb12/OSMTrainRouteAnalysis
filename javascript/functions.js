@@ -28,6 +28,7 @@ $(function()
 	$( '#searchform' ).on('submit', function( event ) 
 	{
 		event.preventDefault();
+		$('#search').modal();
 		$('#searchcontent').html("<span class=\"list-group-item\">Daten werden geladen...</span>");//FIXME: German
 		$.get('ajax/search.php?' + $( this ).serialize(), function(data){
 			$('#searchcontent').html(data);
