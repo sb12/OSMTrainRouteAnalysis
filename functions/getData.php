@@ -2094,6 +2094,14 @@ elseif ( isset($this->refresh_success) && $this->refresh_success == true )
 						$maxpoint = $way_total - $way_brake;
 						break;
 					}
+					// braking starts in section before and we are between two stops
+					elseif ( $exmaxarray[$i][1] == 0 && $exmaxarray[$j-1][1] == 0)
+					{
+						//found braking point
+						$brake_array[] = Array($way_total - $way, $way_total, $exmaxarray[$j][1]*$way/$way_brake, $exmaxarray[$i][1], "brake");
+						$maxpoint = $way_total - $way;
+						break;
+					}
 				}
 				else
 				{
@@ -2138,12 +2146,20 @@ elseif ( isset($this->refresh_success) && $this->refresh_success == true )
 					$acceleration = $train->acceleration($tr_mass_empty, $tr_torque, $tr_power, 200, $exmaxarray[$i][1], $exmaxarray[$j][1]);
 					//calculate acceleration distance
 					$way_acc = ( $exmaxarray[$j][1] * $exmaxarray[$j][1] - $exmaxarray[$i][1] * $exmaxarray[$i][1] ) / ( 2 * $acceleration ); 
-					//acceleration finishes in thsi section
+					//acceleration finishes in this section
 					if ( $way_acc <= $way )
 					{
 						//found acceleration point
 						$acc_array[] = Array($way_total, $way_total + $way_acc, $exmaxarray[$i][1], $exmaxarray[$j][1], "acc");
 						$maxpoint = $way_total + $way_acc;
+						break;
+					}
+					// acceleration does not finish in this section and we are between two stops
+					elseif ( $exmaxarray[$i][1] == 0 && $exmaxarray[$j+1][1] == 0)
+					{
+						//found braking point
+						$acc_array[] = Array($way_total, $way_total + $way, $exmaxarray[$i][1], $exmaxarray[$j][1]*$way/$way_acc, "acc");
+						$maxpoint = $way_total + $way;
 						break;
 					}
 				}
@@ -2201,11 +2217,13 @@ elseif ( isset($this->refresh_success) && $this->refresh_success == true )
 			$vstop[$key]    = $row[3];
 			$type[$key]     = $row[4];
 		}		
-		array_multisort($start, SORT_ASC, $accbrake_array);		
+		array_multisort($start, SORT_ASC, $accbrake_array);
 		
 		//go through array
-		for ( $i = 0; isset($accbrake_array[$i + 1]); $i++ )
+		$j=0;
+		for ( $i = 0; isset($accbrake_array[$i+1]); $i++ )
 		{
+
 			//Operation B is within Operation A
 			if ( $accbrake_array[$i + 1][0] > $accbrake_array[$i][0] && $accbrake_array[$i + 1][1] < $accbrake_array[$i][1] )
 			{
