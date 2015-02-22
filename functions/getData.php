@@ -1979,7 +1979,6 @@ elseif ( isset($this->refresh_success) && $this->refresh_success == true )
 		$i = 0;
 		$maxpoint = 0;
 		$way_total = 0;
-		
 		//go through each point of maxspeed matrix
 		while ( isset($exmaxarray[$i]) )
 		{
@@ -2001,10 +2000,10 @@ elseif ( isset($this->refresh_success) && $this->refresh_success == true )
 						break;
 					}
 					// braking starts in section before and we are between two stops
-					elseif ( $exmaxarray[$i][1] == 0 && $exmaxarray[$j-1][1] == 0)
+					elseif ( $exmaxarray[$i][1] == 0  && $exmaxarray[$j-1][1] == 0)
 					{
 						//found braking point
-						$brake_array[] = Array($way_total - $way, $way_total, $exmaxarray[$j][1]*$way/$way_brake, $exmaxarray[$i][1], "brake");
+						$brake_array[] = Array($way_total - $way, $way_total, $exmaxarray[$i][1] - ( $exmaxarray[$i][1] - $exmaxarray[$j][1] ) * $way / $way_brake, $exmaxarray[$i][1], "brake");
 						$maxpoint = $way_total - $way;
 						break;
 					}
@@ -2064,7 +2063,7 @@ elseif ( isset($this->refresh_success) && $this->refresh_success == true )
 					elseif ( $exmaxarray[$i][1] == 0 && $exmaxarray[$j+1][1] == 0)
 					{
 						//found braking point
-						$acc_array[] = Array($way_total, $way_total + $way, $exmaxarray[$i][1], $exmaxarray[$j][1]*$way/$way_acc, "acc");
+						$acc_array[] = Array($way_total, $way_total + $way, $exmaxarray[$i][1], $exmaxarray[$i][1] + ( $exmaxarray[$j][1] - $exmaxarray[$i][1] ) * $way / $way_acc, "acc");
 						$maxpoint = $way_total + $way;
 						break;
 					}
@@ -2114,6 +2113,7 @@ elseif ( isset($this->refresh_success) && $this->refresh_success == true )
 	 */
 	function sort_accbrake($accbrake_array)
 	{
+
 		//sort array after the start points of the accelerations and brakes
 		foreach ( $accbrake_array as $key => $row ) 
 		{
@@ -2124,11 +2124,75 @@ elseif ( isset($this->refresh_success) && $this->refresh_success == true )
 			$type[$key]     = $row[4];
 		}		
 		array_multisort($start, SORT_ASC, $accbrake_array);
-		
+
 		//go through array
 		$j=0;
 		for ( $i = 0; isset($accbrake_array[$i+1]); $i++ )
 		{
+			//train breaks without accelerating before (next speed is bigger than current speed)
+			if ( $accbrake_array[$i + 1][2] > $accbrake_array[$i][3] )
+			{
+				//Special case: train is stopped
+				if ( $accbrake_array[$i][3] == 0 )
+				{
+					//TODO: do we need to do anything here?
+				}
+				else
+				{
+					//set start speed of next one to end speed of current
+					$accbrake_array[$i + 1][2] = $accbrake_array[$i][3];
+				}
+			}
+				
+			//train accelerates without breaking after (next speed is smaller than current speed)
+			if ( $accbrake_array[$i + 1][2] < $accbrake_array[$i][3]  && $accbrake_array[$i][4] == "acc" && $accbrake_array[$i + 1][4] == "brake")
+			{
+				//skip acceleration and delete array if possible
+				if ( $accbrake_array[$i][2] == $accbrake_array[$i + 1][2] )
+				{
+					$accbrake_array[$i][0] = 0;
+					$accbrake_array[$i][1] = 0;
+					$accbrake_array[$i][2] = 0;
+					$accbrake_array[$i][3] = 0;
+				}
+				// or recalculate acceleration
+				elseif ( $accbrake_array[$i][2] < $accbrake_array[$i + 1][2] )
+				{
+					$acceleration = $this->train->acceleration($this->train->mass_empty, $this->train->torque, $this->train->power, 200, $accbrake_array[$i][2], $accbrake_array[$i + 1][2]);
+					$way_acc = ( $accbrake_array[$i + 1][2] * $accbrake_array[$i + 1][2] - $accbrake_array[$i][2] * $accbrake_array[$i][2] ) / ( 2 * $acceleration );
+					$accbrake_array[$i][0] = $accbrake_array[$i][0];
+					$accbrake_array[$i][1] = $accbrake_array[$i][0] + $way_acc;
+					$accbrake_array[$i][2] = $accbrake_array[$i][2];
+					$accbrake_array[$i][3] = $accbrake_array[$i + 1][2];
+				}
+				else
+				{
+					log_error("WARNING: Train accelerates without breaking after. Relation ID: " . $this->id . " | Maxspeed array position: " . $i);
+				}
+			}
+			
+			//two accelerations with different in-between speeds and no braking (next speed is smaller than current speed)
+			if ( $accbrake_array[$i + 1][2] < $accbrake_array[$i][3] && $accbrake_array[$i][4] == "acc" && $accbrake_array[$i + 1][4] == "acc")
+			{
+				//set maxspeed of first acceleration to lower speed
+				$accbrake_array[$i][3] = $accbrake_array[$i + 1][2];
+				echo "-".$accbrake_array[$i][1]."|".$accbrake_array[$i][2]."|".$accbrake_array[$i][3];
+			}
+			//two brakings with different in-between speeds and no acceleration (next speed is smaller than current speed)
+			if ( $accbrake_array[$i + 1][2] < $accbrake_array[$i][3] && $accbrake_array[$i][4] == "brake" && $accbrake_array[$i + 1][4] == "brake")
+			{
+				//calculate new braking:
+				$way_brake = ( $accbrake_array[$i][2] * $accbrake_array[$i][2] - $accbrake_array[$i + 1][3] * $accbrake_array[$i + 1][3] ) / ( 2 * $this->train->brake );
+				$accbrake_array[$i][0] = $accbrake_array[$i + 1][1] - $way_brake;
+				$accbrake_array[$i][1] = $accbrake_array[$i + 1][1];
+				$accbrake_array[$i][2] = $accbrake_array[$i][2];
+				$accbrake_array[$i][3] = $accbrake_array[$i + 1][3];
+			
+				$accbrake_array[$i + 1][0] = 0;
+				$accbrake_array[$i + 1][1] = 0;
+				$accbrake_array[$i + 1][2] = 0;
+				$accbrake_array[$i + 1][3] = 0;
+			}
 
 			//Operation B is within Operation A
 			if ( $accbrake_array[$i + 1][0] > $accbrake_array[$i][0] && $accbrake_array[$i + 1][1] < $accbrake_array[$i][1] )
@@ -2223,21 +2287,7 @@ elseif ( isset($this->refresh_success) && $this->refresh_success == true )
 					
 				}
 			}
-			
-			//train breaks without accelerating before (next speed is bigger than current speed)
-			if ( $accbrake_array[$i + 1][2] > $accbrake_array[$i][3] )
-			{
-				//Special case: train is stopped
-				if ( $accbrake_array[$i][3] == 0 )
-				{
-					//TODO: do we need to do anything here?
-				}
-				else
-				{
-					//set start speed of next one to end speed of current
-					$accbrake_array[$i + 1][2] = $accbrake_array[$i][3];
-				}
-			}
+
 		}
 		return $accbrake_array;
 	}
@@ -2702,7 +2752,7 @@ elseif ( isset($this->refresh_success) && $this->refresh_success == true )
 	static function getRouteType($route,$service="")
 	{
 		$route_type_lang = Array(
-		"highspeed"     => Lang::l_('Highspeed Train'),
+		"high_speed"     => Lang::l_('Highspeed Train'),
 		"long_distance" => Lang::l_('Long Distance Train'),
 		"car"           => Lang::l_('Motorail Train'),
 		"car_shuttle"   => Lang::l_('Car Shuttle Train'),
