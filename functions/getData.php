@@ -1072,120 +1072,37 @@ Class Route
 			$building_string = round($this->relation_distance, 1) . " km " . LANG::l_('on ground level') . " (100 %)";
 		}
 		
-		//get train class
-		if ( isset($this->relation_tags["route"]) && $this->relation_tags["route"] == "train" )
+		if(!isset($this->relation_tags["service"]))
 		{
-			if ( isset($this->relation_tags["service"]) )
-			{
-				if ( $this->relation_tags["service"] == "high_speed" || $this->relation_tags["service"] == "long_distance" || $this->relation_tags["service"] == "night" || $this->relation_tags["service"] == "car" || $this->relation_tags["service"] == "car_shuttle" )
-				{
-					$css_ref_class = "ref_long_distance";
-					if ( $this->relation_tags["service"] == "high_speed" )
-					{
-						$route_type = "high_speed";
-					}
-					if ( $this->relation_tags["service"] == "long_distance" )
-					{
-						$route_type = "long_distance";
-					}
-					if ( $this->relation_tags["service"] == "night" )
-					{
-						$route_type = "night";
-					}
-					if ( $this->relation_tags["service"] == "car" )
-					{
-						$route_type = "car";
-					}
-					if ( $this->relation_tags["service"] == "car_shuttle" )
-					{
-						$route_type = "car_shuttle";
-					}
-				}
-				elseif ( $this->relation_tags["service"] == "regional" || $this->relation_tags["service"] == "commuter" )
-				{
-					$css_ref_class = "ref_regional";
-					if ( $this->relation_tags["service"] == "regional" )
-					{
-						$route_type = "regional";
-					}
-					if ( $this->relation_tags["service"] == "commuter" )
-					{
-						$route_type = "commuter";
-					}
-				}
-				elseif ( $this->relation_tags["service"] == "tourism")
-				{
-					$css_ref_class = "ref_tourism";
-					$route_type = "tourism";
-				}
-			}
-			else
-			{
-				$css_ref_class = "ref_regional";
-			}
+			$this->relation_tags["service"]="";
 		}
-		elseif ( isset($this->relation_tags["route"]) && $this->relation_tags["route"] == "light_rail" )
-		{
-			$css_ref_class = "ref_light_rail";
-			$route_type = "light_rail";
-			if ( $this->relation_tags["service"] == "tourism")
-			{
-				$css_ref_class = "ref_tourism";
-				$route_type = "tourism";
-			}
-		}
-		elseif ( isset($this->relation_tags["route"]) && $this->relation_tags["route"] == "subway" )
-		{
-			$css_ref_class = "ref_light_rail";
-			$route_type = "subway";
-			if ( $this->relation_tags["service"] == "tourism")
-			{
-				$css_ref_class = "ref_tourism";
-				$route_type = "tourism";
-			}
-		}
-		else
-		{
-			$css_ref_class = "ref_tram";
-			$route_type = "tram";
-			if ( isset($this->relation_tags["service"]) && $this->relation_tags["service"] == "tourism")
-			{
-				$css_ref_class = "ref_tourism_tram";
-				$route_type = "tourism_tram";
-			}
-		}
-		if ( !isset($route_type) )
-		{
-			$route_type = "unknown";
-		}
-		
+
 		//set ref to N/A, when not available
 		if ( !isset($this->relation_tags["ref"]) )
 		{
 			$this->relation_tags["ref"] = "N/A";
 		}
 		
-		//get css style for route ref 
-		$css_ref_style = "";
+		//set colour
 		if ( isset($this->relation_tags["color"]) )
 		{
-			$css_ref_style .= "background-color:" . $this->relation_tags["color"] . ";";
+			$this->relation_tags["colour"]=$this->relation_tags["color"];
 		}
-		elseif ( isset($this->relation_tags["colour"]) )
+		elseif ( !isset($this->relation_tags["colour"]) )
 		{
-			$css_ref_style .= "background-color:" . $this->relation_tags["colour"] . ";";
+			$this->relation_tags["colour"]="";
 		}
 		if ( isset($this->relation_tags["text_color"]) )
 		{
-			$css_ref_style .= "color:" . $this->relation_tags["text_color"] . ";";
-		}
-		elseif ( isset($this->relation_tags["text_colour"]) )
-		{
-			$css_ref_style .= "color:" . $this->relation_tags["text_colour"] . ";";
+			$this->relation_tags["text_colour"]=$this->relation_tags["text_color"];
 		}
 		elseif ( isset($this->relation_tags["colour:text"]) )
 		{
-			$css_ref_style .= "color:" . $this->relation_tags["colour:text"] . ";";
+			$this->relation_tags["text_colour"]=$this->relation_tags["colour:text"];
+		}
+		elseif ( !isset($this->relation_tags["text_colour"]) )
+		{
+			$this->relation_tags["text_colour"]="";
 		}
 		
 		//get from and to values
@@ -1201,6 +1118,9 @@ Class Route
 		{
 			$this->relation_tags["via"] = "";
 		}
+		
+		//get route type:
+		$route_type = Route::getRouteType($this->relation_tags["route"],$this->relation_tags["service"]);
 
 		//title
 		?>
@@ -1585,7 +1505,7 @@ var startData = [[0,0],<?php
 <div id="header" class="page-header">
 	<div class="container">
 		<header>
-<h2><span class="<?php echo $css_ref_class;?>" style="<?php echo $css_ref_style;?>"><?php echo $this->relation_tags["ref"];?></span> <?php echo Route::showfromviato($this->relation_tags["to"], $this->relation_tags["from"], $this->relation_tags["via"]);?></h2>
+<h2> <?php echo Route::showRef($this->relation_tags["ref"], $this->relation_tags["route"], $this->relation_tags["service"], $this->relation_tags["colour"], $this->relation_tags["text_colour"]) . " " . Route::showfromviato($this->relation_tags["to"], $this->relation_tags["from"], $this->relation_tags["via"]);?></h2>
 				</header>
 	</div>
 </div>
@@ -1640,26 +1560,13 @@ elseif ( isset($this->refresh_success) && $this->refresh_success == true )
 		{
 			$relation_distance_show = round($this->relation_distance, 2);
 		}
-		$route_type_de["high_speed"] = Lang::l_('Highspeed train');
-		$route_type_de["long_distance"] = Lang::l_('Long distance train');
-		$route_type_de["car"] = Lang::l_('Motorail Train');
-		$route_type_de["car_shuttle"] = Lang::l_('Car Shuttle Train');
-		$route_type_de["night"] = Lang::l_('Night Train');
-		$route_type_de["regional"] = Lang::l_('Regional train');
-		$route_type_de["commuter"] = Lang::l_('Commuter train');
-		$route_type_de["light_rail"] = Lang::l_('Light Rail');
-		$route_type_de["tram"] = Lang::l_('Tram');
-		$route_type_de["subway"] = Lang::l_('Subway');
-		$route_type_de["tourism"] = Lang::l_('Tourist train');
-		$route_type_de["tourism_tram"] = Lang::l_('Tourist tram');
-		$route_type_de["unknown"] = Lang::l_('N/A');
 
 		//calculate travel time
 		$travel_time = ( $this->relation_distance * $this->relation_distance / $this->real_average_speed ) * 60;
 		//calculate average speed		
 		$average_speed = $this->real_average_speed / $this->relation_distance;
 		?>
-			<div class="col-md-6"><b><?php echo Lang::l_('Train Type');?>:</b> <?php echo $route_type_de[$route_type];?></div> 
+			<div class="col-md-6"><b><?php echo Lang::l_('Train Type');?>:</b> <?php echo $route_type;?></div> 
 			<div class="col-md-6"><b><?php echo Lang::l_('Route Length');?>:</b> <?php echo $relation_distance_show;?> km</div> 
 			<div class="col-md-6"><b><?php echo Lang::l_('Travel Time');?>:</b> <?php echo round($travel_time);?> min</div> 
 			<div class="col-md-6"><b><?php echo Lang::l_('Average Speed');?>:</b> <?php echo round($average_speed);?> km/h</div>
@@ -1851,21 +1758,20 @@ elseif ( isset($this->refresh_success) && $this->refresh_success == true )
 
 		// add route to database
 	 	$query = "SELECT id FROM osm_train_details WHERE id=" . mysqli_real_escape_string($con, $this->id);
-	 	$result = mysqli_query($con, $query) or print(mysqli_error($con));
+	 	$result = @mysqli_query($con, $query) or log_error(mysqli_error($con));
 	 	while ( $row = @mysqli_fetch_array($result) )
 	 	{
 	 		$mysql_id = $row["id"];
 	 	}
 	 	if ( isset($mysql_id) && $mysql_id == $this->id )
 	 	{
-	 		$query2 = "UPDATE osm_train_details SET id=" . mysqli_real_escape_string($con, $this->id) . ", ref='" . mysqli_real_escape_string($con, $this->relation_tags["ref"]) . "', `from`='" . mysqli_real_escape_string($con, $this->relation_tags["from"]) . "', `to`='" . mysqli_real_escape_string($con, $this->relation_tags["to"]) . "', operator='" . mysqli_real_escape_string($con, $this->relation_tags["operator"]) . "', length='" . mysqli_real_escape_string($con, $this->relation_distance) . "', time='" . mysqli_real_escape_string($con, $travel_time) . "', ave_speed='" . mysqli_real_escape_string($con, $average_speed) . "',max_speed='" . mysqli_real_escape_string($con, $this->maxspeed_max) . "',train='" . mysqli_real_escape_string($con, $this->train->ref) . "', date='" . mysqli_real_escape_string($con, $this->filemtime) . "' WHERE id=" . mysqli_real_escape_string($con, $this->id) . ";";
+	 		$query2 = "UPDATE osm_train_details SET id=" . mysqli_real_escape_string($con, $this->id) . ", ref='" . mysqli_real_escape_string($con, $this->relation_tags["ref"]) . "', ref_colour='" . mysqli_real_escape_string($con, $this->relation_tags["colour"]) . "', ref_textcolour='" . mysqli_real_escape_string($con, $this->relation_tags["text_colour"]) . "', `from`='" . mysqli_real_escape_string($con, $this->relation_tags["from"]) . "', `to`='" . mysqli_real_escape_string($con, $this->relation_tags["to"]) . "', operator='" . mysqli_real_escape_string($con, $this->relation_tags["operator"]) . "', route='" . mysqli_real_escape_string($con, $this->relation_tags["route"]) . "', service='" . mysqli_real_escape_string($con, $this->relation_tags["service"]) . "', length='" . mysqli_real_escape_string($con, $this->relation_distance) . "', time='" . mysqli_real_escape_string($con, $travel_time) . "', ave_speed='" . mysqli_real_escape_string($con, $average_speed) . "',max_speed='" . mysqli_real_escape_string($con, $this->maxspeed_max) . "',train='" . mysqli_real_escape_string($con, $this->train->ref) . "', date='" . mysqli_real_escape_string($con, $this->filemtime) . "' WHERE id=" . mysqli_real_escape_string($con, $this->id) . ";";
 	 	}
 	 	else
 	 	{
-	 		$query2 = "INSERT INTO osm_train_details VALUES( '" . mysqli_real_escape_string($con, $this->id) . "','" . mysqli_real_escape_string($con, $this->relation_tags["ref"]) . "','" . mysqli_real_escape_string($con, $this->relation_tags["from"]) . "','" . mysqli_real_escape_string($con, $this->relation_tags["to"]) . "', '" . mysqli_real_escape_string($con, $this->relation_tags["operator"]) . "','" . mysqli_real_escape_string($con, $this->relation_distance) . "','" . mysqli_real_escape_string($con, $travel_time) . "', '" . mysqli_real_escape_string($con, $average_speed) . "','" . mysqli_real_escape_string($con, $this->maxspeed_max) . "','" . mysqli_real_escape_string($con, $this->train->ref) . "','" . mysqli_real_escape_string($con, $this->filemtime) . "');";	 
+	 		$query2 = "INSERT INTO osm_train_details VALUES( '" . mysqli_real_escape_string($con, $this->id) . "','" . mysqli_real_escape_string($con, $this->relation_tags["ref"]). "','" . mysqli_real_escape_string($con, $this->relation_tags["colour"]) . "','" . mysqli_real_escape_string($con, $this->relation_tags["text_colour"]) . "','" . mysqli_real_escape_string($con, $this->relation_tags["from"]) . "','" . mysqli_real_escape_string($con, $this->relation_tags["to"]) . "', '" . mysqli_real_escape_string($con, $this->relation_tags["operator"]) . "', '" . mysqli_real_escape_string($con, $this->relation_tags["route"]) . "', '" . mysqli_real_escape_string($con, $this->relation_tags["service"]) . "','" . mysqli_real_escape_string($con, $this->relation_distance) . "','" . mysqli_real_escape_string($con, $travel_time) . "', '" . mysqli_real_escape_string($con, $average_speed) . "','" . mysqli_real_escape_string($con, $this->maxspeed_max) . "','" . mysqli_real_escape_string($con, $this->train->ref) . "','" . mysqli_real_escape_string($con, $this->filemtime) . "');";	 
 	 	}
-
-	 	mysqli_query($con,$query2) or print(mysqli_error($con));
+	 	@mysqli_query($con,$query2) or log_error(mysqli_error($con));
 	}
 	
 	/**
@@ -2707,6 +2613,168 @@ elseif ( isset($this->refresh_success) && $this->refresh_success == true )
 		}
 
 		return $result;
+	}
+
+	/**
+	 * Function to show and style ref
+	 * @param string $ref route ref
+	 * @param string $route route type
+	 * @param string $service service type
+	 * @param string $colour background colour
+	 * @param string $textcolour text colour
+	 */	
+	static function showRef($ref="", $route="", $service="", $colour="", $text_colour="")
+	{
+		//get train class
+		if ( $route == "train" )
+		{
+			if ( $service )
+			{
+				if ( $service == "high_speed" || $service == "long_distance" || $service == "night" || $service == "car" || $service == "car_shuttle" )
+				{
+					$css_ref_class = "ref_long_distance";
+				}
+				elseif ( $service == "regional" || $service == "commuter" )
+				{
+					$css_ref_class = "ref_regional";
+				}
+				elseif ( $service == "tourism")
+				{
+					$css_ref_class = "ref_tourism";
+				}
+			}
+			else
+			{
+				$css_ref_class = "ref_regional";
+			}
+		}
+		elseif ( $route == "light_rail" )
+		{
+			$css_ref_class = "ref_light_rail";
+			if ( $service == "tourism")
+			{
+				$css_ref_class = "ref_tourism";
+			}
+		}
+		elseif ( $route == "subway" )
+		{
+			$css_ref_class = "ref_light_rail";
+			if ( $service == "tourism")
+			{
+				$css_ref_class = "ref_tourism";
+			}
+		}
+		else
+		{
+			$css_ref_class = "ref_tram";
+			if ( $service == "tourism")
+			{
+				$css_ref_class = "ref_tourism_tram";
+			}
+		}
+		
+		//set ref to N/A, when not available
+		if ( !$ref )
+		{
+			$ref = "N/A";
+		}
+		
+		//get css style for route ref
+		$css_ref_style = "";
+		if ( $colour )
+		{
+			$css_ref_style .= "background-color:" . $colour . ";";
+		}
+		if ( $text_colour )
+		{
+			$css_ref_style .= "color:" . $text_colour . ";";
+		}
+		
+		return '<span class="' . $css_ref_class . '" style="' . $css_ref_style . '">' . $ref . '</span>';
+		
+	}
+
+	/**
+	 * Function to get route type
+	 * @param string $route route type
+	 * @param string $service service type
+	 */	
+	static function getRouteType($route,$service="")
+	{
+		$route_type_lang = Array(
+		"highspeed"     => Lang::l_('Highspeed Train'),
+		"long_distance" => Lang::l_('Long Distance Train'),
+		"car"           => Lang::l_('Motorail Train'),
+		"car_shuttle"   => Lang::l_('Car Shuttle Train'),
+		"night"         => Lang::l_('Night Train'),
+		"regional"      => Lang::l_('Regional Train'),
+		"commuter"      => Lang::l_('Commuter Train'),
+        "train"         => Lang::l_('Unspecified Train'),
+        "light_rail"    => Lang::l_('Light Rail'),
+		"tram"			=> Lang::l_('Tram'),
+		"subway"		=> Lang::l_('Subway'),
+		"tourism"		=> Lang::l_('Tourist Train'),
+		"tourism_tram"  => Lang::l_('Tourist Tram'),
+		"unknown"       => Lang::l_('N/A'),
+		);
+		
+		if ( $route == "train" )
+		{
+			$route_type = "train";
+			if ( $service == "high_speed" )
+			{
+				$route_type = "high_speed";
+			}
+			elseif ( $service == "long_distance" )
+			{
+				$route_type = "long_distance";
+			}
+			elseif ( $service == "night" )
+			{
+				$route_type = "night";
+			}
+			elseif ( $service == "car" )
+			{
+				$route_type = "car";
+			}
+			elseif ( $service == "car_shuttle" )
+			{
+				$route_type = "car_shuttle";
+			}
+			elseif ( $service == "regional" )
+			{
+				$route_type = "regional";
+			}
+			elseif ( $service == "commuter" )
+			{
+				$route_type = "commuter";
+			}
+			elseif ( $service == "tourism")
+			{
+				$route_type = "tourism";
+			}
+		}
+		elseif ( $route == "tram" )
+		{
+			$route_type = "tram";
+			if ( $service == "tourism")
+			{
+				$route_type = "tourism_tram";
+			}
+		}
+		elseif ( $service == "tourism")
+		{
+			$route_type = "tourism";
+		}
+		elseif ( $route == "light_rail" )
+		{
+			$route_type = "light_rail";
+		}
+		elseif ( $route == "subway" )
+		{
+			$route_type = "subway";
+		}
+		return $route_type_lang[$route_type];
 	}
 }
 ?>

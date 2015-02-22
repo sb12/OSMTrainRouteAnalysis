@@ -218,107 +218,15 @@ Class Search
 			<?php
 			return;
 		}
-		$route_type["high_speed"] = Lang::l_('Highspeed train');
-		$route_type["long_distance"] = Lang::l_('Long distance train');
-		$route_type["car"] = Lang::l_('Motorail Train');
-		$route_type["car_shuttle"] = Lang::l_('Car Shuttle Train');
-		$route_type["night"] = Lang::l_('Night Train');
-		$route_type["regional"] = Lang::l_('Regional train');
-		$route_type["commuter"] = Lang::l_('Commuter train');
-		$route_type["light_rail"] = Lang::l_('Light Rail');
-		$route_type["tram"] = Lang::l_('Tram');
-		$route_type["subway"] = Lang::l_('Subway');
-		$route_type["tourism"] = Lang::l_('Tourist train');
-		$route_type["tourism_tram"] = Lang::l_('Tourist tram');
-		$route_type["unknown"] = Lang::l_('N/A');
 
 		// Obtain a list of columns
 		foreach ($this->result as $key => $row) 
 		{
-
-		//build html output
-		
-			//build ref style
-			$css_ref_style = "";
-			if ( isset($row["color"]) )
+			//add missing variables
+			if(!isset($row["service"]))
 			{
-				$css_ref_style .= "background-color:" . $row["color"] . ";";
+				$row["service"]="";
 			}
-			elseif ( isset($row["colour"]) )
-			{
-				$css_ref_style .= "background-color:" . $row["colour"] . ";";
-			}
-			if ( isset($row["text_color"]) )
-			{
-				$css_ref_style .= "color:" . $row["text_color"] . ";";
-			}
-			elseif ( isset($row["text_colour"]) )
-			{
-				$css_ref_style .= "color:" . $row["text_colour"] . ";";
-			}
-			elseif ( isset($row["colour:text"]) )
-			{
-				$css_ref_style .= "color:" . $row["colour:text"] . ";";
-			}
-			
-			if ( $row["route"] == "tram")
-			{
-				$route_html = $route_type["tram"];
-				$css_ref_class = "ref_tram";
-				if ( isset($row["service"]) && $row["service"] == "tourism")
-				{
-					$route_html = $route_type["tourism_tram"];
-					$css_ref_class = "ref_tourism_tram";
-				}
-			}
-			elseif ( $row["route"] == "light_rail")
-			{
-				$route_html = $route_type["light_rail"];
-				$css_ref_class = "ref_light_rail";
-			}
-			elseif ( $row["route"] == "subway")
-			{
-				$route_html = $route_type["subway"];
-				$css_ref_class = "ref_light_rail";
-			}
-			else
-			{
-				if ( isset($row["service"]) && isset($route_type[$row["service"]]) )
-				{
-					$route_html = $route_type[$row["service"]];
-					if ( $row["service"] == "regional" || $row["service"] == "commuter" )
-					{
-						$css_ref_class = "ref_regional";
-					}
-					elseif ( $row["service"] == "tourism")
-					{
-						$css_ref_class = "ref_tourism";
-					}
-					else
-					{
-			
-						$css_ref_class = "ref_long_distance";
-					}
-				}
-				else
-				{
-					$route_html = $route_type["unknown"];
-					$css_ref_class = "ref_regional";
-				}
-			}
-			
-			$html = "<a href=\"?id=".$row["id"]."&train=".urlencode(htmlentities($this->variables["train"]))."\" class=\"list-group-item\">\n";
-
-			$html .= "<h4>";
-			if ( isset($row["ref"]) )
-			{
-				$html .= '<span class="' . $css_ref_class . '" style="' . $css_ref_style . '">' . $row["ref"] . '</span> ';
-			}
-			else
-			{
-				$html .= '<span class="' . $css_ref_class . '">' . Lang::l_("Unknown") . '</span> ';
-			}
-
 			if ( !isset($row["from"]) )
 			{
 				$row["from"] = "";
@@ -331,13 +239,43 @@ Class Search
 			{
 				$row["via"] = "";
 			}
+			//set colour
+			if ( isset($row["color"]) )
+			{
+				$row["colour"]=$row["color"];
+			}
+			elseif ( !isset($row["colour"]) )
+			{
+				$row["colour"]="";
+			}
+			if ( isset($row["text_color"]) )
+			{
+				$row["text_colour"]=$row["text_color"];
+			}
+			elseif ( isset($row["colour:text"]) )
+			{
+				$row["text_colour"]=$row["colour:text"];
+			}
+			elseif ( !isset($row["text_colour"]) )
+			{
+				$row["text_colour"]="";
+			}
+			
+			//build html output
+			
+			$html = "<a href=\"?id=".$row["id"]."&train=".urlencode(htmlentities($this->variables["train"]))."\" class=\"list-group-item\">\n";
+
+			$html .= "<h4>";
+			
+			$html .= Route::showRef($row["ref"], $row["route"], $row["service"], $row["colour"], $row["text_colour"]) . " ";
+
 			
 			$html .= Route::showfromviato($row["to"],$row["from"],$row["via"]);
 			
 			$html .= "</h4>\n";
 			$html .= "<span>";
 
-			$html .= $route_html;
+			$html .= Route::getRouteType($row["route"], $row["service"]);
 			if ( isset($row["network"]) )
 			{
 				$html .= " / " . $row["network"];

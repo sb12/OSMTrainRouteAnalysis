@@ -246,9 +246,10 @@ function showRoutes($amount = 50)
 		//get Train
 		unset($train);
 		$train = new Train($row["train"]);
+		
 		?>
 						<tr>
-							<td><a href="?id=<?php echo $row["id"];?>&train=<?php echo $train->ref;?>" title="<?php echo Lang::l_('Show Route');?>"><?php echo $row["ref"];?></a></td>
+							<td><a href="?id=<?php echo $row["id"];?>&train=<?php echo $train->ref;?>" title="<?php echo Lang::l_('Show Route');?>"><?php echo Route::showRef($row["ref"],$row["route"],$row["service"],$row["ref_colour"],$row["ref_textcolour"]); ?></a></td>
 							<td><?php echo $row["from"];?></td>
 							<td><?php echo $row["to"];?></td>
 							<td><?php echo $row["operator"];?></td>
