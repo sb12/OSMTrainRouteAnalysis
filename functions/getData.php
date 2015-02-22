@@ -1875,8 +1875,6 @@ elseif ( isset($this->refresh_success) && $this->refresh_success == true )
 	{
 		$max_before = 0;
 		$this->maxspeed_array[-1] = Array(0, 0, "exact");
-		
-
 
 		//handle stops and add them to maxspeed matrix
 		if ( isset($this->relation_stops) )
@@ -1919,7 +1917,7 @@ elseif ( isset($this->refresh_success) && $this->refresh_success == true )
 					$i++;
 				}
 			}
-			
+
 			//sort stops in array
 			if ( isset($this->stop_position) )
 			{
@@ -2006,8 +2004,6 @@ elseif ( isset($this->refresh_success) && $this->refresh_success == true )
 		//get points where train has to start braking/accelerating
 		$brake_array = $this->getBrakingPoints($exmaxarray, $this->train);
 		$acc_array = $this->getAccelerationPoints($exmaxarray, $this->train);
-		
-		
 		$i = 0;
 		$way_total = 0;
 		$brake = false;
@@ -2635,12 +2631,6 @@ elseif ( isset($this->refresh_success) && $this->refresh_success == true )
 			// only use nodes that are less than 500m away
 			if ( $node_diff < 0.5 && $node_diff > 0 )
 			{
-				// use this node when it is a stop position
-				if ( isset($this->node[$nodeid]["public_transport"]) && $this->node[$nodeid]["public_transport"] == "stop_position" )
-				{
-					return $nodeid;
-				}
-				
 				// add node to array
 				$nodes_dis[$nodeid] = $node_diff;
 			}
@@ -2648,15 +2638,25 @@ elseif ( isset($this->refresh_success) && $this->refresh_success == true )
 		
 		//sort array
 		asort($nodes_dis);
-		
-		//use nearest node
+
+		//use nearest found stop position
 		foreach ( $nodes_dis as $nodeid => $nodedis )
 		{
-			$id = $nodeid;
+			$flipped_stops = array_flip($this->relation_stops);
+			// use this node when it is a stop position
+			if ( isset($this->node[$nodeid]["public_transport"]) && $this->node[$nodeid]["public_transport"] == "stop_position" && !isset($flipped_stops[$ref]))
+			{
+				return $nodeid;
+			}
+		}		
+		
+		// no stop position found
+		foreach ( $nodes_dis as $nodeid => $nodedis )
+		{
+			return $nodeid;
 			break;
 		}
 		
-		return $id;
 	}
 	
 	/**
