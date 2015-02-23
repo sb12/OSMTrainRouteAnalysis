@@ -160,13 +160,20 @@ function showRoutes($amount = 50)
 	
 	//get number of entries
 	$query = "SELECT COUNT(id) FROM osm_train_details";
-	$result = mysqli_query($con, $query) or return_error("mysql", "message", $con);
-	$row = $result->fetch_row();
-	$count = $row[0];
-	
-	$lastpage = ceil( $count / $amount );
-	$start = $amount * ( $page - 1 );
-
+	$result = @$con->query($query) or log_error(@$con->error);
+	if($result)
+	{
+		$row = $result->fetch_row();
+		$count = $row[0];
+		
+		$lastpage = ceil( $count / $amount );
+		$start = $amount * ( $page - 1 );
+	}
+	else
+	{
+		$start = 0;
+		$lastpage = "?";
+	}
 	//get order by and check if valid
 	if ( isset($_GET["order_by"]) )
 	{
@@ -236,30 +243,43 @@ function showRoutes($amount = 50)
 	<?php 
 
 	//generate and execute query
-	$query = "SELECT * FROM osm_train_details ORDER BY `".@mysqli_real_escape_string($con, $order_by)."` ".mysqli_real_escape_string($con, $dir)." LIMIT ".$start.",".$amount;
-	$result = mysqli_query($con, $query) or return_error("mysql", "message", $con);
+	$query = "SELECT * FROM osm_train_details ORDER BY `" . @$con->real_escape_string($order_by) . "` " . @$con->real_escape_string($dir) . " LIMIT " . $start . "," . $amount;
+	$result = @$con->query($query);
 	
-	//show routes 
-	while ( $row = @mysqli_fetch_array($result) )
+	if ($result)
 	{
-		$mysql_id = $row["id"];
-		//get Train
-		unset($train);
-		$train = new Train($row["train"]);
-		
+		//show routes 
+		while ( $row = @$result->fetch_array() )
+		{
+			$mysql_id = $row["id"];
+			//get Train
+			unset($train);
+			$train = new Train($row["train"]);
+			
+			?>
+							<tr>
+								<td><a href="?id=<?php echo $row["id"];?>&train=<?php echo $train->ref;?>" title="<?php echo Lang::l_('Show Route');?>"><?php echo Route::showRef($row["ref"],$row["route"],$row["service"],$row["ref_colour"],$row["ref_textcolour"]); ?></a></td>
+								<td><?php echo $row["from"];?></td>
+								<td><?php echo $row["to"];?></td>
+								<td><?php echo $row["operator"];?></td>
+								<td class="nowrap"><?php echo round($row["length"], 1);?> km</td>
+								<td class="nowrap"><?php echo round($row["time"], 0);?> min</td>
+								<td class="nowrap"><?php echo round($row["ave_speed"]);?> km/h</td>
+								<td class="nowrap"><?php echo round($row["max_speed"]);?> km/h</td>
+								<td style="width:150px"><div style="height:50px;width:150px;display:inline-block;background-image:url('img/trains/<?php echo $train->image;?>');background-repeat:no-repeat;background-position:right;background-size:auto 50px" title="<?php echo $train->name;?>"></div></td>
+							</tr>
+			<?php 
+		}
+	}
+	else
+	{
 		?>
-						<tr>
-							<td><a href="?id=<?php echo $row["id"];?>&train=<?php echo $train->ref;?>" title="<?php echo Lang::l_('Show Route');?>"><?php echo Route::showRef($row["ref"],$row["route"],$row["service"],$row["ref_colour"],$row["ref_textcolour"]); ?></a></td>
-							<td><?php echo $row["from"];?></td>
-							<td><?php echo $row["to"];?></td>
-							<td><?php echo $row["operator"];?></td>
-							<td class="nowrap"><?php echo round($row["length"], 1);?> km</td>
-							<td class="nowrap"><?php echo round($row["time"], 0);?> min</td>
-							<td class="nowrap"><?php echo round($row["ave_speed"]);?> km/h</td>
-							<td class="nowrap"><?php echo round($row["max_speed"]);?> km/h</td>
-							<td style="width:150px"><div style="height:50px;width:150px;display:inline-block;background-image:url('img/trains/<?php echo $train->image;?>');background-repeat:no-repeat;background-position:right;background-size:auto 50px" title="<?php echo $train->name;?>"></div></td>
-						</tr>
-		<?php 
+							<tr>
+								<td colspan="9">
+									<?php return_error("mysql", "message", $con);?>
+								</td>
+							</tr>
+		<?php
 	}
 	?>
 					</tbody>
@@ -373,7 +393,14 @@ function connectToDB()
 	require 'functions/mysql_settings.php';
 	
 	//open connection
-	$con = mysqli_connect($mysql_host, $mysql_user, $mysql_password, $mysql_database) or return_error("mysql", "message", $con);
+	$con = @new mysqli($mysql_host, $mysql_user, $mysql_password, $mysql_database);
+	
+	//log error when connection failed
+	if($con->connect_errno)
+	{
+		log_error($con->connect_error);
+	}
+	
 	
 	//return connection
 	return $con;
@@ -396,9 +423,9 @@ function return_error($value, $type = "message", $dbcon = "")
 	$errormsg["no_route"] = Lang::l_("error_noroute");
 	$errormsg["mysql"] = Lang::l_("error_mysql");
 
-	if ( $value == "mysql" ) // add mysql error message (only working when dbcon is set)
+	if ( $value == "mysql" ) // log mysql error message (only working when dbcon is set)
 	{
-		$errormsg["mysql"] .= mysqli_error($dbcon);
+		log_error(@$dbcon->error);
 	}
 	//unknown error message
 	if ( !isset($errormsg[$value]) )
@@ -446,12 +473,16 @@ function return_error($value, $type = "message", $dbcon = "")
 
 /**
  * Write error message to log
+ * @param String msg error message which should be logged
  */
 function log_error($msg)
 {
-	$fp = fopen("errors.log", "a");
-	fwrite($fp, date("Y-m-d H:i") . " " . $msg . "\n");
-	fclose($fp);
+	if($msg) // only log error when error message exists
+	{
+		$fp = fopen("errors.log", "a");
+		fwrite($fp, date("Y-m-d H:i") . " " . $msg . "\n");
+		fclose($fp);
+	}
 }
 
 function showAbout()

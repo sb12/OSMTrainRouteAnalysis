@@ -586,7 +586,7 @@ Class Route
 			//connect to database
 			$con = connectToDB();
 			// delete id from database
-			@mysqli_query($con, "DELETE FROM osm_train_details WHERE `id` = ".mysqli_real_escape_string($con,$this->id)) or print(mysqli_error($con) );
+			@$con->query("DELETE FROM osm_train_details WHERE `id` = " . @$con->real_escape_string($this->id)) or log_error(@$con->error);
 
 			// show error
 			return_error("no_route", "full");
@@ -1757,21 +1757,21 @@ elseif ( isset($this->refresh_success) && $this->refresh_success == true )
 		$con = connectToDB();
 
 		// add route to database
-	 	$query = "SELECT id FROM osm_train_details WHERE id=" . mysqli_real_escape_string($con, $this->id);
-	 	$result = @mysqli_query($con, $query) or log_error(mysqli_error($con));
-	 	while ( $row = @mysqli_fetch_array($result) )
+	 	$query = "SELECT id FROM osm_train_details WHERE id=" . @$con->real_escape_string($this->id);
+	 	$result = @$con->query($query) or log_error(@$con->error);
+	 	while ( $row = @$result->fetch_array() )
 	 	{
 	 		$mysql_id = $row["id"];
 	 	}
 	 	if ( isset($mysql_id) && $mysql_id == $this->id )
 	 	{
-	 		$query2 = "UPDATE osm_train_details SET id=" . mysqli_real_escape_string($con, $this->id) . ", ref='" . mysqli_real_escape_string($con, $this->relation_tags["ref"]) . "', ref_colour='" . mysqli_real_escape_string($con, $this->relation_tags["colour"]) . "', ref_textcolour='" . mysqli_real_escape_string($con, $this->relation_tags["text_colour"]) . "', `from`='" . mysqli_real_escape_string($con, $this->relation_tags["from"]) . "', `to`='" . mysqli_real_escape_string($con, $this->relation_tags["to"]) . "', operator='" . mysqli_real_escape_string($con, $this->relation_tags["operator"]) . "', route='" . mysqli_real_escape_string($con, $this->relation_tags["route"]) . "', service='" . mysqli_real_escape_string($con, $this->relation_tags["service"]) . "', length='" . mysqli_real_escape_string($con, $this->relation_distance) . "', time='" . mysqli_real_escape_string($con, $travel_time) . "', ave_speed='" . mysqli_real_escape_string($con, $average_speed) . "',max_speed='" . mysqli_real_escape_string($con, $this->maxspeed_max) . "',train='" . mysqli_real_escape_string($con, $this->train->ref) . "', date='" . mysqli_real_escape_string($con, $this->filemtime) . "' WHERE id=" . mysqli_real_escape_string($con, $this->id) . ";";
+	 		$query2 = "UPDATE osm_train_details SET id=" . @$con->real_escape_string($this->id) . ", ref='" . @$con->real_escape_string($this->relation_tags["ref"]) . "', ref_colour='" . @$con->real_escape_string($this->relation_tags["colour"]) . "', ref_textcolour='" . @$con->real_escape_string($this->relation_tags["text_colour"]) . "', `from`='" . @$con->real_escape_string($this->relation_tags["from"]) . "', `to`='" . @$con->real_escape_string($this->relation_tags["to"]) . "', operator='" . @$con->real_escape_string($this->relation_tags["operator"]) . "', route='" . @$con->real_escape_string($this->relation_tags["route"]) . "', service='" . @$con->real_escape_string($this->relation_tags["service"]) . "', length='" . @$con->real_escape_string($this->relation_distance) . "', time='" . @$con->real_escape_string($travel_time) . "', ave_speed='" . @$con->real_escape_string($average_speed) . "',max_speed='" . @$con->real_escape_string($this->maxspeed_max) . "',train='" . @$con->real_escape_string($this->train->ref) . "', date='" . @$con->real_escape_string($this->filemtime) . "' WHERE id=" . @$con->real_escape_string($this->id) . ";";
 	 	}
 	 	else
 	 	{
-	 		$query2 = "INSERT INTO osm_train_details VALUES( '" . mysqli_real_escape_string($con, $this->id) . "','" . mysqli_real_escape_string($con, $this->relation_tags["ref"]). "','" . mysqli_real_escape_string($con, $this->relation_tags["colour"]) . "','" . mysqli_real_escape_string($con, $this->relation_tags["text_colour"]) . "','" . mysqli_real_escape_string($con, $this->relation_tags["from"]) . "','" . mysqli_real_escape_string($con, $this->relation_tags["to"]) . "', '" . mysqli_real_escape_string($con, $this->relation_tags["operator"]) . "', '" . mysqli_real_escape_string($con, $this->relation_tags["route"]) . "', '" . mysqli_real_escape_string($con, $this->relation_tags["service"]) . "','" . mysqli_real_escape_string($con, $this->relation_distance) . "','" . mysqli_real_escape_string($con, $travel_time) . "', '" . mysqli_real_escape_string($con, $average_speed) . "','" . mysqli_real_escape_string($con, $this->maxspeed_max) . "','" . mysqli_real_escape_string($con, $this->train->ref) . "','" . mysqli_real_escape_string($con, $this->filemtime) . "');";	 
+	 		$query2 = "INSERT INTO osm_train_details VALUES( '" . @$con->real_escape_string($this->id) . "','" . @$con->real_escape_string($this->relation_tags["ref"]). "','" . @$con->real_escape_string($this->relation_tags["colour"]) . "','" . @$con->real_escape_string($this->relation_tags["text_colour"]) . "','" . @$con->real_escape_string($this->relation_tags["from"]) . "','" . @$con->real_escape_string($this->relation_tags["to"]) . "', '" . @$con->real_escape_string($this->relation_tags["operator"]) . "', '" . @$con->real_escape_string($this->relation_tags["route"]) . "', '" . @$con->real_escape_string($this->relation_tags["service"]) . "','" . @$con->real_escape_string($this->relation_distance) . "','" . @$con->real_escape_string($travel_time) . "', '" . @$con->real_escape_string($average_speed) . "','" . @$con->real_escape_string($this->maxspeed_max) . "','" . @$con->real_escape_string($this->train->ref) . "','" . @$con->real_escape_string($this->filemtime) . "');";	 
 	 	}
-	 	@mysqli_query($con,$query2) or log_error(mysqli_error($con));
+	 	@$con->query($query2) or log_error(@$con->error);
 	}
 	
 	/**
