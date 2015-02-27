@@ -904,8 +904,11 @@ Class Route
 			}
 		}
 		//add last value to maxspeed_array:
-		$maxspeed_array[] = Array($distance_before, $maxspeed_before, $exact);
-		$maxspeed_array[] = Array(0, 0, $exact);
+		if($distance_before && $maxspeed_before)
+		{
+			$maxspeed_array[] = Array($distance_before, $maxspeed_before, $exact);
+		}
+		$maxspeed_array[] = Array(0, 0, true);
 
 
 		$this->maxspeed_array = $maxspeed_array;
@@ -1515,6 +1518,8 @@ if ( isset($this->refresh_success) && $this->refresh_success == false )
 {
 	?>
 	<div class="alert alert-danger alert-dismissable fade in" role="alert" id="alert">
+		<span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+		<span class="sr-only">Error:</span>
 		<?php echo Lang::l_("Route Data could not be updated from Overpass API.")?>
 		<button type="button" class="close" data-dismiss="alert" aria-label="Close">
   			<span aria-hidden="true">&times;</span>
@@ -1526,7 +1531,23 @@ elseif ( isset($this->refresh_success) && $this->refresh_success == true )
 {
 	?>
 	<div class="alert alert-success alert-dismissable fade in" role="alert" id="alert">
+		<span class="glyphicon glyphicon-ok-sign" aria-hidden="true"></span>
+		<span class="sr-only">Success:</span>
 		<?php echo Lang::l_("Route Data was successfully updated from Overpass API.")?>
+		<button type="button" class="close" data-dismiss="alert" aria-label="Close">
+  			<span aria-hidden="true">&times;</span>
+		</button>
+	</div>
+	<?php 
+}
+ 
+if (  $this->relation_distance == 0 )
+{
+	?>
+	<div class="alert alert-warning alert-dismissable fade in" role="alert" id="alert_noways">
+		<span class="glyphicon glyphicon-alert" aria-hidden="true"></span>
+		<span class="sr-only">Warning:</span>
+		<?php echo Lang::l_("We couldn't find any ways for this route. Please check the OpenStreetMap data for errors.")?>
 		<button type="button" class="close" data-dismiss="alert" aria-label="Close">
   			<span aria-hidden="true">&times;</span>
 		</button>
@@ -1562,9 +1583,17 @@ elseif ( isset($this->refresh_success) && $this->refresh_success == true )
 		}
 
 		//calculate travel time
-		$travel_time = ( $this->relation_distance * $this->relation_distance / $this->real_average_speed ) * 60;
-		//calculate average speed		
-		$average_speed = $this->real_average_speed / $this->relation_distance;
+		$travel_time = 0;
+		if($this->real_average_speed > 0)
+		{
+			$travel_time = ( $this->relation_distance * $this->relation_distance / $this->real_average_speed ) * 60;
+		}
+		//calculate average speed	
+		$average_speed = 0;
+		if($this->relation_distance > 0)
+		{
+			$average_speed = $this->real_average_speed / $this->relation_distance;
+		}	
 		?>
 			<div class="col-md-6"><b><?php echo Lang::l_('Train Type');?>:</b> <?php echo $route_type;?></div> 
 			<div class="col-md-6"><b><?php echo Lang::l_('Route Length');?>:</b> <?php echo $relation_distance_show;?> km</div> 
@@ -1757,21 +1786,31 @@ elseif ( isset($this->refresh_success) && $this->refresh_success == true )
 		$con = connectToDB();
 
 		// add route to database
-	 	$query = "SELECT id FROM osm_train_details WHERE id=" . @$con->real_escape_string($this->id);
-	 	$result = @$con->query($query) or log_error(@$con->error);
-	 	while ( $row = @$result->fetch_array() )
-	 	{
-	 		$mysql_id = $row["id"];
-	 	}
-	 	if ( isset($mysql_id) && $mysql_id == $this->id )
-	 	{
-	 		$query2 = "UPDATE osm_train_details SET id=" . @$con->real_escape_string($this->id) . ", ref='" . @$con->real_escape_string($this->relation_tags["ref"]) . "', ref_colour='" . @$con->real_escape_string($this->relation_tags["colour"]) . "', ref_textcolour='" . @$con->real_escape_string($this->relation_tags["text_colour"]) . "', `from`='" . @$con->real_escape_string($this->relation_tags["from"]) . "', `to`='" . @$con->real_escape_string($this->relation_tags["to"]) . "', operator='" . @$con->real_escape_string($this->relation_tags["operator"]) . "', route='" . @$con->real_escape_string($this->relation_tags["route"]) . "', service='" . @$con->real_escape_string($this->relation_tags["service"]) . "', length='" . @$con->real_escape_string($this->relation_distance) . "', time='" . @$con->real_escape_string($travel_time) . "', ave_speed='" . @$con->real_escape_string($average_speed) . "',max_speed='" . @$con->real_escape_string($this->maxspeed_max) . "',train='" . @$con->real_escape_string($this->train->ref) . "', date='" . @$con->real_escape_string($this->filemtime) . "' WHERE id=" . @$con->real_escape_string($this->id) . ";";
-	 	}
-	 	else
-	 	{
-	 		$query2 = "INSERT INTO osm_train_details VALUES( '" . @$con->real_escape_string($this->id) . "','" . @$con->real_escape_string($this->relation_tags["ref"]). "','" . @$con->real_escape_string($this->relation_tags["colour"]) . "','" . @$con->real_escape_string($this->relation_tags["text_colour"]) . "','" . @$con->real_escape_string($this->relation_tags["from"]) . "','" . @$con->real_escape_string($this->relation_tags["to"]) . "', '" . @$con->real_escape_string($this->relation_tags["operator"]) . "', '" . @$con->real_escape_string($this->relation_tags["route"]) . "', '" . @$con->real_escape_string($this->relation_tags["service"]) . "','" . @$con->real_escape_string($this->relation_distance) . "','" . @$con->real_escape_string($travel_time) . "', '" . @$con->real_escape_string($average_speed) . "','" . @$con->real_escape_string($this->maxspeed_max) . "','" . @$con->real_escape_string($this->train->ref) . "','" . @$con->real_escape_string($this->filemtime) . "');";	 
-	 	}
-	 	@$con->query($query2) or log_error(@$con->error);
+		$query = "SELECT id FROM osm_train_details WHERE id=" . @$con->real_escape_string($this->id);
+		$result = @$con->query($query) or log_error(@$con->error);
+		while ( $row = @$result->fetch_array() )
+		{
+			$mysql_id = $row["id"];
+		}
+		if ( isset($mysql_id) && $mysql_id == $this->id )
+		{
+			if ( $this->relation_distance > 0 ) //only update when route includes ways
+			{
+				$query2 = "UPDATE osm_train_details SET id=" . @$con->real_escape_string($this->id) . ", ref='" . @$con->real_escape_string($this->relation_tags["ref"]) . "', ref_colour='" . @$con->real_escape_string($this->relation_tags["colour"]) . "', ref_textcolour='" . @$con->real_escape_string($this->relation_tags["text_colour"]) . "', `from`='" . @$con->real_escape_string($this->relation_tags["from"]) . "', `to`='" . @$con->real_escape_string($this->relation_tags["to"]) . "', operator='" . @$con->real_escape_string($this->relation_tags["operator"]) . "', route='" . @$con->real_escape_string($this->relation_tags["route"]) . "', service='" . @$con->real_escape_string($this->relation_tags["service"]) . "', length='" . @$con->real_escape_string($this->relation_distance) . "', time='" . @$con->real_escape_string($travel_time) . "', ave_speed='" . @$con->real_escape_string($average_speed) . "',max_speed='" . @$con->real_escape_string($this->maxspeed_max) . "',train='" . @$con->real_escape_string($this->train->ref) . "', date='" . @$con->real_escape_string($this->filemtime) . "' WHERE id=" . @$con->real_escape_string($this->id) . ";";
+			}
+			else // delete otherwise
+			{
+				$query2 = "DELETE FROM osm_train_details WHERE id=" . @$con->real_escape_string($this->id) . ";";
+			}
+		}
+		else
+		{
+			if ( $this->relation_distance > 0 ) //only add when route includes ways
+			{
+				$query2 = "INSERT INTO osm_train_details VALUES( '" . @$con->real_escape_string($this->id) . "','" . @$con->real_escape_string($this->relation_tags["ref"]). "','" . @$con->real_escape_string($this->relation_tags["colour"]) . "','" . @$con->real_escape_string($this->relation_tags["text_colour"]) . "','" . @$con->real_escape_string($this->relation_tags["from"]) . "','" . @$con->real_escape_string($this->relation_tags["to"]) . "', '" . @$con->real_escape_string($this->relation_tags["operator"]) . "', '" . @$con->real_escape_string($this->relation_tags["route"]) . "', '" . @$con->real_escape_string($this->relation_tags["service"]) . "','" . @$con->real_escape_string($this->relation_distance) . "','" . @$con->real_escape_string($travel_time) . "', '" . @$con->real_escape_string($average_speed) . "','" . @$con->real_escape_string($this->maxspeed_max) . "','" . @$con->real_escape_string($this->train->ref) . "','" . @$con->real_escape_string($this->filemtime) . "');";
+			}	 
+		}
+		@$con->query($query2) or log_error(@$con->error);
 	}
 	
 	/**
@@ -1926,7 +1965,15 @@ elseif ( isset($this->refresh_success) && $this->refresh_success == true )
 		}
 		
 		//merge acceleration and braking points
-		$accbrake_array = array_merge($brake_array, $acc_array);
+		if($brake_array && $acc_array)
+		{
+			$accbrake_array = array_merge($brake_array, $acc_array);
+		}
+		else
+		{
+			$accbrake_array[] = Array(0,0,0,0,"error");
+			log_error("WARNING: Empty Acceleration and Brake Array. Relation ID: " . $this->id );
+		}
 		
 		
 		//sort accbrake array as long as there are still improvements		
@@ -2016,7 +2063,11 @@ elseif ( isset($this->refresh_success) && $this->refresh_success == true )
 			$way_total += $exmaxarray[$i][0];
 			$i++;
 		}
-		return $brake_array;
+		
+		if(isset($brake_array))
+		{
+			return $brake_array;
+		}
 	}
 	
 	/**
@@ -2075,7 +2126,11 @@ elseif ( isset($this->refresh_success) && $this->refresh_success == true )
 			}
 			$i++;
 		}
-		return $acc_array;
+		
+		if(isset($acc_array))
+		{
+			return $acc_array;
+		}
 	}
 	/**
 	 * Recalculates an acceleration way s2 for a speed change v2, when s1 for v1 is known
@@ -2297,6 +2352,12 @@ elseif ( isset($this->refresh_success) && $this->refresh_success == true )
 	 */
 	function showMap()
 	{
+		// only set bounds when bounds are given
+		$fitBounds = ".setView([50, 10], 4)";
+		if($this->min_lat_bounds)
+		{
+			$fitBounds = ".fitBounds([[" . $this->min_lat_bounds . ", " . $this->min_lon_bounds . "], [" . $this->max_lat_bounds . ", " . $this->max_lon_bounds . "]])";
+		}
 		?>
 		<div id="map" class="col-lg-6"></div>
 		<script type="text/javascript">
@@ -2304,9 +2365,9 @@ elseif ( isset($this->refresh_success) && $this->refresh_success == true )
 		/* define bounds */
 		var map = L.map('map', {
 			scrollWheelZoom: false
-		}).fitBounds([[<?php echo $this->min_lat_bounds;?>, <?php echo $this->min_lon_bounds;?>], [<?php echo $this->max_lat_bounds;?>, <?php echo $this->max_lon_bounds;?>]]);
+		})<?php echo $fitBounds;?>;
 
-		/*activate scrollWhellZoom after first focus on the map */
+		/* activate scrollWhellZoom after first focus on the map */
 		map.once('focus', function() 
 		{
 			map.scrollWheelZoom.enable(); 
