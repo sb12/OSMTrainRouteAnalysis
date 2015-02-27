@@ -445,19 +445,21 @@ function return_error($value, $type = "message", $dbcon = "")
 	}
 	?>
 		<p class="alert alert-danger alert-dismissable fade in">
-			<?php echo $errormsg[$value]; ?> 
-			<button type="button" class="close" data-dismiss="alert" aria-label="Close">
-  				<span aria-hidden="true">&times;</span>
-			</button>
+			<span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+			<span class="sr-only">Error:</span>
+			<?php echo $errormsg[$value]; ?>
 	<?php 
 	//show link to update route if necessary
 	if ( $value == "invalid_xml_file" )
 	{
 		?>
-			<a href="?id=<?php echo $route->id;?>&train=<?php echo $route->train->ref;?>&rf=1"><?php echo Lang::l_("Update data");?></a>
+			<a href="?id=<?php echo $route->id;?>&train=<?php echo $route->train->ref;?>&rf=1" class="alert-link"><?php echo Lang::l_("Update data");?></a>
 		<?php 	
 	}
-	?>
+	?> 
+			<button type="button" class="close" data-dismiss="alert" aria-label="Close">
+  				<span aria-hidden="true">&times;</span>
+			</button>
 		</p>
 	<?php
 	if ( $type == "full")
