@@ -1483,6 +1483,8 @@ var startData = [[0,0],<?php
 		}
 			
 	});
+
+	// update labels when window is resized
 	$( window ).resize(function(event,ranges) {
 		updateLabels(plot, stationData, stations);
 		});
@@ -1494,9 +1496,24 @@ var startData = [[0,0],<?php
 			updateLabels(plot, stationData, stations);
 		})
 	}
+
+	// show and hide maxspeed overview
+	$('#show_overview').change(function() 
+	{
+		if ( $('#show_overview:checked').length > 0 )
+		{
+				$('#maxspeed_overview').show();
+		}		
+		else
+		{	
+			for ( i = 0; i < <?php echo $j;?>; i++ )
+			{ 
+				$('#maxspeed_overview').hide();
+			}
+		}
+	});
 	
 	// Add the Flot version string 
-
 	$("#flotversion").prepend('powered by <a href="http://www.flotcharts.org/">Flot ' + $.plot.version + '</a>');
 });
 
@@ -1620,6 +1637,12 @@ if (  $this->relation_distance == 0 )
 				<input type="checkbox" id="maxspeed_labels" checked="checked" aria-label="..."/>
 				</span>
 				<label for="maxspeed_labels" class="input-group-addon"><?php echo Lang::l_('Show Stop Names');?></label>
+			</div>
+			<div class="btn-group hidden-xs">
+				<span class="input-group-addon">
+				<input type="checkbox" id="show_overview" checked="checked" aria-label="..."/>
+				</span>
+				<label for="show_overview" class="input-group-addon"><?php echo Lang::l_('Show Overview');?></label>
 			</div>
 			<div class="row"><small class="col-md-12"><b><?php echo Lang::l_('Please note');?>:</b> <?php echo Lang::l_('note_maxspeed');?></small></div>
 		</div>
