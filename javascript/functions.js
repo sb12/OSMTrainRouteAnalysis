@@ -21,35 +21,136 @@
     */
 
 /**
- * initialize search function
+ * initialize functions
  */
 $(function() 
 {
+	// search functions
 	$( '#searchform' ).on('submit', function( event ) 
 	{
 		event.preventDefault();
-		$('#search').modal();
-		$('#searchcontent').html("<span class=\"list-group-item\">Daten werden geladen...</span>");//FIXME: German
+		$( '#search' ).modal();
+		$( '#searchcontent' ).html("<span class=\"list-group-item\">Daten werden geladen...</span>");//FIXME: German
 		$.get('ajax/search.php?' + $( this ).serialize(), function(data){
-			$('#searchcontent').html(data);
+			$( '#searchcontent' ).html(data);
 			$(window).trigger('resize');
 		});
 	});
-	
+
+	// josm links
 	$( '#josmLink' ).on('click', function( event ) 
 	{
 		event.preventDefault();
-		var jqxhr = $.get($('#josmLink').attr('href'))
+		var jqxhr = $.get($( '#josmLink' ).attr('href'))
 		.fail(function()
 		{
-			$('#josmErrorDialog').modal(show=true);
+			$( '#josmErrorDialog' ).modal(show=true);
 		})
 	});
 	
+
+	// changelog
 	$( '#changelog' ).on('shown.bs.collapse', function () {
 		$(window).trigger('resize');
 	});	
 	$( '#changelog' ).on('hidden.bs.collapse', function () {
 		$(window).trigger('resize');
 	});
+	
+	//default train
+	if ( $( '#train_default' ))
+	{
+		var chosenTrain = $( '#train option:selected' ).val();
+		$( '#train_default' ).change(function() 
+		{
+			if ( $( '#train_default:checked' ).length > 0 )
+			{
+				$( '#train_icon' ).removeClass( 'glyphicon-star-empty' );
+				$( '#train_icon' ).addClass( 'glyphicon-hourglass' );
+
+				$( '#train_default_group > div' ).addClass( 'disabled' );
+				$( '#train_default' ).prop( 'disabled', true);
+				
+				$( '#train_default_text' ).text('Loading ... '); 
+	
+				$.get('ajax/defaultTrain.php?' + $( '#train_form' ).serialize(), function(data){
+					if(data == "true")
+					{
+						$( '#train_icon' ).removeClass( 'glyphicon-hourglass' );
+						$( '#train_icon' ).addClass( 'glyphicon-star' );
+
+						$( '#train_default_group > div' ).removeClass( 'btn-default' );
+						$( '#train_default_group > div' ).addClass( 'btn-info disabled' );
+						$( '#train_default' ).prop( 'disabled', true);
+					
+						$( '#train_default_text' ).text($( '#text_default_train' ).text());
+						
+						//reload page with new train
+						window.location.href =window.location.pathname + '?' + $( '#train_form' ).serialize();
+					}
+					else
+					{
+						$( '#train_icon' ).removeClass( 'glyphicon-hourglass' );
+						$( '#train_icon' ).addClass( 'glyphicon-exclamation-sign' );
+
+						$( '#train_default' ).prop( 'disabled', true);
+					
+						$( '#train_default_text' ).text( 'Can\'t set as default' );
+					}
+				});
+
+				
+			}		
+			else
+			{
+				$( '#train_icon' ).removeClass( 'glyphicon-hourglass glyphicon-exclamation-sign' );
+				$( '#train_icon' ).addClass( 'glyphicon-star-empty' );
+				
+				$( '#train_default_group > div' ).removeClass( 'btn-info disabled' );
+				$( '#train_default_group > div' ).addClass( 'btn-default' );
+				$( '#train_default' ).prop( 'disabled', false);
+				if(chosenTrain == $( '#train option:selected' ).val())
+				{
+					$( '#train_submit' ).prop( 'disabled', true);
+				}
+				else
+				{
+					$( '#train_submit' ).prop( 'disabled', false);
+				}
+
+				var text = $( '#text_not_default_train1' ).text() + $( '#train option:selected' ).text() + $( '#text_not_default_train2' ).text();
+				$( '#train_default_text' ).text( text );
+			}
+		});
+
+		$( '#train' ).change(function() 
+		{
+			if ( $( '#train option:selected' ).hasClass('bg-info') )
+			{
+				$( '#train_icon' ).removeClass( 'glyphicon-star-empty' );
+				$( '#train_icon' ).addClass( 'glyphicon-star' );
+
+				$( '#train_default_group > div' ).removeClass( 'btn-default' );
+				$( '#train_default_group > div' ).addClass( 'btn-info disabled' );
+				$( '#train_default' ).prop( 'checked', true);
+				$( '#train_default' ).prop( 'disabled', true);
+				if(chosenTrain == $( '#train option:selected' ).val())
+				{
+					$( '#train_submit' ).prop( 'disabled', true);
+				}
+				else
+				{
+					$( '#train_submit' ).prop( 'disabled', false);
+				}
+			
+				$( '#train_default_text' ).text($( '#text_default_train' ).text());
+			}
+			else
+			{
+				$( '#train_default' ).prop( 'checked', false);
+				$( '#train_default' ).trigger( 'change' );
+			}
+		});
+		
+	}
 });

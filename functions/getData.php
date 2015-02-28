@@ -1720,13 +1720,50 @@ if (  $this->relation_distance == 0 )
 			</div>
 		</div>
 	</div>
-		
+	
+		<?php
+		//connect to database
+		$con = connectToDB();
+
+		// add route to database
+		$query = "SELECT id FROM osm_train_details WHERE id=" . @$con->real_escape_string($this->id);
+		$result = @$con->query($query) or log_error(@$con->error);
+		while ( $row = @$result->fetch_array() )
+		{
+			$mysql_id = $row["id"];
+		}
+		if ( isset($mysql_id) && $mysql_id == $this->id )
+		{
+			if ( $this->relation_distance > 0 ) //only update when route includes ways
+			{
+				$query2 = "UPDATE osm_train_details SET id=" . @$con->real_escape_string($this->id) . ", ref='" . @$con->real_escape_string($this->relation_tags["ref"]) . "', ref_colour='" . @$con->real_escape_string($this->relation_tags["colour"]) . "', ref_textcolour='" . @$con->real_escape_string($this->relation_tags["text_colour"]) . "', `from`='" . @$con->real_escape_string($this->relation_tags["from"]) . "', `to`='" . @$con->real_escape_string($this->relation_tags["to"]) . "', operator='" . @$con->real_escape_string($this->relation_tags["operator"]) . "', route='" . @$con->real_escape_string($this->relation_tags["route"]) . "', service='" . @$con->real_escape_string($this->relation_tags["service"]) . "', length='" . @$con->real_escape_string($this->relation_distance) . "', time='" . @$con->real_escape_string($travel_time) . "', ave_speed='" . @$con->real_escape_string($average_speed) . "',max_speed='" . @$con->real_escape_string($this->maxspeed_max) . "', date='" . @$con->real_escape_string($this->filemtime) . "' WHERE id=" . @$con->real_escape_string($this->id) . ";";
+			}
+			else // delete otherwise
+			{
+				$query2 = "DELETE FROM osm_train_details WHERE id=" . @$con->real_escape_string($this->id) . ";";
+			}
+			@$con->query($query2) or log_error(@$con->error);
+		}
+		else
+		{
+			if ( $this->relation_distance > 0 ) //only add when route includes ways
+			{
+				$query2 = "INSERT INTO osm_train_details VALUES( '" . @$con->real_escape_string($this->id) . "','" . @$con->real_escape_string($this->relation_tags["ref"]). "','" . @$con->real_escape_string($this->relation_tags["colour"]) . "','" . @$con->real_escape_string($this->relation_tags["text_colour"]) . "','" . @$con->real_escape_string($this->relation_tags["from"]) . "','" . @$con->real_escape_string($this->relation_tags["to"]) . "', '" . @$con->real_escape_string($this->relation_tags["operator"]) . "', '" . @$con->real_escape_string($this->relation_tags["route"]) . "', '" . @$con->real_escape_string($this->relation_tags["service"]) . "','" . @$con->real_escape_string($this->relation_distance) . "','" . @$con->real_escape_string($travel_time) . "', '" . @$con->real_escape_string($average_speed) . "','" . @$con->real_escape_string($this->maxspeed_max) . "','" . @$con->real_escape_string($this->train->ref) . "','" . @$con->real_escape_string($this->filemtime) . "');";
+				@$con->query($query2) or log_error(@$con->error);
+
+				Train::setDefaultTrain($this->train->ref, $this->id, $this->relation_tags["service"], $this->relation_tags["route"], true);
+			}
+		}
+		?>
 	<div class="panel panel-primary">
 		<div class="panel-heading">
 			<h4 class="panel-title"><?php echo Lang::l_('Train details');?>:</h4>
 		</div>
 		<div class="panel-body">
-			<form action="index.php" method="get"><input type="hidden" name="id" value="<?php echo $this->id;?>">
+			<form action="index.php" method="get" class="form-inline" id="train_form">
+				<input type="hidden" name="id" value="<?php echo $this->id;?>">
+				<input type="hidden" name="service" value="<?php echo $this->relation_tags["service"];?>">
+				<input type="hidden" name="route" value="<?php echo $this->relation_tags["route"];?>">
 		<?php 
 		//show image for train if available
 		if(isset($this->train->image))
@@ -1745,13 +1782,56 @@ if (  $this->relation_distance == 0 )
 			<div class="col-md-4"><b><?php echo Lang::l_('Maximum brake');?>:</b> <?php echo $this->train->brake / 12960;?> m/s²</div>
 			<div class="col-md-4"><b><?php echo Lang::l_('Length');?>:</b> <?php echo $this->train->length * 1000;?> m</div>
 			<div class="col-md-4"><b><?php echo Lang::l_('Seats');?>:</b> <?php echo $this->train->seats;?></div>
+
+		<?php
+		$default_train = false;
+		$train_def = Train::getDefaultTrain($this->id);
+		if ( $train_def == $this->train->ref )
+		{
+			$default_train = true;
+		}
+		
+		if($default_train == true)
+		{
+			$train_icon = "star";
+			$train_text = Lang::l_('Set as Default');
+			$btn = "btn-info disabled";
+			$disabled = " disabled=\"disabled\"";
+		}
+		else
+		{
+			$train_icon = "star-empty";
+			$btn = "btn-default";
+			$train_text = Lang::l_('Set ') . $this->train->name . Lang::l_(' as Default');
+			$disabled = "";
+		}
+		?>
 			
 			<div class="col-md-12"> 
 				<div class="form-group">
-					<label for="train"><?php echo Lang::l_('Change train');?>:</label> 
-					<?php echo Train::changeTrain($this->train->ref);?>
-					<button class="btn btn-default" type="submit"><?php echo Lang::l_('Change train');?></button>
-    			</div>
+					<div>
+						<label for="train"><?php echo Lang::l_('Change train');?>:</label> 
+						<?php echo Train::changeTrain($this->train->ref, $train_def);?>
+					</div>
+					<div>
+						<input type="checkbox" id="train_default"<?php echo $disabled;?> class="sr-only">
+    					<span id="text_default_train" class="hidden"><?php echo Lang::l_('Set as Default');?></span>
+    					<span id="text_not_default_train1" class="hidden"><?php echo Lang::l_('Change train and set ');?></span>
+    					<span id="text_not_default_train2" class="hidden"><?php echo Lang::l_(' as Default');?></span>
+	    				
+	    				<label for="train_default">
+    					<div class="btn-group" role="group" id="train_default_group">
+    						<div class="btn <?php echo $btn;?> btn-sm">
+	    						<span id="train_icon" class="glyphicon glyphicon-<?php echo $train_icon;?>" aria-hidden="true"></span>
+	    					</div>
+	    					<div id="train_default_text" class="btn <?php echo $btn;?> btn-sm" title="<?php echo Lang::l_('Click button to change.');?>">
+	    						<?php echo $train_text;?>
+	    					</div>
+	    					<button id="train_submit" class="btn btn-default btn-sm" type="submit" disabled="disabled"><?php echo Lang::l_('Change train');?></button>
+    					</div>
+	    				</label>
+    				</div>
+    			</div>		
     		</div>
 			</form>
 		</div>
@@ -1803,37 +1883,7 @@ if (  $this->relation_distance == 0 )
 </div>
 <!-- Place this tag right after the last button or just before your close body tag. -->
 <script async defer id="github-bjs" src="https://buttons.github.io/buttons.js"></script>
-
-		<?php
-		//connect to database
-		$con = connectToDB();
-
-		// add route to database
-		$query = "SELECT id FROM osm_train_details WHERE id=" . @$con->real_escape_string($this->id);
-		$result = @$con->query($query) or log_error(@$con->error);
-		while ( $row = @$result->fetch_array() )
-		{
-			$mysql_id = $row["id"];
-		}
-		if ( isset($mysql_id) && $mysql_id == $this->id )
-		{
-			if ( $this->relation_distance > 0 ) //only update when route includes ways
-			{
-				$query2 = "UPDATE osm_train_details SET id=" . @$con->real_escape_string($this->id) . ", ref='" . @$con->real_escape_string($this->relation_tags["ref"]) . "', ref_colour='" . @$con->real_escape_string($this->relation_tags["colour"]) . "', ref_textcolour='" . @$con->real_escape_string($this->relation_tags["text_colour"]) . "', `from`='" . @$con->real_escape_string($this->relation_tags["from"]) . "', `to`='" . @$con->real_escape_string($this->relation_tags["to"]) . "', operator='" . @$con->real_escape_string($this->relation_tags["operator"]) . "', route='" . @$con->real_escape_string($this->relation_tags["route"]) . "', service='" . @$con->real_escape_string($this->relation_tags["service"]) . "', length='" . @$con->real_escape_string($this->relation_distance) . "', time='" . @$con->real_escape_string($travel_time) . "', ave_speed='" . @$con->real_escape_string($average_speed) . "',max_speed='" . @$con->real_escape_string($this->maxspeed_max) . "',train='" . @$con->real_escape_string($this->train->ref) . "', date='" . @$con->real_escape_string($this->filemtime) . "' WHERE id=" . @$con->real_escape_string($this->id) . ";";
-			}
-			else // delete otherwise
-			{
-				$query2 = "DELETE FROM osm_train_details WHERE id=" . @$con->real_escape_string($this->id) . ";";
-			}
-		}
-		else
-		{
-			if ( $this->relation_distance > 0 ) //only add when route includes ways
-			{
-				$query2 = "INSERT INTO osm_train_details VALUES( '" . @$con->real_escape_string($this->id) . "','" . @$con->real_escape_string($this->relation_tags["ref"]). "','" . @$con->real_escape_string($this->relation_tags["colour"]) . "','" . @$con->real_escape_string($this->relation_tags["text_colour"]) . "','" . @$con->real_escape_string($this->relation_tags["from"]) . "','" . @$con->real_escape_string($this->relation_tags["to"]) . "', '" . @$con->real_escape_string($this->relation_tags["operator"]) . "', '" . @$con->real_escape_string($this->relation_tags["route"]) . "', '" . @$con->real_escape_string($this->relation_tags["service"]) . "','" . @$con->real_escape_string($this->relation_distance) . "','" . @$con->real_escape_string($travel_time) . "', '" . @$con->real_escape_string($average_speed) . "','" . @$con->real_escape_string($this->maxspeed_max) . "','" . @$con->real_escape_string($this->train->ref) . "','" . @$con->real_escape_string($this->filemtime) . "');";
-			}	 
-		}
-		@$con->query($query2) or log_error(@$con->error);
+		<?php 
 	}
 	
 	/**

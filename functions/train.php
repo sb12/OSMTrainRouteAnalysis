@@ -235,7 +235,7 @@ Class Train
 	/**
 	 * generates form to change the train
 	 */
-	static function changeTrain($trainref="")
+	static function changeTrain($trainref = "", $train_def = "")
 	{
 		include "train_details.php";
 		$type="";
@@ -264,7 +264,7 @@ Class Train
 				$type = $tr_type[$ref];
 			}
 			?>
-				<option <?php if ( $ref == $trainref ){ echo 'selected="selected"'; } ?>value="<?php echo $ref; ?>"><?php echo $name; ?></option>
+				<option <?php if ( $ref == $trainref ){ echo 'selected="selected"'; } ?> <?php if ( $ref == $train_def ){ echo 'class="bg-info"'; } ?>value="<?php echo $ref; ?>"><?php echo $name; ?></option>
 			<?php 
 		}
 		?>
@@ -272,6 +272,118 @@ Class Train
 		</select>
 		<?php 
 		
+	}
+
+	/**
+	 * sets the default train in the database
+	 * @param String $train id of train
+	 * @param number $id id of route
+	 * @param number $service service value of route
+	 * @param number $route route value of route
+	 * @return boolean result of function
+	 */
+	static function setDefaultTrain($train, $id, $service, $route, $forced = false)
+	{
+		include 'train_details.php';
+		$train_type = $tr_type[$train];
+		
+		//check if combination between train and route is allowed:
+		
+		$default_allowed = false;
+		//highspeed and long distance trains
+		if( ( $train_type == "highspeed" || $train_type == "long_distance" || $train_type == "night" ) && $route == "train" && ( !$service || $service == "highspeed" || $service == "long_distance" || $service == "night" || $service == "car" ) )
+		{
+			$default_allowed = true;
+		}
+		//regional trains
+		if( ( $train_type == "regional" || $train_type == "light_rail" ) && $route == "train" && ( !$service || $service == "regional" || $service == "commuter" ) )
+		{
+			$default_allowed = true;
+		}
+		//light rail
+		if( ( $train_type == "regional" || $train_type == "light_rail"|| $train_type == "tram"|| $train_type == "subway" ) && $route == "light_rail")
+		{
+			$default_allowed = true;
+		}
+		//tram and subway
+		if( ( $train_type == "light_rail"|| $train_type =="tram"|| $train_type =="subway" ) && $route == "tram"|"subway")
+		{
+			$default_allowed = true;
+		}
+		
+		// set generic train, when train is needed and given train is not allowed
+		if(!$default_allowed && $forced == true)
+		{
+			if($route == "train")
+			{
+				if($service == "highspeed" || $service == "long_distance" || $service == "night" || $service == "car")
+				{
+					$train = "highspeed";
+				}
+				else
+				{
+					$train = "regional";
+				}
+			}
+			elseif( $route == "light_rail")
+			{
+				$train = "light_rail";
+			}
+			elseif( $route == "tram")
+			{
+				$train = "tram";
+			}
+			elseif( $route == "subway")
+			{
+				$train = "subway";
+			}
+			else
+			{
+				$train = "regional";
+			}
+			$default_allowed = true;
+		}
+
+		//update database
+		if($default_allowed)
+		{
+			$mysql = connectToDB();
+			
+			$query = "UPDATE `osm_train_details` SET train = '" . $mysql->real_escape_string($train) . "' WHERE `id` = '" . $mysql->real_escape_string($id) . "'";
+			
+			if(@$mysql->query($query))
+			{
+				return true;
+			}
+			else
+			{
+				log_error($mysql->error);
+				return false;
+			}
+		}
+		else
+		{
+			return false;
+		}
+	}
+	
+	/**
+	 * gets the default train for a route
+	 * @param number $id id of route
+	 * @return String ref of default train
+	 */
+	static function getDefaultTrain($id)
+	{
+		$mysql = connectToDB();
+			
+		$query = "SELECT train FROM `osm_train_details` WHERE `id` = '" . $mysql->real_escape_string($id) . "'";
+			
+		$result = @$mysql->query($query);
+		
+		while ( $line = $result->fetch_array())
+		{
+			return $line["train"];
+		}
 	}
 }
 

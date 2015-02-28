@@ -390,7 +390,7 @@ function pagination($page = 1, $lastpage = 1, $order_by = "" , $dir = "" )
 function connectToDB()
 {
 	//load settings
-	require 'functions/mysql_settings.php';
+	require dirname(__FILE__) . '/mysql_settings.php';
 	
 	//open connection
 	$con = @new mysqli($mysql_host, $mysql_user, $mysql_password, $mysql_database);
@@ -481,7 +481,7 @@ function log_error($msg)
 {
 	if($msg) // only log error when error message exists
 	{
-		$fp = fopen("errors.log", "a");
+		$fp = fopen(dirname(__FILE__) . "/../errors.log", "a");
 		fwrite($fp, date("Y-m-d H:i") . " " . $msg . "\n");
 		fclose($fp);
 	}
