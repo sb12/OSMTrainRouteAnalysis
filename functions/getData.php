@@ -1901,39 +1901,74 @@ if (  $this->relation_distance == 0 )
 			$i = 0;
 			foreach ( $this->relation_stops as $nr => $ref )
 			{
-
-				// node is not on way
-				if ( !isset($this->stop_node_distance[$ref]) )
+				if($this->relation_stops_type[$nr] == "n")
+				{
+					// node is not on way
+					if ( !isset($this->stop_node_distance[$ref]) )
+					{
+						$old_ref = $ref;
+						
+						// try to find nearest node on way 
+						// FIXME: only works for nodes
+						$ref = $this->get_nearest_node($ref);
+	
+						// add new ref and move name and description to new ref
+						$this->relation_stops[$nr] = $ref;
+						if ( isset($this->node[$old_ref]["name"]) )
+						{
+							$this->node[$ref]["name"] = $this->node[$old_ref]["name"];
+						}
+						if ( isset($this->node[$old_ref]["description"]) )
+						{
+							$this->node[$ref]["description"] = $this->node[$old_ref]["description"];
+						}
+					}
+	
+					if ( isset($this->stop_node_distance[$ref]) )
+					{
+						if ( isset($this->node[$ref]["lat"]) )
+						{
+							$this->stop_position[$i]["lat"] = $this->node[$ref]["lat"];
+							$this->stop_position[$i]["lon"] = $this->node[$ref]["lon"];
+						}
+						$this->stop_position[$i]["dis"] = $this->stop_node_distance[$ref];
+						$this->stop_position[$i]["ref"] = $ref;
+						$i++;
+					}
+				}
+				elseif($this->relation_stops_type[$nr] == "w")
 				{
 					$old_ref = $ref;
 					
-					// try to find nearest node on way 
-					// FIXME: only works for nodes
-					$ref = $this->get_nearest_node($ref);
-
+					// try to find nearest node on way
+					$ref = $this->get_nearest_node($this->way_nodes[$ref][0]);
+	
 					// add new ref and move name and description to new ref
 					$this->relation_stops[$nr] = $ref;
-					if ( isset($this->node[$old_ref]["name"]) )
+					if ( isset($this->way_tags[$old_ref]["name"]) )
 					{
-						$this->node[$ref]["name"] = $this->node[$old_ref]["name"];
+						$this->node[$ref]["name"] = $this->way_tags[$old_ref]["name"];
 					}
-					if ( isset($this->node[$old_ref]["description"]) )
+					if ( isset($this->way_tags[$old_ref]["description"]) )
 					{
-						$this->node[$ref]["description"] = $this->node[$old_ref]["description"];
+						$this->node[$ref]["description"] = $this->way_tags[$old_ref]["description"];
+					}
+					
+					$this->relation_stops_type[$nr] = "n";
+	
+					if ( isset($this->stop_node_distance[$ref]) )
+					{
+						if ( isset($this->node[$ref]["lat"]) )
+						{
+							$this->stop_position[$i]["lat"] = $this->node[$ref]["lat"];
+							$this->stop_position[$i]["lon"] = $this->node[$ref]["lon"];
+						}
+						$this->stop_position[$i]["dis"] = $this->stop_node_distance[$ref];
+						$this->stop_position[$i]["ref"] = $ref;
+						$i++;
 					}
 				}
-
-				if ( isset($this->stop_node_distance[$ref]) )
-				{
-					if ( isset($this->node[$ref]["lat"]) )
-					{
-						$this->stop_position[$i]["lat"] = $this->node[$ref]["lat"];
-						$this->stop_position[$i]["lon"] = $this->node[$ref]["lon"];
-					}
-					$this->stop_position[$i]["dis"] = $this->stop_node_distance[$ref];
-					$this->stop_position[$i]["ref"] = $ref;
-					$i++;
-				}
+					
 			}
 
 			//sort stops in array
@@ -2722,9 +2757,10 @@ if (  $this->relation_distance == 0 )
 	/**
 	 * get nearest node to node
 	 * @param int $ref
+	 * @param double $treshold maximum distance of nodes to station
 	 * @return int id of nearest node
 	 */
-	function get_nearest_node($ref)
+	function get_nearest_node($ref, $treshold = 0.3)
 	{
 		if ( !isset($this->node[$ref]) )
 		{
@@ -2736,35 +2772,44 @@ if (  $this->relation_distance == 0 )
 			// distance between nodes
 			$node_diff = $this->getDistance($node["lat"], $node["lon"], $this->node[$ref]["lat"], $this->node[$ref]["lon"]);
 
-			// only use nodes that are less than 500m away
-			if ( $node_diff < 0.5 && $node_diff > 0 )
+			// only use nodes that are less than specified distance away
+			if ( $node_diff < $treshold && $node_diff > 0 )
 			{
 				// add node to array
 				$nodes_dis[$nodeid] = $node_diff;
 			}
 		}
-		
-		//sort array
-		asort($nodes_dis);
 
-		//use nearest found stop position
-		foreach ( $nodes_dis as $nodeid => $nodedis )
+		if( isset ( $nodes_dis) )
 		{
-			$flipped_stops = array_flip($this->relation_stops);
-			// use this node when it is a stop position
-			if ( isset($this->node[$nodeid]["public_transport"]) && $this->node[$nodeid]["public_transport"] == "stop_position" && !isset($flipped_stops[$ref]))
+			//sort array
+			asort($nodes_dis);
+	
+			//use nearest found stop position
+			foreach ( $nodes_dis as $nodeid => $nodedis )
+			{
+				$flipped_stops = array_flip($this->relation_stops);
+				// use this node when it is a stop position
+				if ( isset($this->node[$nodeid]["public_transport"]) && $this->node[$nodeid]["public_transport"] == "stop_position" && !isset($flipped_stops[$ref]))
+				{
+					return $nodeid;
+				}
+			}		
+			
+			// no stop position found
+			foreach ( $nodes_dis as $nodeid => $nodedis )
 			{
 				return $nodeid;
+				break;
+			}
+		}
+		else
+		{
+			if($treshold < 2)
+			{
+				return $this->get_nearest_node($ref, ( $treshold + 0.2 ) );
 			}
 		}		
-		
-		// no stop position found
-		foreach ( $nodes_dis as $nodeid => $nodedis )
-		{
-			return $nodeid;
-			break;
-		}
-		
 	}
 	
 	/**
