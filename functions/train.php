@@ -306,7 +306,7 @@ Class Train
 			$default_allowed = true;
 		}
 		//tram and subway
-		if( ( $train_type == "light_rail"|| $train_type =="tram"|| $train_type =="subway" ) && $route == "tram"|"subway")
+		if( ( $train_type == "light_rail"|| $train_type =="tram"|| $train_type =="subway" ) && ( $route == "tram" || $route == "subway" ) )
 		{
 			$default_allowed = true;
 		}
