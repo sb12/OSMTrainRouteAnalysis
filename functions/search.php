@@ -69,31 +69,31 @@ Class Search
 		// reference number
 		if ( $this->variables["ref"] )
 		{
-			$link .= "%3Chas-kv%20k%3D%22ref%22%20regv%3D%22" . urlencode( htmlentities($this->variables["ref"]) ) . "%22%2F%3E";
+			$link .= "%3Chas-kv%20k%3D%22ref%22%20regv%3D%22" . urlencode( htmlspecialchars($this->variables["ref"]) ) . "%22%2F%3E";
 		}
 
 		// network
 		if ( $this->variables["network"] )
 		{
-			$link .= "%3Chas-kv%20k%3D%22network%22%20regv%3D%22" . urlencode( htmlentities($this->variables["network"]) ) . "%22%2F%3E";
+			$link .= "%3Chas-kv%20k%3D%22network%22%20regv%3D%22" . urlencode( htmlspecialchars($this->variables["network"]) ) . "%22%2F%3E";
 		}
 
 		// operator
 		if ( $this->variables["operator"] )
 		{
-			$link .= "%3Chas-kv%20k%3D%22operator%22%20regv%3D%22" . urlencode( htmlentities($this->variables["operator"]) ) . "%22%2F%3E";
+			$link .= "%3Chas-kv%20k%3D%22operator%22%20regv%3D%22" . urlencode( htmlspecialchars($this->variables["operator"]) ) . "%22%2F%3E";
 		}
 
 		// to
 		if ( $this->variables["to"] )
 		{
-			$link .= "%3Chas-kv%20k%3D%22to%22%20regv%3D%22" . urlencode( htmlentities($this->variables["to"]) ) . "%22%2F%3E";
+			$link .= "%3Chas-kv%20k%3D%22to%22%20regv%3D%22" . urlencode( htmlspecialchars($this->variables["to"]) ) . "%22%2F%3E";
 		}
 
 		// from
 		if ( $this->variables["from"] )
 		{
-			$link .= "%3Chas-kv%20k%3D%22from%22%20regv%3D%22" . urlencode( htmlentities($this->variables["from"]) ) . "%22%2F%3E";
+			$link .= "%3Chas-kv%20k%3D%22from%22%20regv%3D%22" . urlencode( htmlspecialchars($this->variables["from"]) ) . "%22%2F%3E";
 		}
 
 		$link .= "%3Chas-kv%20k%3D%22type%22%20v%3D%22route%22%2F%3E%3Chas-kv%20k%3D%22route%22%20regv%3D%22train%7Ctram%7Clight_rail%7Csubway%22%2F%3E%3C%2Fquery%3E%3Cprint%2F%3E";
@@ -223,6 +223,10 @@ Class Search
 		foreach ($this->result as $key => $row) 
 		{
 			//add missing variables
+			if(!isset($row["ref"]))
+			{
+				$row["ref"]="";
+			}
 			if(!isset($row["service"]))
 			{
 				$row["service"]="";
