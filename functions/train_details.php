@@ -295,19 +295,57 @@ $tr_brake["BR430"] = 0.9;
 $tr_length["BR430"] = 0.068;
 $tr_image["BR430"] = "BR430.svg";
 
+//DB BR 442.0 Talent 2 (Germany)
+$tr_name["BR442.0"] = "DB Baureihe 442.0 Bombardier Talent 2 2-teilig";
+$tr_type["BR442.0"] = "regional";
+$tr_maxspeed["BR442.0"] = 160; // km/h
+$tr_mass_empty["BR442.0"] = 70; // t
+$tr_power["BR442.0"] = 2020; // kW
+$tr_torque["BR442.0"] = 150; // kN
+$tr_seats["BR442.0"] = 280;
+$tr_acc["BR442.0"] = 1.1;
+$tr_brake["BR442.0"] = 0.9;
+$tr_length["BR442.0"] = 0.0401;
+$tr_image["BR442.0"] = "BR442.0.svg";
+
+//DB BR 442.1 Talent 2 (Germany)
+$tr_name["BR442.1"] = "DB Baureihe 442.1 Bombardier Talent 2 3-teilig";
+$tr_type["BR442.1"] = "regional";
+$tr_maxspeed["BR442.1"] = 160; // km/h
+$tr_mass_empty["BR442.1"] = 100; // t
+$tr_power["BR442.1"] = 2020; // kW
+$tr_torque["BR442.1"] = 150; // kN
+$tr_seats["BR442.1"] = 280;
+$tr_acc["BR442.1"] = 1.1;
+$tr_brake["BR442.1"] = 0.9;
+$tr_length["BR442.1"] = 0.0562;
+$tr_image["BR442.1"] = "BR442.1.svg";
+
+//DB BR 442.2 Talent 2 (Germany)
+$tr_name["BR442.2"] = "DB Baureihe 442.2 Bombardier Talent 2 4-teilig";
+$tr_type["BR442.2"] = "regional";
+$tr_maxspeed["BR442.2"] = 160; // km/h
+$tr_mass_empty["BR442.2"] = 130; // t
+$tr_power["BR442.2"] = 3030; // kW
+$tr_torque["BR442.2"] = 150; // kN
+$tr_seats["BR442.2"] = 280;
+$tr_acc["BR442.2"] = 1.1;
+$tr_brake["BR442.2"] = 0.9;
+$tr_length["BR442.2"] = 0.0723;
+$tr_image["BR442.2"] = "BR442.2.svg";
+
 //DB BR 442.3 Talent 2 (Germany)
 $tr_name["BR442.3"] = "DB Baureihe 442.3 Bombardier Talent 2 5-teilig";
 $tr_type["BR442.3"] = "regional";
-$tr_maxspeed["BR442.3"] = 140; // km/h
+$tr_maxspeed["BR442.3"] = 160; // km/h
 $tr_mass_empty["BR442.3"] = 160; // t
 $tr_power["BR442.3"] = 3030; // kW
 $tr_torque["BR442.3"] = 150; // kN
-$tr_seats["BR442.3"] = 223;
+$tr_seats["BR442.3"] = 280;
 $tr_acc["BR442.3"] = 1.1;
 $tr_brake["BR442.3"] = 0.9;
 $tr_length["BR442.3"] = 0.0884;
-$tr_image["BR442.3"] = "BR425.svg";
-
+$tr_image["BR442.3"] = "BR442.3.svg";
 
 //DB BR 628.4 (Germany)
 $tr_name["BR628"] = "DB Baureihe 628";
