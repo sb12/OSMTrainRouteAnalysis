@@ -547,6 +547,7 @@ function showAbout()
 				<p><?php echo Lang::l_("used_data_stops"); ?></p>
 				<ul>
 					<li>name</li>
+					<li>ref_name</li>
 					<li>description</li>
 				</ul>
 				<h5><?php echo Lang::l_("I have a suggestion. / I found an error"); ?></h5>

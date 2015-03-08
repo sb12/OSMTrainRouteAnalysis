@@ -1216,7 +1216,11 @@ var startData = [[0,0],<?php
 	    		$stop_name[$nr] = "";
 	    		if ( $this->relation_stops_type[$nr] == "n" )//stop is node
 	    		{
-	    			if ( isset($this->node[$ref]["name"]) )
+	    			if ( isset($this->node[$ref]["ref_name"]) )
+	    			{
+	    				$stop_name[$nr] = $this->node[$ref]["ref_name"];
+	    			}
+	    			elseif ( isset($this->node[$ref]["name"]) )
 	    			{
 	    				$stop_name[$nr] = $this->node[$ref]["name"];
 	    			}
@@ -1914,6 +1918,10 @@ if (  $this->relation_distance == 0 )
 	
 						// add new ref and move name and description to new ref
 						$this->relation_stops[$nr] = $ref;
+						if ( isset($this->node[$old_ref]["ref_name"]) )
+						{
+							$this->node[$ref]["ref_name"] = $this->node[$old_ref]["ref_name"];
+						}
 						if ( isset($this->node[$old_ref]["name"]) )
 						{
 							$this->node[$ref]["name"] = $this->node[$old_ref]["name"];
@@ -1945,6 +1953,10 @@ if (  $this->relation_distance == 0 )
 	
 					// add new ref and move name and description to new ref
 					$this->relation_stops[$nr] = $ref;
+					if ( isset($this->way_tags[$old_ref]["ref_name"]) )
+					{
+						$this->node[$ref]["ref_name"] = $this->way_tags[$old_ref]["ref_name"];
+					}
 					if ( isset($this->way_tags[$old_ref]["name"]) )
 					{
 						$this->node[$ref]["name"] = $this->way_tags[$old_ref]["name"];
@@ -2605,7 +2617,11 @@ if (  $this->relation_distance == 0 )
 				$this->stop_name[$nr] = Lang::l_('Unknown stop');
 				if ( $this->relation_stops_type[$nr] == "n" )//nodes
 				{
-					if ( isset($this->node[$ref]["name"]) )
+					if ( isset($this->node[$ref]["ref_name"]) )
+					{
+						$this->stop_name[$nr] = $this->node[$ref]["ref_name"];
+					}
+					elseif ( isset($this->node[$ref]["name"]) )
 					{
 						$this->stop_name[$nr] = $this->node[$ref]["name"];
 					}
