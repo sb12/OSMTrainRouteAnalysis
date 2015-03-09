@@ -71,7 +71,7 @@ $(function()
 				$( '#train_default_group > div' ).addClass( 'disabled' );
 				$( '#train_default' ).prop( 'disabled', true);
 				
-				$( '#train_default_text' ).text('Loading ... '); 
+				$( '#train_default_text' ).text( $( '#text_default_loading' ).text() ); 
 	
 				$.get('ajax/defaultTrain.php?' + $( '#train_form' ).serialize(), function(data){
 					if(data == "true")
@@ -85,8 +85,16 @@ $(function()
 					
 						$( '#train_default_text' ).text($( '#text_default_train' ).text());
 						
-						//reload page with new train
-						window.location.href =window.location.pathname + '?' + $( '#train_form' ).serialize();
+						//reload page with new train when train not already loaded
+						if(chosenTrain != $( '#train option:selected' ).val())
+						{
+							window.location.href =window.location.pathname + '?' + $( '#train_form' ).serialize();
+						}
+						else
+						{
+							$( '#train > optgroup > option' ).removeClass('bg-info');
+							$( '#train option:selected' ).addClass('bg-info');
+						}
 					}
 					else
 					{
@@ -95,7 +103,7 @@ $(function()
 
 						$( '#train_default' ).prop( 'disabled', true);
 					
-						$( '#train_default_text' ).text( 'Can\'t set as default' );
+						$( '#train_default_text' ).text( $( '#text_default_error' ).text() );
 					}
 				});
 
@@ -112,13 +120,14 @@ $(function()
 				if(chosenTrain == $( '#train option:selected' ).val())
 				{
 					$( '#train_submit' ).prop( 'disabled', true);
+					var text = $( '#text_not_default_train1' ).text() + $( '#train option:selected' ).text() + $( '#text_not_default_train2' ).text();
 				}
 				else
 				{
 					$( '#train_submit' ).prop( 'disabled', false);
+					var text = $( '#text_not_default_change_train1' ).text() + $( '#train option:selected' ).text() + $( '#text_not_default_train2' ).text();
 				}
 
-				var text = $( '#text_not_default_train1' ).text() + $( '#train option:selected' ).text() + $( '#text_not_default_train2' ).text();
 				$( '#train_default_text' ).text( text );
 			}
 		});

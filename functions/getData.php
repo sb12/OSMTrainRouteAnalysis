@@ -1820,8 +1820,11 @@ if (  $this->relation_distance == 0 )
 					<div>
 						<input type="checkbox" id="train_default"<?php echo $disabled;?> class="sr-only">
     					<span id="text_default_train" class="hidden"><?php echo Lang::l_('Set as Default');?></span>
-    					<span id="text_not_default_train1" class="hidden"><?php echo Lang::l_('Change train and set ');?></span>
+    					<span id="text_not_default_change_train1" class="hidden"><?php echo Lang::l_('Change train and set ');?></span>
+    					<span id="text_not_default_train1" class="hidden"><?php echo Lang::l_('Set ');?></span>
     					<span id="text_not_default_train2" class="hidden"><?php echo Lang::l_(' as Default');?></span>
+    					<span id="text_default_error" class="hidden"><?php echo Lang::l_('Can\'t set as Default');?></span>
+    					<span id="text_default_loading" class="hidden"><?php echo Lang::l_('Loading...');?></span>
 	    				
 	    				<label for="train_default">
     					<div class="btn-group" role="group" id="train_default_group">
