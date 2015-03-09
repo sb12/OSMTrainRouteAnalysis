@@ -43,15 +43,14 @@ function loadHeader()
 
 <?php top_nav("index");?>
     
-<div id="header" class="page-header">
+<header id="header" class="page-header">
 	<div class="container">
-		<header>
-			<h1><?php echo Lang::l_('Train Analysis');?></h1>
-			<p> <?php echo Lang::l_('Analysis of Train Routes Based on OpenStreetMap Data');?></p>
-		</header>
+		<h1><?php echo Lang::l_('Train Analysis');?></h1>
+		<p> <?php echo Lang::l_('Analysis of Train Routes Based on OpenStreetMap Data');?></p>
 	</div>
-</div>
-<div id="main">
+</header>
+
+<main id="main">
 	<?php
 }
 
@@ -103,7 +102,7 @@ function top_nav($page="")
 function enterID()
 {
 	?>
-<div class="panel-group container-fluid">
+<div class="panel-group container-fluid" role="tablist">
 
 	<div class="panel panel-primary">
 		<div class="panel-heading">
@@ -112,7 +111,7 @@ function enterID()
 	</div>
 	
 	<div class="panel panel-primary">
-		<div class="panel-heading" data-toggle="collapse" href="#idForm" aria-expanded="false" aria-controls="idForm">
+		<div class="panel-heading" data-toggle="collapse" aria-expanded="false" aria-controls="idForm" role="tab">
 			<h3 class="panel-title"><a data-toggle="collapse" href="#idForm" aria-expanded="false" aria-controls="idForm"><?php echo Lang::l_("By the OpenStreetMap relation id:");?></a></h3>
 		</div>
 		<div class="panel-body collapse" id="idForm">
@@ -120,11 +119,11 @@ function enterID()
 				<div class="form-group">
 					<label for="id" class="col-sm-2 control-label"><?php echo Lang::l_('OpenStreetMap id');?>:</label>
 					<div class="col-sm-10">
-						<input type="number" name="id" class="form-control" required>
+						<input type="number" name="id" id="id" class="form-control" required>
 					</div>
 				</div>		
 				<div class="form-group">
-					<label for="id" class="col-sm-2 control-label"><?php echo Lang::l_('Train');?>:</label>
+					<label for="train" class="col-sm-2 control-label"><?php echo Lang::l_('Train');?>:</label>
 					<div class="col-sm-10">
 						<?php echo Train::changeTrain();?>
 					</div>
@@ -217,7 +216,7 @@ function showRoutes($amount = 50)
 	}
 	?>
 	<div class="panel panel-primary choose_route_save">
-		<div class="panel-heading" data-toggle="collapse" href="#table" aria-expanded="false" aria-controls="table">
+		<div class="panel-heading" data-toggle="collapse" aria-expanded="false" aria-controls="table" role="tab">
 			<h3 class="panel-title"><a data-toggle="collapse" href="#table" aria-expanded="false" aria-controls="table"><?php echo Lang::l_("By choosing a route from the list:");?></a></h4>
 		</div>
 		<div id="table" class="collapse in">
@@ -299,9 +298,9 @@ function showRoutes($amount = 50)
 function loadFooter()
 {
 	?>
-</div>
-    <nav class="navbar" id=footer>
-      <div class="container">
+</main>
+<footer class="navbar" id=footer>
+	<div class="container">
 		<small><?php echo Lang::l_('Route Data');?> © <a href="http://www.openstreetmap.org/copyright" title="OpenStreetMap Lizenz">OpenStreetMap</a><?php echo Lang::l_(' contributors');?></small>
 
 		<small class="navbar-right">
@@ -323,10 +322,10 @@ function loadFooter()
 <!-- Place this tag where you want the button to render. -->
 <a data-count-api="/repos/sb12/OSMTrainRouteAnalysis#stargazers_count" data-count-href="/sb12/OSMTrainRouteAnalysis/stargazers" data-icon="octicon-star" href="https://github.com/sb12/OSMTrainRouteAnalysis" class="github-button">Star</a> 
  
-</small>
+		</small>
 
-</div>
-</nav>
+	</div>
+</footer>
 <!-- Place this tag right after the last button or just before your close body tag. -->
 <script async defer id="github-bjs" src="https://buttons.github.io/buttons.js"></script>
 

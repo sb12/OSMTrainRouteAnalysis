@@ -235,19 +235,15 @@ Class Train
 	/**
 	 * generates form to change the train
 	 */
-	static function changeTrain($trainref = "", $train_def = "")
+	static function changeTrain($trainref = "", $train_def = "", $formid = "train")
 	{
 		include "train_details.php";
 		$type="";
 		?>
-		<select name="train" style="max-width:100%" id="train" required>
-		<?php 
-		if( !$trainref)
-		{
-			?>
-			<option selected="selected" value=""><?php echo Lang::l_('Please choose a train'); ?></option>
-			<?php
-		}
+		<select name="train" style="max-width:100%" id="<?php echo $formid; ?>" required>
+		
+			<option<?php if( !$trainref) { ?> selected="selected"<?php } ?> value=""><?php echo Lang::l_('Please choose a train'); ?></option>
+		<?php
 		foreach ( $tr_name as $ref => $name )
 		{
 			if( $tr_type[$ref] != $type )

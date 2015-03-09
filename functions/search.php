@@ -304,7 +304,7 @@ Class Search
 	{
 		?>
 	<div class="panel panel-primary">
-		<div class="panel-heading" data-toggle="collapse" href="#searchForm" aria-expanded="false" aria-controls="searchForm">
+		<div class="panel-heading" data-toggle="collapse" aria-expanded="false" aria-controls="searchForm" role="tab">
 			<h3 class="panel-title"><a data-toggle="collapse" href="#searchForm" aria-expanded="false" aria-controls="searchForm"><?php echo Lang::l_("By route information:");?></a></h3>
 		</div>
 		<div class="panel-body collapse" id="searchForm">
@@ -312,37 +312,37 @@ Class Search
 				<div class="form-group">
 					<label for="ref" class="col-sm-2 control-label"><?php echo Lang::l_("Line");?>:</label>
 					<div class="col-sm-10">
-						<input type="text" name="ref" class="form-control">
+						<input type="text" name="ref" id="ref" class="form-control">
 					</div>
 				</div>	
 				<div class="form-group">
 					<label for="operator" class="col-sm-2 control-label"><?php echo Lang::l_("Operator");?>:</label>
 					<div class="col-sm-10">
-						<input type="text" name="operator" class="form-control">
+						<input type="text" name="operator" id="operator" class="form-control">
 					</div>
 				</div>	
 				<div class="form-group">
 					<label for="network" class="col-sm-2 control-label"><?php echo Lang::l_("Network");?>:</label>
 					<div class="col-sm-10">
-						<input type="text" name="network" class="form-control">
+						<input type="text" name="network" id="network" class="form-control">
 					</div>
 				</div>	
 				<div class="form-group">
 					<label for="from" class="col-sm-2 control-label"><?php echo Lang::l_("Origin");?>:</label>
 					<div class="col-sm-10">
-						<input type="text" name="from" class="form-control">
+						<input type="text" name="from" id="from" class="form-control">
 					</div>
 				</div>	
 				<div class="form-group">
 					<label for="to" class="col-sm-2 control-label"><?php echo Lang::l_("Destination");?>:</label>
 					<div class="col-sm-10">
-						<input type="text" name="to" class="form-control">
+						<input type="text" name="to" id="to" class="form-control">
 					</div>
 				</div>										
 				<div class="form-group">
-					<label for="id" class="col-sm-2 control-label"><?php echo Lang::l_('Train');?>:</label>
+					<label for="trainsearch" class="col-sm-2 control-label"><?php echo Lang::l_('Train');?>:</label>
 					<div class="col-sm-10">
-						<?php echo Train::changeTrain();?>
+						<?php echo Train::changeTrain("", "", "trainsearch");?>
 					</div>
 				</div>
 				<div class="form-group">

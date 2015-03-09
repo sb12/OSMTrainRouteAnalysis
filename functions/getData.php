@@ -1773,7 +1773,7 @@ if (  $this->relation_distance == 0 )
 		if(isset($this->train->image))
 		{
 			?>
-			<div class="col-md-12"><img src="img/trains/<?php echo $this->train->image?>" style="max-height: 50px;max-width: 100%"></div>
+			<div class="col-md-12"><img src="img/trains/<?php echo $this->train->image?>" style="max-height: 50px;max-width: 100%" alt="<?php echo Lang::l_("Train Image");?>"></div>
 			<?php 
 		}
 		?>
@@ -1826,17 +1826,19 @@ if (  $this->relation_distance == 0 )
     					<span id="text_default_error" class="hidden" aria-hidden="true"><?php echo Lang::l_('Can\'t set as Default');?></span>
     					<span id="text_default_loading" class="hidden" aria-hidden="true"><?php echo Lang::l_('Loading...');?></span>
 	    				
-	    				<label for="train_default">
     					<div class="btn-group" role="group" id="train_default_group">
     						<div class="btn <?php echo $btn;?> btn-sm">
+	    						<label for="train_default">
 	    						<span id="train_icon" class="glyphicon glyphicon-<?php echo $train_icon;?>" aria-hidden="true"></span>
+	    						</label>
 	    					</div>
-	    					<div id="train_default_text" class="btn <?php echo $btn;?> btn-sm" title="<?php echo Lang::l_('Click button to change.');?>">
+	    					<div class="btn <?php echo $btn;?> btn-sm" title="<?php echo Lang::l_('Click button to change.');?>">
+	    						<label for="train_default" id="train_default_text">
 	    						<?php echo $train_text;?>
+	    						</label>
 	    					</div>
 	    					<button id="train_submit" class="btn btn-default btn-sm" type="submit" disabled="disabled"><?php echo Lang::l_('Change train');?></button>
     					</div>
-	    				</label>
     				</div>
     			</div>		
     		</div>

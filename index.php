@@ -20,16 +20,36 @@
     
     */
 ?>
+<?php
+//turn off error_reports
+//error_reporting(0);
+include "functions/train_details.php";
+include "functions/getData.php";
+include "functions/lang.php";
+include "functions/start.php";
+include "functions/train.php";
+include "functions/search.php";
+include "po_parser/src/Sepia/PoParser.php";
+//FIXME: add possibility to change language
+
+// define path to home directory 
+define("PATH", "");
+
+// load language
+Lang::defineLanguage();
+?>
 <!DOCTYPE html>
 <html>
 <head>
 
 <meta charset='utf-8'> 
+<meta name="description" content="<?php echo Lang::l_('Analysis of Train Routes Based on OpenStreetMap Data');?>">
 
+<!-- include leaflet -->
 <script src="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.js"></script>
 
 <!-- include bootstrap -->
- <!-- Latest compiled and minified CSS -->
+<!-- Latest compiled and minified CSS -->
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">
 
 <!-- Optional theme -->
@@ -41,33 +61,16 @@
 <!-- Latest compiled and minified JavaScript -->
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"></script>
 
-
 <!-- load javascript functions -->
 <script type="text/javascript" src="javascript/functions.js"></script>
 
 
 <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.css" />
 
-
 <link rel="stylesheet" type="text/css" href="style/style.css">
 <link rel="alternate" type="application/rss+xml" href="changelog.php" title="Changelog">
 
 <?php
-//turn off error_reports
-//error_reporting(0);
-include "functions/train_details.php";
-include "functions/getData.php";
-include "functions/lang.php";
-include "functions/start.php";
-include "functions/train.php";
-include "functions/search.php";
-include "po_parser/src/Sepia/PoParser.php";
-//include "lang/lang_de.php"; //FIXME: add possibility to change language
-
-// define path to home directory 
-define("PATH", "");
-
-Lang::defineLanguage();
 //route id is defined -> get route 
 if(isset($_GET["id"])) 
 {
