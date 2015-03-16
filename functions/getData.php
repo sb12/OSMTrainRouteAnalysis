@@ -509,7 +509,8 @@ Class Route
 			{
 				foreach ( $temp_relation_array as $c => $d )
 				{
-					if ( !isset($this -> relation_tags[$c]) )
+					//do not overwrite tags for route_master when tag is already set in route
+					if ( $temp_relation_array["type"] != "route_master" || !isset($this -> relation_tags[$c]) )
 					{
 						// type tag should only be route
 						if ( $c != "type" || $d == "route" )
