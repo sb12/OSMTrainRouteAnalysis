@@ -35,6 +35,11 @@ include "po_parser/src/Sepia/PoParser.php";
 // define path to home directory 
 define("PATH", "");
 
+//define version numbers of external software
+$v_bootstrap = "3.3.4";
+$v_leaflet = "0.7.3";
+$v_jquery = "1.11.2";
+
 // load language
 Lang::defineLanguage();
 ?>
@@ -46,26 +51,26 @@ Lang::defineLanguage();
 <meta name="description" content="<?php echo Lang::l_('Analysis of Train Routes Based on OpenStreetMap Data');?>">
 
 <!-- include leaflet -->
-<script src="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.js"></script>
+<script src="http://cdn.leafletjs.com/leaflet-<?php echo $v_leaflet;?>/leaflet.js"></script>
 
 <!-- include bootstrap -->
 <!-- Latest compiled and minified CSS -->
-<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/<?php echo $v_bootstrap;?>/css/bootstrap.min.css">
 
 <!-- Optional theme -->
-<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap-theme.min.css">
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/<?php echo $v_bootstrap;?>/css/bootstrap-theme.min.css">
  
 <!-- load jquery -->
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/<?php echo $v_jquery;?>/jquery.min.js"></script>
 
 <!-- Latest compiled and minified JavaScript -->
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/<?php echo $v_bootstrap;?>/js/bootstrap.min.js"></script>
 
 <!-- load javascript functions -->
 <script type="text/javascript" src="javascript/functions.js"></script>
 
 
-<link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.css" />
+<link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-<?php echo $v_leaflet;?>/leaflet.css" />
 
 <link rel="stylesheet" type="text/css" href="style/style.css">
 <link rel="alternate" type="application/rss+xml" href="changelog.php" title="Changelog">
