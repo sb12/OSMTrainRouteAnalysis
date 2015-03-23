@@ -287,7 +287,7 @@ Class Train
 		
 		$default_allowed = false;
 		//highspeed and long distance trains
-		if( ( $train_type == "highspeed" || $train_type == "long_distance" || $train_type == "night" ) && $route == "train" && ( !$service || $service == "highspeed" || $service == "long_distance" || $service == "night" || $service == "car" ) )
+		if( ( $train_type == "highspeed" || $train_type == "long_distance" || $train_type == "night" ) && $route == "train" && ( !$service || $service == "high_speed" || $service == "long_distance" || $service == "night" || $service == "car" ) )
 		{
 			$default_allowed = true;
 		}
