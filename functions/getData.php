@@ -1911,7 +1911,7 @@ if (  $this->relation_distance == 0 )
 			$i = 0;
 			foreach ( $this->relation_stops as $nr => $ref )
 			{
-				if($this->relation_stops_type[$nr] == "n")
+				if ( $this->relation_stops_type[$nr] == "n" )
 				{
 					// node is not on way
 					if ( !isset($this->stop_node_distance[$ref]) )
@@ -1921,7 +1921,11 @@ if (  $this->relation_distance == 0 )
 						// try to find nearest node on way 
 						// FIXME: only works for nodes
 						$ref = $this->get_nearest_node($ref);
-	
+
+						if(!$ref) //use old ref in case no node was found
+						{
+							$ref = $old_ref;
+						}
 						// add new ref and move name and description to new ref
 						$this->relation_stops[$nr] = $ref;
 						if ( isset($this->node[$old_ref]["ref_name"]) )
@@ -1950,12 +1954,17 @@ if (  $this->relation_distance == 0 )
 						$i++;
 					}
 				}
-				elseif($this->relation_stops_type[$nr] == "w")
+				elseif ( $this->relation_stops_type[$nr] == "w" )
 				{
 					$old_ref = $ref;
 					
 					// try to find nearest node on way
 					$ref = $this->get_nearest_node($this->way_nodes[$ref][0]);
+
+					if(!$ref) //use old ref in case no node was found
+					{
+						$ref = $this->way_nodes[$old_ref][0];
+					}
 	
 					// add new ref and move name and description to new ref
 					$this->relation_stops[$nr] = $ref;
@@ -2879,6 +2888,7 @@ if (  $this->relation_distance == 0 )
 		//get train class
 		if ( $route == "train" )
 		{
+			$css_ref_class = "ref_regional";
 			if ( $service )
 			{
 				if ( $service == "high_speed" || $service == "long_distance" || $service == "night" || $service == "car" || $service == "car_shuttle" )
@@ -2893,10 +2903,6 @@ if (  $this->relation_distance == 0 )
 				{
 					$css_ref_class = "ref_tourism";
 				}
-			}
-			else
-			{
-				$css_ref_class = "ref_regional";
 			}
 		}
 		elseif ( $route == "light_rail" )
