@@ -214,7 +214,7 @@ Class Search
 		{
 			//FIXME: translation
 			?>
-			No data was found.
+			<div class="list-group-item alert alert-danger"><?php echo Lang::l_("No data was found."); ?></div
 			<?php
 			return;
 		}
