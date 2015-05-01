@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Zuganalyse\n"
-"POT-Creation-Date: 2014-12-26 19:55+0100\n"
-"PO-Revision-Date: 2014-12-26 19:56+0100\n"
+"POT-Creation-Date: 2015-05-01 15:34+0100\n"
+"PO-Revision-Date: 2015-05-01 15:48+0100\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: de\n"
@@ -15,190 +15,140 @@ msgstr ""
 "X-Poedit-SourceCharset: UTF-8\n"
 "X-Poedit-SearchPath-0: ..\n"
 
-#: ../functions/getData.php:797 ../functions/getData.php:801
-#: ../functions/getData.php:930 ../functions/getData.php:940
-#: ../functions/getData.php:967 ../functions/getData.php:977
-#: ../functions/getData.php:994 ../functions/getData.php:996
-#: ../functions/getData.php:1002 ../functions/getData.php:1004
-#: ../functions/getData.php:1014 ../functions/getData.php:1026
-#: ../functions/getData.php:1036 ../functions/getData.php:1598
-#: ../functions/getData.php:1662 ../functions/search.php:227
-msgid "N/A"
-msgstr "nicht angegeben"
-
-#: ../functions/getData.php:944 ../functions/getData.php:1173
-#: ../functions/getData.php:1177 ../functions/search.php:304
-msgid "Unknown"
-msgstr "Unbekannt"
-
-#: ../functions/getData.php:950
-msgid "mixed traffic"
-msgstr "Gemischter Verkehr"
-
-#: ../functions/getData.php:951
-msgid "passenger traffic"
-msgstr "Personenverkehr"
-
-#: ../functions/getData.php:952
-msgid "freight traffic"
-msgstr "Güterverkehr"
-
-#: ../functions/getData.php:989
-msgid "not electrified"
-msgstr "nicht elektrifiziert"
-
-#: ../functions/getData.php:1008
-msgid "DC"
-msgstr "Gleichstrom"
-
-#: ../functions/getData.php:1012
-msgid "AC"
-msgstr "Wechselstrom"
-
-#: ../functions/getData.php:1016
-msgid "electrified with unknown voltage"
-msgstr "elektrifiziert mit unbekannter Spannung"
-
-#: ../functions/getData.php:1044
-msgid "in tunnels"
-msgstr "in Tunneln"
-
-#: ../functions/getData.php:1048
-msgid "on bridges"
-msgstr "auf Brücken"
-
-#: ../functions/getData.php:1052
-msgid "on embankments"
-msgstr "auf Dämmen"
-
-#: ../functions/getData.php:1056
-msgid "in cuttings"
-msgstr "in Einschnitten"
-
-#: ../functions/getData.php:1061 ../functions/getData.php:1071
-msgid "on ground level"
-msgstr "ebenerdig"
-
-#: ../functions/getData.php:1182
-msgid "Train Analysis: "
-msgstr "Zuganalyse: "
-
-#: ../functions/getData.php:1543 ../functions/start.php:41
-#: ../functions/start.php:46
-msgid "Train Analysis"
-msgstr "Zuganalyse"
-
-#: ../functions/getData.php:1544 ../functions/start.php:47
+#: ../index.php:51 ../functions/start.php:49
 msgid "Analysis of Train Routes Based on OpenStreetMap Data"
 msgstr "Analyse von Zugrouten basierend auf OpenStreetMap Daten"
 
-#: ../functions/getData.php:1548 ../functions/search.php:312
-msgid "to"
-msgstr "nach"
+#: ../functions/getData.php:799 ../functions/getData.php:803
+#: ../functions/getData.php:935 ../functions/getData.php:945
+#: ../functions/getData.php:972 ../functions/getData.php:982
+#: ../functions/getData.php:999 ../functions/getData.php:1001
+#: ../functions/getData.php:1007 ../functions/getData.php:1009
+#: ../functions/getData.php:1019 ../functions/getData.php:1031
+#: ../functions/getData.php:1041 ../functions/getData.php:1719
+#: ../functions/getData.php:2975
+msgid "N/A"
+msgstr "nicht angegeben"
 
-#: ../functions/getData.php:1549 ../functions/start.php:347
-msgid "Back to Overview"
-msgstr "Zurück zur Übersicht"
+#: ../functions/getData.php:949 ../functions/getData.php:1115
+#: ../functions/getData.php:1119
+msgid "Unknown"
+msgstr "Unbekannt"
 
-#: ../functions/getData.php:1549 ../functions/start.php:347
-msgid "Back to Route Overview"
-msgstr "Zurück zur Routenübersicht"
+#: ../functions/getData.php:955
+msgid "mixed traffic"
+msgstr "Gemischter Verkehr"
 
-#: ../functions/getData.php:1554
+#: ../functions/getData.php:956
+msgid "passenger traffic"
+msgstr "Personenverkehr"
+
+#: ../functions/getData.php:957
+msgid "freight traffic"
+msgstr "Güterverkehr"
+
+#: ../functions/getData.php:994
+msgid "not electrified"
+msgstr "nicht elektrifiziert"
+
+#: ../functions/getData.php:1013
+msgid "DC"
+msgstr "Gleichstrom"
+
+#: ../functions/getData.php:1017
+msgid "AC"
+msgstr "Wechselstrom"
+
+#: ../functions/getData.php:1021
+msgid "electrified with unknown voltage"
+msgstr "elektrifiziert mit unbekannter Spannung"
+
+#: ../functions/getData.php:1049
+msgid "in tunnels"
+msgstr "in Tunneln"
+
+#: ../functions/getData.php:1053
+msgid "on bridges"
+msgstr "auf Brücken"
+
+#: ../functions/getData.php:1057
+msgid "on embankments"
+msgstr "auf Dämmen"
+
+#: ../functions/getData.php:1061
+msgid "in cuttings"
+msgstr "in Einschnitten"
+
+#: ../functions/getData.php:1066 ../functions/getData.php:1076
+msgid "on ground level"
+msgstr "ebenerdig"
+
+#: ../functions/getData.php:1131
+msgid "Train Analysis: "
+msgstr "Zuganalyse: "
+
+#: ../functions/getData.php:1545
 msgid "Route Data could not be updated from Overpass API."
 msgstr ""
 "Die Routendaten konnten nicht von der Overpass-API aktualisiert werden."
 
-#: ../functions/getData.php:1560
+#: ../functions/getData.php:1558
 msgid "Route Data was successfully updated from Overpass API."
 msgstr "Die Routendaten wurden erfolgreich über die Overpass-API aktualisiert."
 
-#: ../functions/getData.php:1565
+#: ../functions/getData.php:1572
+msgid ""
+"We couldn't find any ways for this route. Please check the OpenStreetMap "
+"data for errors."
+msgstr ""
+"Es konnten keine Wege in dieser Route gefunden werde. Bitte überprüfe die "
+"OpenStreetMap-Daten auf Fehler."
+
+#: ../functions/getData.php:1583
 msgid "Route Details"
 msgstr "Routendetails"
 
-#: ../functions/getData.php:1572
+#: ../functions/getData.php:1590
 msgid "Operator:"
 msgstr "Betreiber:"
 
-#: ../functions/getData.php:1588 ../functions/getData.php:1673
-#: ../functions/search.php:217
-msgid "Highspeed train"
-msgstr "Hochgeschwindigkeitszug"
-
-#: ../functions/getData.php:1589 ../functions/getData.php:1674
-#: ../functions/search.php:218
-msgid "Long distance train"
-msgstr "Fernverkehrszug"
-
-#: ../functions/getData.php:1590 ../functions/search.php:219
-msgid "Motorail Train"
-msgstr "Autoreisezug"
-
-#: ../functions/getData.php:1591 ../functions/search.php:220
-msgid "Car Shuttle Train"
-msgstr "Autotransportzug"
-
-#: ../functions/getData.php:1592 ../functions/search.php:221
-msgid "Night Train"
-msgstr "Nachtreisezug"
-
-#: ../functions/getData.php:1593 ../functions/getData.php:1676
-#: ../functions/search.php:222
-msgid "Regional train"
-msgstr "Regionalverkehrszug"
-
-#: ../functions/getData.php:1594 ../functions/search.php:223
-msgid "Commuter train"
-msgstr "S-Bahn"
-
-#: ../functions/getData.php:1595 ../functions/search.php:224
-msgid "Light Rail"
-msgstr "Stadtbahn"
-
-#: ../functions/getData.php:1596 ../functions/getData.php:1678
-#: ../functions/search.php:225
-msgid "Tram"
-msgstr "Straßenbahn"
-
-#: ../functions/getData.php:1597 ../functions/getData.php:1679
-#: ../functions/search.php:226
-msgid "Subway"
-msgstr "U-Bahn"
-
-#: ../functions/getData.php:1605
+#: ../functions/getData.php:1620
 msgid "Train Type"
 msgstr "Zugtyp"
 
-#: ../functions/getData.php:1606 ../functions/start.php:170
+#: ../functions/getData.php:1621 ../functions/start.php:234
 msgid "Route Length"
 msgstr "Streckenlänge"
 
-#: ../functions/getData.php:1607
+#: ../functions/getData.php:1622
 msgid "Travel Time"
 msgstr "Reisezeit"
 
-#: ../functions/getData.php:1608
+#: ../functions/getData.php:1623
 msgid "Average Speed"
 msgstr "Durchschnittsgeschwindigkeit"
 
-#: ../functions/getData.php:1609
+#: ../functions/getData.php:1624
 msgid "Maximum Speed"
 msgstr "Höchstgeschwindigkeit"
 
-#: ../functions/getData.php:1611
+#: ../functions/getData.php:1630
 msgid "Speed Profile"
 msgstr "Geschwindigkeitsprofil"
 
-#: ../functions/getData.php:1617
+#: ../functions/getData.php:1644
 msgid "Show Stop Names"
 msgstr "Haltestellennamen anzeigen"
 
-#: ../functions/getData.php:1620
+#: ../functions/getData.php:1650
+msgid "Show Overview"
+msgstr "Übersicht zeigen"
+
+#: ../functions/getData.php:1652
 msgid "Please note"
 msgstr "Hinweis"
 
-#: ../functions/getData.php:1620
+#: ../functions/getData.php:1652
 msgid "note_maxspeed"
 msgstr ""
 "Für die Berechnung der Geschwindigkeiten werden nur die zulässigen "
@@ -208,269 +158,354 @@ msgstr ""
 "die für den Fahrgastwechsel benötigt wird, wird ebenfalls nicht "
 "berücksichtigt."
 
-#: ../functions/getData.php:1622
+#: ../functions/getData.php:1658
 msgid "Railway details"
 msgstr "Streckendetails"
 
-#: ../functions/getData.php:1624
+#: ../functions/getData.php:1661
 msgid "Railway Operators"
 msgstr "Streckenbetreiber"
 
-#: ../functions/getData.php:1625
+#: ../functions/getData.php:1662
 msgid "Railway Users"
 msgstr "Streckenbenutzung"
 
-#: ../functions/getData.php:1626
+#: ../functions/getData.php:1663
 msgid "Electrification"
 msgstr "Elektrifizierung"
 
-#: ../functions/getData.php:1627
+#: ../functions/getData.php:1664
 msgid "Structures"
 msgstr "Bauwerke"
 
-#: ../functions/getData.php:1628
+#: ../functions/getData.php:1665
 msgid "Gaps in Route"
 msgstr "Lücken in der Route"
 
-#: ../functions/getData.php:1631
+#: ../functions/getData.php:1670
+msgid "Analyze route with OSM Relation Analyzer"
+msgstr "Route mit OSM Relation Analyzer analysieren"
+
+#: ../functions/getData.php:1670
+msgid "Analyze route"
+msgstr "Route analysieren"
+
+#: ../functions/getData.php:1686
 msgid "Map of Route and Stops"
 msgstr "Karte der Route und Haltestellen"
 
-#: ../functions/getData.php:1675
-msgid "Night train"
-msgstr "Nachtreisezug"
-
-#: ../functions/getData.php:1677
-msgid "Light rail"
-msgstr "S-Bahn"
-
-#: ../functions/getData.php:1680
-msgid "Freight train"
-msgstr "Güterzug"
-
-#: ../functions/getData.php:1684
+#: ../functions/getData.php:1765
 msgid "Train details"
 msgstr "Zugdetails"
 
-#: ../functions/getData.php:1695
+#: ../functions/getData.php:1777
+msgid "Train Image"
+msgstr "Zugbild"
+
+#: ../functions/getData.php:1781
 msgid "Train name"
 msgstr "Zugbezeichnung"
 
-#: ../functions/getData.php:1696
+#: ../functions/getData.php:1782
 msgid "Train type"
 msgstr "Zugart"
 
-#: ../functions/getData.php:1697
+#: ../functions/getData.php:1783
 msgid "Maximum speed"
 msgstr "Höchstgeschwindigkeit"
 
-#: ../functions/getData.php:1698
+#: ../functions/getData.php:1784
 msgid "Weight empty"
 msgstr "Leergewicht"
 
-#: ../functions/getData.php:1699
+#: ../functions/getData.php:1785
 msgid "Power"
 msgstr "Leistung"
 
-#: ../functions/getData.php:1700
+#: ../functions/getData.php:1786
 msgid "Maximum torque"
 msgstr "Maximales Drehmoment"
 
-#: ../functions/getData.php:1701
+#: ../functions/getData.php:1787
 msgid "Maximum brake"
 msgstr "Maximale Bremsverzögerung"
 
-#: ../functions/getData.php:1702
+#: ../functions/getData.php:1788
 msgid "Length"
 msgstr "Zuglänge"
 
-#: ../functions/getData.php:1703
+#: ../functions/getData.php:1789
 msgid "Seats"
 msgstr "Sitzplätze"
 
-#: ../functions/getData.php:1705
+#: ../functions/getData.php:1802 ../functions/getData.php:1823
+msgid "Set as Default"
+msgstr "Als Standard setzen"
+
+#: ../functions/getData.php:1810 ../functions/getData.php:1825
+msgid "Set "
+msgstr " "
+
+#: ../functions/getData.php:1810 ../functions/getData.php:1826
+msgid " as Default"
+msgstr " als Standard setzen"
+
+#: ../functions/getData.php:1818 ../functions/getData.php:1841
 msgid "Change train"
 msgstr "Zug ändern"
 
-#: ../functions/getData.php:1711
+#: ../functions/getData.php:1824
+msgid "Change train and set "
+msgstr "Zug ändern und "
+
+#: ../functions/getData.php:1827
+msgid "Can't set as Default"
+msgstr "Kann nicht als Standard gesetzt werden"
+
+#: ../functions/getData.php:1828
+msgid "Loading..."
+msgstr "Lädt..."
+
+#: ../functions/getData.php:1836
+msgid "Click button to change."
+msgstr "Zum Ändern klicken."
+
+#: ../functions/getData.php:1853
 msgid "Data date"
 msgstr "Daten vom"
 
-#: ../functions/getData.php:1711 ../functions/start.php:353
+#: ../functions/getData.php:1853 ../functions/start.php:455
 msgid "Update data"
 msgstr "Daten aktualisieren"
 
-#: ../functions/getData.php:1711 ../functions/start.php:223
+#: ../functions/getData.php:1853 ../functions/start.php:304
 msgid "Route Data"
 msgstr "Routendaten"
 
-#: ../functions/getData.php:1711
+#: ../functions/getData.php:1853
 msgid "licence"
 msgstr "Lizenz"
 
-#: ../functions/getData.php:1711 ../functions/start.php:223
+#: ../functions/getData.php:1853 ../functions/start.php:304
 msgid " contributors"
 msgstr "-Mitwirkende"
 
-#: ../functions/getData.php:1711
+#: ../functions/getData.php:1853
 msgid "Load relation in JOSM"
 msgstr "Relation in JOSM laden"
 
-#: ../functions/getData.php:2322
+#: ../functions/getData.php:1886
+msgid ""
+"Loading relation to the editor failed - make sure JOSM or Merkaartor is "
+"loaded and the remote control option is enabled."
+msgstr ""
+"Das Laden der Relation ist fehlgeschlagen - bitte überprüfe ob JOSM oder "
+"Merkator geladen wurde und die Fernbedienungsfunktion eingeschaltet ist."
+
+#: ../functions/getData.php:2608
 msgid "OpenRailwayMap - Infrastructure"
 msgstr "OpenRailwayMap - Infrastruktur"
 
-#: ../functions/getData.php:2323
+#: ../functions/getData.php:2609
 msgid "OpenRailwayMap - Speed Limits"
 msgstr "OpenRailwayMap - Geschwindigkeiten"
 
-#: ../functions/getData.php:2324
+#: ../functions/getData.php:2610
 msgid "OpenRailwayMap - Rail signals"
 msgstr "OpenRailwayMap - Eisenbahnsignale"
 
-#: ../functions/getData.php:2325
+#: ../functions/getData.php:2611
 msgid "Route"
 msgstr "Route"
 
-#: ../functions/getData.php:2326
+#: ../functions/getData.php:2612
 msgid "Stops"
 msgstr "Haltestellen"
 
-#: ../functions/getData.php:2346
+#: ../functions/getData.php:2632
 msgid "Unknown stop"
 msgstr "Unbekannte Haltestelle"
 
-#: ../functions/start.php:41 ../functions/start.php:61
+#: ../functions/getData.php:2962
+msgid "Highspeed Train"
+msgstr "Hochgeschwindigkeitszug"
+
+#: ../functions/getData.php:2963
+msgid "Long Distance Train"
+msgstr "Fernverkehrszug"
+
+#: ../functions/getData.php:2964
+msgid "Motorail Train"
+msgstr "Autoreisezug"
+
+#: ../functions/getData.php:2965
+msgid "Car Shuttle Train"
+msgstr "Autotransportzug"
+
+#: ../functions/getData.php:2966
+msgid "Night Train"
+msgstr "Nachtreisezug"
+
+#: ../functions/getData.php:2967
+msgid "Regional Train"
+msgstr "Regionalverkehrszug"
+
+#: ../functions/getData.php:2968
+msgid "Commuter Train"
+msgstr "S-Bahn"
+
+#: ../functions/getData.php:2969
+msgid "Unspecified Train"
+msgstr "Unbestimmter Zug"
+
+#: ../functions/getData.php:2970
+msgid "Light Rail"
+msgstr "Stadtbahn"
+
+#: ../functions/getData.php:2971 ../functions/train.php:393
+msgid "Tram"
+msgstr "Straßenbahn"
+
+#: ../functions/getData.php:2972 ../functions/train.php:394
+msgid "Subway"
+msgstr "U-Bahn"
+
+#: ../functions/getData.php:2973
+msgid "Tourist Train"
+msgstr "Touristenzug"
+
+#: ../functions/getData.php:2974
+msgid "Tourist Tram"
+msgstr "Touristen-Straßenbahn"
+
+#: ../functions/start.php:40 ../functions/start.php:109
 msgid "Choose Route"
 msgstr "Route wählen"
 
-#: ../functions/start.php:63
-msgid "By the OpenStreetMap relation id:"
-msgstr "Über die OpenStreetMap Relations-ID:"
+#: ../functions/start.php:40 ../functions/start.php:48
+#: ../functions/start.php:73
+msgid "Train Analysis"
+msgstr "Zuganalyse"
 
-#: ../functions/start.php:68
-msgid "OpenStreetMap id"
-msgstr "OpenStreetMap ID"
-
-#: ../functions/start.php:76 ../functions/start.php:174
-#: ../functions/search.php:394
-msgid "Train"
-msgstr "Zug"
-
-#: ../functions/start.php:84
-msgid "Load route"
-msgstr "Route laden"
-
-#: ../functions/start.php:162
-msgid "By choosing a route from the list:"
-msgstr "Über das Auswählen einer Route aus der Liste:"
-
-#: ../functions/start.php:166 ../functions/search.php:354
-msgid "Line"
-msgstr "Linie"
-
-#: ../functions/start.php:167 ../functions/search.php:378
-msgid "Origin"
-msgstr "Startort"
-
-#: ../functions/start.php:168 ../functions/search.php:386
-msgid "Destination"
-msgstr "Zielort"
-
-#: ../functions/start.php:169 ../functions/search.php:362
-msgid "Operator"
-msgstr "Betreiber"
-
-#: ../functions/start.php:171
-msgid "Duration"
-msgstr "Fahrtzeit"
-
-#: ../functions/start.php:194
-msgid "Show Route"
-msgstr "Route anzeigen"
-
-#: ../functions/start.php:266 ../functions/start.php:271
-msgid "First"
-msgstr "Erste"
-
-#: ../functions/start.php:266 ../functions/start.php:271
-msgid "Previous"
-msgstr "Vorherige"
-
-#: ../functions/start.php:273
-msgid " of "
-msgstr " von "
-
-#: ../functions/start.php:276 ../functions/start.php:281
-msgid "Next"
-msgstr "Nächste"
-
-#: ../functions/start.php:276 ../functions/start.php:281
-msgid "Last"
-msgstr "Letzte"
-
-#: ../functions/start.php:312
-msgid "error_noid"
-msgstr "Es wurde keine Routen-ID angegeben."
-
-#: ../functions/start.php:313
-msgid "error_invalidid"
-msgstr "Die Route-ID ist ungültig."
-
-#: ../functions/start.php:314
-msgid "error_noxmlfile"
-msgstr "Für diese Route existiert keine XML-Datei."
-
-#: ../functions/start.php:315
-msgid "error_invalidxmlfile"
-msgstr "Die XML-Datei ist defekt."
-
-#: ../functions/start.php:316
-msgid "error_noroute"
-msgstr "Diese ID gehört nicht zu einer Route."
-
-#: ../functions/start.php:317
-msgid "error_mysql"
-msgstr "Es ist ein Datenbankfehler aufgetreten."
-
-#: ../functions/start.php:335
-msgid "error_title"
-msgstr "Es ist ein Fehler aufgetreten."
-
-#: ../functions/start.php:338
-msgid "error_heading"
-msgstr "Es ist ein Fehler aufgetreten."
-
-#: ../functions/start.php:376
+#: ../functions/start.php:92 ../functions/start.php:498
 msgid "About This Service"
 msgstr "Über diesen Service"
 
-#: ../functions/start.php:379
+#: ../functions/start.php:115
+msgid "By the OpenStreetMap relation id:"
+msgstr "Über die OpenStreetMap Relations-ID:"
+
+#: ../functions/start.php:120
+msgid "OpenStreetMap id"
+msgstr "OpenStreetMap ID"
+
+#: ../functions/start.php:126 ../functions/start.php:238
+#: ../functions/search.php:343
+msgid "Train"
+msgstr "Zug"
+
+#: ../functions/start.php:133
+msgid "Load route"
+msgstr "Route laden"
+
+#: ../functions/start.php:220
+msgid "By choosing a route from the list:"
+msgstr "Über das Auswählen einer Route aus der Liste:"
+
+#: ../functions/start.php:230 ../functions/search.php:313
+msgid "Line"
+msgstr "Linie"
+
+#: ../functions/start.php:231 ../functions/search.php:331
+msgid "Origin"
+msgstr "Startort"
+
+#: ../functions/start.php:232 ../functions/search.php:337
+msgid "Destination"
+msgstr "Zielort"
+
+#: ../functions/start.php:233 ../functions/search.php:319
+msgid "Operator"
+msgstr "Betreiber"
+
+#: ../functions/start.php:235
+msgid "Duration"
+msgstr "Fahrtzeit"
+
+#: ../functions/start.php:260
+msgid "Show Route"
+msgstr "Route anzeigen"
+
+#: ../functions/start.php:351 ../functions/start.php:358
+msgid "First"
+msgstr "Erste"
+
+#: ../functions/start.php:352 ../functions/start.php:359
+msgid "Previous"
+msgstr "Vorherige"
+
+#: ../functions/start.php:363
+msgid " of "
+msgstr " von "
+
+#: ../functions/start.php:368 ../functions/start.php:376
+msgid "Next"
+msgstr "Nächste"
+
+#: ../functions/start.php:369 ../functions/start.php:377
+msgid "Last"
+msgstr "Letzte"
+
+#: ../functions/start.php:418
+msgid "error_noid"
+msgstr "Es wurde keine Routen-ID angegeben."
+
+#: ../functions/start.php:419
+msgid "error_invalidid"
+msgstr "Die Route-ID ist ungültig."
+
+#: ../functions/start.php:420
+msgid "error_noxmlfile"
+msgstr "Für diese Route existiert keine XML-Datei."
+
+#: ../functions/start.php:421
+msgid "error_invalidxmlfile"
+msgstr "Die XML-Datei ist defekt."
+
+#: ../functions/start.php:422
+msgid "error_noroute"
+msgstr "Diese ID gehört nicht zu einer Route."
+
+#: ../functions/start.php:423
+msgid "error_mysql"
+msgstr "Es ist ein Datenbankfehler aufgetreten."
+
+#: ../functions/start.php:501
 msgid "What is this?"
 msgstr "Was ist das?"
 
-#: ../functions/start.php:380
+#: ../functions/start.php:502
 msgid "What is this? text"
 msgstr ""
 "Die Zuganalyse ist ein Service zur Analyse der Zugrouten, die in der "
 "OpenStreetMap-Datenbanken vorhanden sind. Ausgewertet werden dabei unter "
 "anderem Geschwindigkeiten, sowie Streckeneigenschaften. "
 
-#: ../functions/start.php:381
+#: ../functions/start.php:503
 msgid "How do I choose a route?"
 msgstr "Wie wähle ich eine Zugroute?"
 
-#: ../functions/start.php:382
+#: ../functions/start.php:504
 msgid "How do I choose a route? text"
 msgstr ""
 "Zur Zeit kann die Zugroute durch Eingabe der OSM-ID gewählt werden. Außerdem "
 "werden Zugrouten aufgelistet, die bereits abgefragt wurden. "
 
-#: ../functions/start.php:383
+#: ../functions/start.php:505
 msgid "Where does the data come from and is it up to date?"
 msgstr "Woher kommen die Daten und wie aktuell sind sie?"
 
-#: ../functions/start.php:384
+#: ../functions/start.php:506
 msgid "Where does the data come from and is it up to date? text"
 msgstr ""
 "Die Daten stammen aus der OpenStreetMap-Datenbank und werden über die "
@@ -478,35 +513,35 @@ msgstr ""
 "ca. 50 Tage gecacht. Das Datum der letzten Aktualisierung steht am Ende der "
 "Seite. Dort können die Daten auch manuell aktualisiert werden."
 
-#: ../functions/start.php:385
+#: ../functions/start.php:507
 msgid "Which data is used?"
 msgstr "Welche Daten werden ausgewertet?"
 
-#: ../functions/start.php:386
+#: ../functions/start.php:508
 msgid "used_data_relations"
 msgstr "Zur Zeit werden die folgenden Tags an der Relation ausgewertet:"
 
-#: ../functions/start.php:397
+#: ../functions/start.php:519
 msgid "used_data_ways"
 msgstr ""
 "An den in der Relation enthaltenen Wegen werden folgende Tags ausgewertet:"
 
-#: ../functions/start.php:413
+#: ../functions/start.php:535
 msgid "used_data_maxspeed"
 msgstr ""
 "Wenn die Geschwindigkeit nicht explicit angegeben ist, werden die folgenden "
 "Tags benutzt um die Geschwindigkeit abzuschätzen:"
 
-#: ../functions/start.php:424
+#: ../functions/start.php:546
 msgid "used_data_stops"
 msgstr "An den Haltestellen werden folgende Tags ausgewertet:"
 
-#: ../functions/start.php:429
+#: ../functions/start.php:552
 msgid "I have a suggestion. / I found an error"
 msgstr ""
 "Ich habe einen Verbesserungsvorschlag. / Ich habe einen Fehler gefunden."
 
-#: ../functions/start.php:430
+#: ../functions/start.php:553
 msgid "suggestion_error_text"
 msgstr ""
 "Wenn es sich um einen Programmfehler handelt, freue ich mich auf einen <a "
@@ -518,32 +553,78 @@ msgstr ""
 "Relationen (z.B. falscher Fahrtverlauf, falsche Haltreihenfolge, Lücken in "
 "der Route) erfordert erweiterte Kenntnisse des Datenmodells)."
 
-#: ../functions/start.php:431
+#: ../functions/start.php:554
 msgid "Changelog"
 msgstr "Versionsgeschichte"
 
+#: ../functions/train.php:245
+msgid "Please choose a train"
+msgstr "Bitte wähle einen Zug"
+
+#: ../functions/train.php:388
+msgid "Highspeed train"
+msgstr "Hochgeschwindigkeitszug"
+
+#: ../functions/train.php:389
+msgid "Long distance train"
+msgstr "Fernverkehrszug"
+
+#: ../functions/train.php:390
+msgid "Night train"
+msgstr "Nachtreisezug"
+
+#: ../functions/train.php:391
+msgid "Regional train"
+msgstr "Regionalverkehrszug"
+
+#: ../functions/train.php:392
+msgid "Light rail"
+msgstr "S-Bahn"
+
+#: ../functions/train.php:395
+msgid "Freight train"
+msgstr "Güterzug"
+
+#: ../functions/search.php:217
+msgid "No data was found."
+msgstr "Es wurden keine Daten gefunden"
+
 #: ../functions/search.php:308
-msgid "from"
-msgstr "von"
-
-#: ../functions/search.php:316
-msgid "via"
-msgstr "über"
-
-#: ../functions/search.php:348
 msgid "By route information:"
 msgstr "Über Routeninformationen:"
 
-#: ../functions/search.php:370
+#: ../functions/search.php:325
 msgid "Network"
 msgstr "Netzwerk"
 
-#: ../functions/search.php:402
+#: ../functions/search.php:350
 msgid "Search route"
 msgstr "Route suchen"
 
-#~ msgid "Route Overview"
-#~ msgstr "Routenübersicht"
+#: ../functions/search.php:371
+msgid "Search Results"
+msgstr "Suchergebnisse"
+
+#~ msgid "to"
+#~ msgstr "nach"
+
+#~ msgid "Back to Overview"
+#~ msgstr "Zurück zur Übersicht"
+
+#~ msgid "Back to Route Overview"
+#~ msgstr "Zurück zur Routenübersicht"
+
+#~ msgid "error_title"
+#~ msgstr "Es ist ein Fehler aufgetreten."
+
+#~ msgid "error_heading"
+#~ msgstr "Es ist ein Fehler aufgetreten."
+
+#~ msgid "from"
+#~ msgstr "von"
+
+#~ msgid "via"
+#~ msgstr "über"
 
 #~ msgid "Updata data"
 #~ msgstr "Update data"

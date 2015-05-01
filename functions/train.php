@@ -255,7 +255,7 @@ Class Train
 					<?php 
 				}
 				?>
-			<optgroup label="<?php echo self::$train_type[$tr_type[$ref]]; ?>">
+			<optgroup label="<?php echo Lang::l_(self::$train_type[$tr_type[$ref]]); ?>">
 				<?php
 				$type = $tr_type[$ref];
 			}
