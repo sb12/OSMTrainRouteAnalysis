@@ -282,6 +282,19 @@ $tr_brake["BR425"] = 0.9;
 $tr_length["BR425"] = 0.068;
 $tr_image["BR425"] = "BR425.svg";
 
+//DB BR 429 FLIRT 3 Süwex (Germany)
+$tr_name["BR429Süwex"] = "DB Baureihe 429 Stadler FLIRT 3 5-teilig SÜWEX";
+$tr_type["BR429Süwex"] = "regional";
+$tr_maxspeed["BR429Süwex"] = 160; // km/h
+$tr_mass_empty["BR429Süwex"] = 130; // t
+$tr_power["BR429Süwex"] = 2000; // kW
+$tr_torque["BR429Süwex"] = 175; // kN
+$tr_seats["BR429Süwex"] = 270;
+$tr_acc["BR429Süwex"] = 0.9;
+$tr_brake["BR429Süwex"] = 0.9;
+$tr_length["BR429Süwex"] = 0.098;
+$tr_image["BR429Süwex"] = "StadlerFlirt_SÜWEX.svg";
+
 //DB BR 430 (Germany)
 $tr_name["BR430"] = "DB Baureihe 430";
 $tr_type["BR430"] = "regional";
@@ -374,6 +387,19 @@ $tr_brake["BR642"] = 1; // m/s²
 $tr_length["BR642"] = 0.042; //in Einzeltraktion
 $tr_image["BR642"] = "BR642.svg";
 
+
+//Stadler FLIRT 3 (Germany)
+$tr_name["Flirt3_5t"] = "Stadler FLIRT 3 5-teilig";
+$tr_type["Flirt3_5t"] = "regional";
+$tr_maxspeed["Flirt3_5t"] = 160; // km/h
+$tr_mass_empty["Flirt3_5t"] = 130; // t
+$tr_power["Flirt3_5t"] = 2000; // kW
+$tr_torque["Flirt3_5t"] = 175; // kN
+$tr_seats["Flirt3_5t"] = 270;
+$tr_acc["Flirt3_5t"] = 0.9;
+$tr_brake["Flirt3_5t"] = 0.9;
+$tr_length["Flirt3_5t"] = 0.098;
+$tr_image["Flirt3_5t"] = "StadlerFlirt.svg";
 
 //Stadler Regioshuttle RS1
 $tr_name["RS1"] = "Stadler Regioshuttle RS1";
