@@ -509,16 +509,18 @@ function showAbout()
 				<ul>
 					<li><a href="http://wiki.openstreetmap.org/wiki/OpenRailwayMap/Tagging#Train_Route">ref</a></li>
 					<li><a href="http://wiki.openstreetmap.org/wiki/OpenRailwayMap/Tagging#Train_Route">operator</a></li>
+					<li><a href="http://wiki.openstreetmap.org/wiki/OpenRailwayMap/Tagging#Train_Route">network</a></li>
 					<li><a href="http://wiki.openstreetmap.org/wiki/OpenRailwayMap/Tagging#Train_Route">route=rail|train|light_rail|tram|subway</a></li>
-					<li><a href="http://wiki.openstreetmap.org/wiki/OpenRailwayMap/Tagging#Train_Route">service=high_speed|long_distance|night|car|car_shuttle|regional|commuter</a></li>
+					<li><a href="http://wiki.openstreetmap.org/wiki/OpenRailwayMap/Tagging#Train_Route">service=high_speed|long_distance|night|car|car_shuttle|regional|commuter|tourism</a></li>
 					<li><a href="http://wiki.openstreetmap.org/wiki/OpenRailwayMap/Tagging#Train_Route">color|colour</a></li>
 					<li><a href="http://wiki.openstreetmap.org/wiki/OpenRailwayMap/Tagging#Train_Route">text_color|text_colour|colour:text</a></li>
 					<li><a href="http://wiki.openstreetmap.org/wiki/OpenRailwayMap/Tagging#Train_Route">from</a></li>
 					<li><a href="http://wiki.openstreetmap.org/wiki/OpenRailwayMap/Tagging#Train_Route">to</a></li>
+					<li><a href="http://wiki.openstreetmap.org/wiki/OpenRailwayMap/Tagging#Train_Route">via</a></li>
 				</ul>
 				<p><?php echo Lang::l_("used_data_ways"); ?></p>
 				<ul>
-					<li><a href="http://wiki.openstreetmap.org/wiki/OpenRailwayMap/Tagging#Tracks">railway=rail|light_rail|tram|narrow_gauge|subway</a></li>
+					<li><a href="http://wiki.openstreetmap.org/wiki/OpenRailwayMap/Tagging#Tracks">railway=rail|light_rail|tram|narrow_gauge|subway|miniature</a></li>
 					<li><a href="http://wiki.openstreetmap.org/wiki/OpenRailwayMap/Tagging#Tracks">maxspeed</a></li>
 					<li><a href="http://wiki.openstreetmap.org/wiki/OpenRailwayMap/Tagging#Tracks">maxspeed:forward</a></li>
 					<li><a href="http://wiki.openstreetmap.org/wiki/OpenRailwayMap/Tagging#Tracks">maxspeed:backward</a></li>

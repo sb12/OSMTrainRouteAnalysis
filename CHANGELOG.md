@@ -18,3 +18,13 @@
 * Additional trains
 * Support of stop nodes that are not directly on the way of the route
 * Minor tweaks and bugfixes
+
+## v1.0 - June 6, 2015
+
+* New user interface based on bootstrap
+* Improved selection of trains
+* Show route colors on front page
+* Select a default train for a route
+* Support for tourist trains and miniature trains
+* Additional trains
+* Lot's of minor tweaks and bugfixes
