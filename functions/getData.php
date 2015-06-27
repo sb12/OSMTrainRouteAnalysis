@@ -602,7 +602,7 @@ Class Route
 	function loadRelationWays()
 	{
 		// set variables to 0
-		$maxspeed_before = $maxspeed_before_max = $maxspeed_before_min = $distance_before = $distance_before_min = $distance_before_max = $maxspeed_total_max = $maxspeed_total_min = $maxspeed_total = 0;
+		$maxspeed_before = $maxspeed_before_max = $maxspeed_before_min = $distance_before = $distance_before_min = $distance_before_max = $exact_before = $maxspeed_total_max = $maxspeed_total_min = $maxspeed_total = 0;
 
 		// set maxspeed of train
 		$maxspeed_train = $this->train->maxspeed;
@@ -737,19 +737,19 @@ Class Route
 			/*Set maxspeed matrix for average*/
 			if ( $maxspeed_before != $maxspeed && $maxspeed_before != 0 )
 			{
-				$maxspeed_array[] = Array($distance_before, $maxspeed_before, $exact);
+				$maxspeed_array[] = Array($distance_before, $maxspeed_before, $exact_before);
 				$distance_before = 0;
 			}
 			/*Set maxspeed matrix for max*/
 			if( $maxspeed_before_max != $maxspeed && $maxspeed_before_max != 0 )
 			{
-				$maxspeed_array_max[] = Array($distance_before_max, $maxspeed_before_max, $exact);
+				$maxspeed_array_max[] = Array($distance_before_max, $maxspeed_before_max, $exact_before);
 				$distance_before_max = 0;
 			}
 			/*Set maxspeed matrix for min*/
 			if ( $maxspeed_before_min != $maxspeed && $maxspeed_before_min != 0 )
 			{
-				$maxspeed_array_min[] = Array($distance_before_min, $maxspeed_before_min, $exact);
+				$maxspeed_array_min[] = Array($distance_before_min, $maxspeed_before_min, $exact_before);
 				$distance_before_min = 0;
 			}
 
@@ -759,6 +759,7 @@ Class Route
 			$maxspeed_before = $maxspeed;
 			$maxspeed_before_max = $maxspeed;
 			$maxspeed_before_min = $maxspeed;
+			$exact_before = $exact;
 							
 			// handle operators
 			// FIXME: how to handle name differences for operators?
@@ -907,7 +908,7 @@ Class Route
 		//add last value to maxspeed_array:
 		if($distance_before && $maxspeed_before)
 		{
-			$maxspeed_array[] = Array($distance_before, $maxspeed_before, $exact);
+			$maxspeed_array[] = Array($distance_before, $maxspeed_before, $exact_before);
 		}
 		$maxspeed_array[] = Array(0, 0, true);
 
@@ -1134,6 +1135,7 @@ Class Route
 		?>
 <!-- flot implementation -->
 <script type="text/javascript" src="flot/jquery.flot.js"></script>
+<script type="text/javascript" src="flot/jquery.flot.dashes.js"></script>
 <script type="text/javascript" src="flot/jquery.flot.selection.js"></script>
 <script type="text/javascript" src="flot/jquery.flot.resize.js"></script>
 
@@ -1183,7 +1185,7 @@ var startData = [[0,0],<?php
     	$real_average_speed += ( $this->maxspeed_point_array[$i][0] - $this->maxspeed_point_array[$i-1][0] ) * ( $this->maxspeed_point_array[$i-1][1] + $this->maxspeed_point_array[$i][1] ) / 2;
     	
     	//add speed to javascript matrix
-    	echo "[" . $this->maxspeed_point_array[$i][0] . "," . $this->maxspeed_point_array[$i][1] . "]";
+    	echo "[" . $this->maxspeed_point_array[$i][0] . "," . $this->maxspeed_point_array[$i][1] . ", 'real']";
     	
     	if ( isset($this->maxspeed_point_array[$i+1]) )// this is not the last value
        	{
@@ -1191,10 +1193,80 @@ var startData = [[0,0],<?php
  		} 
     }
     ?>];
+    <?php 
+    // add allowed maxspeed and distinguish between guessed and mapped values
+    $k = 0;
+    $l = 0;
+    
+    // only for first maxspeed value
+    if ( $this->maxspeed_array[0][2] ) // mapped maxspeed values
+    {
+    	?>
+
+	var maxspeed_<?php echo $k;?> = [<?php
+		$k++;
+	}
+	else // guessed maxspeed values
+    {
+    	?>
+
+	var maxspeed_guessed_<?php echo $l;?> = [<?php
+		$l++;
+	}
+
+	// all other maxspeed values
+    $this->maxspeed_array[-1] = $this->maxspeed_array[0];
+    $maxspeed_distance = 0;
+    $maxspeed_known = 0;
+    for ( $i = 0; isset($this->maxspeed_array[$i]); $i++)
+    {
+    	// change between guessed and mapped -> new array
+    	if($this->maxspeed_array[$i][2]!=$this->maxspeed_array[$i-1][2])
+    	{
+		    if($this->maxspeed_array[$i][1]<$this->maxspeed_array[$i-1][1]) // add vertical line in the right pattern
+		    {
+    			echo ",[" . $maxspeed_distance . "," . $this->maxspeed_array[$i][1] . ", 'allowed']";
+		    }
+		    if($this->maxspeed_array[$i][2]) // mapped maxspeed values
+		    {
+		    		?>];
+
+	var maxspeed_<?php echo $k;?> = [<?php
+				$k++;
+			}
+			else // guessed maxspeed values
+		    {
+		    	?>];
+
+	var maxspeed_guessed_<?php echo $l;?> = [<?php
+				$l++;
+			}
+		    if($this->maxspeed_array[$i][1]>$this->maxspeed_array[$i-1][1]) // add vertical line in the right pattern
+		    {
+    			echo "[" . $maxspeed_distance . "," . $this->maxspeed_array[$i-1][1] . ", 'allowed'],";
+		    }
+    	}
+    	//add speed to javascript matrix
+    	echo "[" . $maxspeed_distance . "," . $this->maxspeed_array[$i][1] . ", 'allowed'],";
+    	echo "[" . ($maxspeed_distance + $this->maxspeed_array[$i][0]) . "," . $this->maxspeed_array[$i][1] . ", 'allowed']";
+    	
+    	if ( isset($this->maxspeed_array[$i+1]) &&  $this->maxspeed_array[$i+1][2]==$this->maxspeed_array[$i][2])// this is not the last value
+       	{
+       		echo ","; 
+ 		} 
+ 		$maxspeed_distance += $this->maxspeed_array[$i][0];
+ 		
+ 		// calculate how much of the maxspeed data is actually mapped and not guessed
+ 		if($this->maxspeed_array[$i][2])
+ 		{
+ 			$maxspeed_known += $this->maxspeed_array[$i][0];
+ 		}
+    }
+    ?>];
+
     var stationData = [<?php 
     
     //construct matrix for stations
-    
     $j = 0;
     if ( isset($this->relation_stops[0]) )//stops exist
     {
@@ -1280,17 +1352,60 @@ var startData = [[0,0],<?php
 			}
 		}
 		  
-    }
-    
-	var plot = $.plot("#maxspeed", [
-	{
+    }	      
+    var plotdata = []; 
+    var plotdata_nm = [];             
+		<?php 
+		for ($i = 0; $i < $k; $i++)
+		{
+			?>
+	var plotmaxspeed_<?php echo $i;?>={
+		data: maxspeed_<?php echo $i;?>, 
+		lines: 
+		{
+			show: true,
+	        fill: true,
+	        fillColor: "rgba(255, 168, 0, 0.1)",
+	    },
+		color: "#FF8800",
+	};
+
+	
+		plotdata.push(plotmaxspeed_<?php echo $i;?>);
+		<?php 
+		} 
+		for ($i = 0; $i < $l; $i++)
+		{
+			?>
+	var plotmaxspeed_guessed_<?php echo $i;?>={
+		data: maxspeed_guessed_<?php echo $i;?>, 
+		lines: 
+		{
+			show: true,
+	        fill: true,
+	        fillColor: "rgba(255, 168, 0, 0.06)",
+	        lineWidth: 0,
+	    },
+	    dashes:
+	    {
+		    show: true,
+ 	 		lineWidth: 1,
+ 	 		dashLength: 2,
+	    },
+		color: "#FF8800"
+		}
+		plotdata.push(plotmaxspeed_guessed_<?php echo $i;?>);
+
+		<?php 
+		}?>
+		var plotMaxspeed = {
 		data: startData, 
 		lines: 
 		{
 			show: true,
 		}
-	},
-	{
+		};
+		var plotStationData = {
 		data: stationData,
 		lines: 
 		{
@@ -1300,14 +1415,23 @@ var startData = [[0,0],<?php
 		{
 			show: true,
 			radius: 1,
-		}		
-	}],
+		}
+		};
+
+		plotdata.push(plotMaxspeed);
+		plotdata.push(plotStationData);
+
+		plotdata_nm.push(plotMaxspeed);
+		plotdata_nm.push(plotStationData);
+		
+	    
+		var plot = $.plot("#maxspeed", plotdata,
 	 options);
 
 
 	$("#maxspeed").bind("plothover", function (event, pos, item) 
 	{
-	 	if ( item ) 
+	 	if ( item) 
 		{
 	 		var x = item.datapoint[0].toFixed(3),
 	 		y = item.datapoint[1].toFixed(0);
@@ -1336,8 +1460,10 @@ var startData = [[0,0],<?php
  			{
 					var postop = item.pageY + 5;
 					var className="bottom";
- 			}	
-	 		$("#tooltip").html("km " + x + ": " + y + " km/h")
+ 			}
+ 			
+	 		$("#tooltip").html("km " + x + ": " + y + " km/h");
+	 		
  			$("#tooltip_wrapper")
  			.removeClass("top")
  			.removeClass("bottom")
@@ -1348,6 +1474,19 @@ var startData = [[0,0],<?php
  			.removeClass("right")
  			.removeClass("left")
  			.addClass("tooltip-arrow "+classNameArrow)
+ 			if(item.series.data[item.dataIndex][2] == "allowed")
+ 			{
+ 	 			$("#tooltip").css("background-color","rgb(255, 168, 0)");
+ 	 			$("#tooltip").css("border-color","rgb(255, 168, 0)");
+ 	 			$("#tooltip_arrow").css("border-bottom-color","rgb(255, 168, 0)");
+ 			}
+ 			else
+ 			{
+ 	 			$("#tooltip").css("background-color","");
+ 	 			$("#tooltip").css("border-color","");
+ 	 			$("#tooltip").css("color","");
+ 	 			$("#tooltip_arrow").css("border-bottom-color","");
+ 			}
 	 	} 
 	 	else 
 	  	{
@@ -1409,7 +1548,7 @@ var startData = [[0,0],<?php
  	);
 
 	// now connect the two
-
+	var global_ranges;
 	$("#maxspeed").bind("plotselected", function (event, ranges) 
 	{
 
@@ -1425,34 +1564,25 @@ var startData = [[0,0],<?php
 			ranges.yaxis.to = ranges.yaxis.from + 0.00001;
 		}
 
-		// do the zooming
-
-		plot = $.plot("#maxspeed", 
-		[{
-			data: startData, 
-			lines: 
-			{
-				show: true,
-			}
-		},
+		//get the data
+		if ( $('#show_maxspeed:checked').length > 0 )
 		{
-			data: stationData,
-			lines: 
-			{
-				show: false,
-			},
-			points: 
-			{
-				show: true,
-				radius: 1,
-			}		
-		}],
+			data = plotdata;
+		}
+		else
+		{
+			data = plotdata_nm;
+		}
+
+		// do the zooming
+		plot = $.plot("#maxspeed", data,
 		$.extend(true, {}, options, 
 		{
 			xaxis: { min: ranges.xaxis.from, max: ranges.xaxis.to },
 			yaxis: { min: ranges.yaxis.from, max: ranges.yaxis.to }
 		})
 		);
+		global_ranges = ranges;
 
 
 		// don't fire event on the overview to prevent eternal loop
@@ -1515,6 +1645,33 @@ var startData = [[0,0],<?php
 			{ 
 				$('#maxspeed_overview').hide();
 			}
+		}
+	});
+
+	// show and hide allowed maxspeeds
+	$('#show_maxspeed').change(function() 
+	{	
+		if ( $('#show_maxspeed:checked').length > 0 )
+		{
+			data = plotdata;
+		}					
+		else
+		{
+			data = plotdata_nm;
+		}
+		if(global_ranges)
+		{
+			$.plot("#maxspeed", data, 
+					$.extend(true, {}, options, 
+							{
+								xaxis: { min: global_ranges.xaxis.from, max: global_ranges.xaxis.to },
+								yaxis: { min: global_ranges.yaxis.from, max: global_ranges.yaxis.to }
+							})
+					);
+		}
+		else
+		{
+			$.plot("#maxspeed", data, options);
 		}
 	});
 	
@@ -1615,6 +1772,12 @@ if (  $this->relation_distance == 0 )
 		if($this->relation_distance > 0)
 		{
 			$average_speed = $this->real_average_speed / $this->relation_distance;
+		}
+		//calculate speed_coverage	
+		$speed_coverage = 0;
+		if($this->relation_distance > 0)
+		{
+			$speed_coverage = $maxspeed_known / $this->relation_distance;
 		}	
 		?>
 			<div class="col-md-6"><b><?php echo Lang::l_('Train Type');?>:</b> <?php echo $route_type;?></div> 
@@ -1622,6 +1785,7 @@ if (  $this->relation_distance == 0 )
 			<div class="col-md-6"><b><?php echo Lang::l_('Travel Time');?>:</b> <?php echo round($travel_time);?> min</div> 
 			<div class="col-md-6"><b><?php echo Lang::l_('Average Speed');?>:</b> <?php echo round($average_speed);?> km/h</div>
 			<div class="col-md-6"><b><?php echo Lang::l_('Maximum Speed');?>:</b> <?php echo $this->maxspeed_max;?> km/h</div>
+			<div class="col-md-6"><b><?php echo Lang::l_('Known speed limits in OSM database');?>:</b> <?php echo round($speed_coverage*100,1);?> %</div>
 		</div>
 	</div>
 	
@@ -1648,6 +1812,12 @@ if (  $this->relation_distance == 0 )
 				<input type="checkbox" id="show_overview" checked="checked" aria-label="..."/>
 				</span>
 				<label for="show_overview" class="input-group-addon"><?php echo Lang::l_('Show Overview');?></label>
+			</div>
+			<div class="btn-group hidden-xs">
+				<span class="input-group-addon">
+				<input type="checkbox" id="show_maxspeed" checked="checked" aria-label="..."/>
+				</span>
+				<label for="show_maxspeed" class="input-group-addon"><?php echo Lang::l_('Show Allowed Maxspeed');?></label>
 			</div>
 			<div class="row"><small class="col-md-12"><b><?php echo Lang::l_('Please note');?>:</b> <?php echo Lang::l_('note_maxspeed');?></small></div>
 		</div>
@@ -1858,13 +2028,6 @@ if (  $this->relation_distance == 0 )
 <script id='fbcr6gj'>(function(i){var f,s=document.getElementById(i);f=document.createElement('iframe');f.src='//api.flattr.com/button/view/?uid=sb89&button=compact&url='+encodeURIComponent(document.URL);f.title='Flattr';f.height=20;f.width=110;f.style.borderWidth=0;s.parentNode.insertBefore(f,s);})('fbcr6gj');</script>
 
 <?php 
-/** Gratipay-Button, feel free to add your own gratipay username or delete it **/
-?>
-<script data-gratipay-username="mapper999"
-        data-gratipay-widget="button"
-        src="//grtp.co/v1.js"></script>
-
-<?php 
 /** Github-Button, feel free to add your own github repository or delete it **/
 ?>       
 <!-- Place this tag where you want the button to render. -->
@@ -1902,7 +2065,7 @@ if (  $this->relation_distance == 0 )
 	function calculateSpeed()
 	{
 		$max_before = 0;
-		$this->maxspeed_array[-1] = Array(0, 0, "exact");
+		$this->maxspeed_array[-1] = Array(0, 0, true);
 
 		//handle stops and add them to maxspeed matrix
 		if ( isset($this->relation_stops) )
@@ -2054,7 +2217,7 @@ if (  $this->relation_distance == 0 )
 					//Stop (0 km/h, length 0)
 					$exmaxarray[$j][0] = 0;
 					$exmaxarray[$j][1] = 0;
-					$exmaxarray[$j][2] = "exact";
+					$exmaxarray[$j][2] = true;
 					$j++;
 					
 					//remaining part of section
