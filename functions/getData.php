@@ -1478,14 +1478,21 @@ var startData = [[0,0],<?php
  			{
  	 			$("#tooltip").css("background-color","rgb(255, 168, 0)");
  	 			$("#tooltip").css("border-color","rgb(255, 168, 0)");
- 	 			$("#tooltip_arrow").css("border-bottom-color","rgb(255, 168, 0)");
+ 	 			if ( className == "bottom" )
+ 	 			{
+ 	 				$("#tooltip_arrow").css("border-bottom-color","rgb(255, 168, 0)");
+ 	 			}
+ 	 			else
+ 	 			{
+ 	 				$("#tooltip_arrow").css("border-top-color","rgb(255, 168, 0)");
+ 	 			}
  			}
  			else
  			{
  	 			$("#tooltip").css("background-color","");
  	 			$("#tooltip").css("border-color","");
- 	 			$("#tooltip").css("color","");
  	 			$("#tooltip_arrow").css("border-bottom-color","");
+ 	 			$("#tooltip_arrow").css("border-top-color","");
  			}
 	 	} 
 	 	else 
