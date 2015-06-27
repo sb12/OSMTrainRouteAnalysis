@@ -602,7 +602,7 @@ Class Route
 	function loadRelationWays()
 	{
 		// set variables to 0
-		$maxspeed_before = $maxspeed_before_max = $maxspeed_before_min = $distance_before = $distance_before_min = $distance_before_max = $exact_before = $maxspeed_total_max = $maxspeed_total_min = $maxspeed_total = 0;
+		$maxspeed_before = $maxspeed_before_max = $maxspeed_before_min = $distance_before = $distance_before_min = $distance_before_max = $exact_before = $maxspeed_total_max = $maxspeed_total_min = $maxspeed_total = $last_id = 0;
 
 		// set maxspeed of train
 		$maxspeed_train = $this->train->maxspeed;
@@ -624,6 +624,7 @@ Class Route
 			//forward or backward?
 			if ( isset($last_last_node) )
 			{
+				$gap[$b] = false;
 				if ( $this->first_node[$b] == $last_last_node || $this->first_node[$b] == $last_first_node )
 				{
 					$direction[$b] = "forward";
@@ -636,15 +637,39 @@ Class Route
 				{
 					$this->count_holes++;
 					$direction[$b] = "unknown";
+					$gap[$b] = true;
 				}
 			}
 			else
 			{
 				$direction[$b] = "unknown";
+				$gap[$b] = true;
+			}
+				
+			// add way direction to way before if needed
+			if( isset($direction[$last_id]) && $direction[$last_id] == "unknown" && $direction[$b] != "unknown" )
+			{
+				if ( ( $direction[$b] == "forward" && $this->first_node[$b] == $last_last_node) || ( $direction[$b] == "backward" && $this->last_node[$b] == $last_last_node))
+				{
+					$direction[$last_id] = "forward";
+				}
+				elseif ( ( $direction[$b] == "forward" && $this->first_node[$b] == $last_first_node) || ( $direction[$b] == "backward" && $this->last_node[$b] == $last_first_node))
+				{
+					$direction[$last_id] = "backward";
+				}
 			}
 			$last_last_node = $this->last_node[$b];
 			$last_first_node = $this->first_node[$b];
-				
+			$last_id = $b;
+		}
+		// go through all relation ways
+		foreach ( $this->relation_ways as $a => $b )
+		{
+			//exlude platforms and stops
+			if ( strstr($this->role_way[$b], "stop") || strstr($this->role_way[$b], "platform") )
+			{
+				continue;
+			}
 				
 			// check if way is railway
 			if ( !isset($this->way_tags[$b]["railway"]) || ( $this->way_tags[$b]["railway"] != "rail" && $this->way_tags[$b]["railway"] != "light_rail" && $this->way_tags[$b]["railway"] != "tram" && $this->way_tags[$b]["railway"] != "narrow_gauge") && $this->way_tags[$b]["railway"] != "miniature" && $this->way_tags[$b]["railway"] != "subway" )
@@ -869,7 +894,7 @@ Class Route
 			{
 				$temp_way_nodes = array_reverse($temp_way_nodes);
 			}
-			elseif ( $direction[$b] == "unknown" )//gap in the route
+			if ( $gap[$b] == true )//gap in the route
 			{
 				$this->map_node[$l]["lat"] = 0;
 				$this->map_node[$l]["lon"] = 0;
