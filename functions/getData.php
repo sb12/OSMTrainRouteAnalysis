@@ -601,6 +601,7 @@ Class Route
 	 */
 	function loadRelationWays()
 	{
+		
 		// set variables to 0
 		$maxspeed_before = $maxspeed_before_max = $maxspeed_before_min = $distance_before = $distance_before_min = $distance_before_max = $exact_before = $maxspeed_total_max = $maxspeed_total_min = $maxspeed_total = $last_id = 0;
 
@@ -899,12 +900,23 @@ Class Route
 				$this->map_node[$l]["lat"] = 0;
 				$this->map_node[$l]["lon"] = 0;
 				$l++;
+				unset($last_node);
+				unset($lastlast_node);
 			}
 			foreach ( $temp_way_nodes as $node_ref => $node_id )
 			{
 				//add nodes to array for drawing the route later;
 				$this->map_node[$l]["lat"] = $this->node[$node_id]["lat"];
 				$this->map_node[$l]["lon"] = $this->node[$node_id]["lon"];
+				
+				if($l>0 && $this->map_node[$l-1]["lat"] != 0 && $this->map_node[$l]["lat"] != 0)
+				{
+					$this->distance[$l] = $this->getDistance($this->map_node[$l]["lat"], $this->map_node[$l]["lon"], $this->map_node[$l-1]["lat"], $this->map_node[$l-1]["lon"]);
+				}
+				else
+				{
+					$this->distance[$l] = 0;
+				}
 
 				//get bounds for map
 				if ( !isset($this->min_lat_bounds) )
@@ -927,6 +939,8 @@ Class Route
 				$this->max_lat_bounds = max($this->max_lat_bounds, $this->node[$node_id]["lat"]);
 				$this->min_lon_bounds = min($this->min_lon_bounds, $this->node[$node_id]["lon"]);
 				$this->max_lon_bounds = max($this->max_lon_bounds, $this->node[$node_id]["lon"]);
+				
+				
 				$l++;
 			}
 		}
@@ -939,8 +953,163 @@ Class Route
 
 
 		$this->maxspeed_array = $maxspeed_array;
+		
+		//calculate curviness:
+		$this->calculateCurviness();
 	}
 
+	function calculateCurviness()
+	{
+		include "GaussianElimination.php";
+		
+		// go through all nodes
+		for($l = 1; isset($this->distance[$l]); $l++ )
+		{
+			if($this->distance[$l]==0)
+			{
+				continue;
+			}
+			$x1 = $x2 = $x3 = $y1 = $y2 = $y3 = 0; 
+			//findout which nodes are the best:
+			for ( $i = 1; $i < 10; $i ++)
+			{
+			// get distance between nodes
+				if(!isset($this->distance[$l-$i]) || !isset($this->distance[$l+$i]))
+				{
+					break;
+				}
+				$distance = $this->getDistance($this->map_node[$l-$i]["lat"],$this->map_node[$l-$i]["lon"],$this->map_node[$l+$i]["lat"],$this->map_node[$l+$i]["lon"]);
+				//echo "Distanz:".$distance."|";
+				if($distance > 1 && $i > 1)
+				{
+					break;
+				}
+				$x1 = $this->getDistance($this->map_node[$l-$i]["lat"], $this->map_node[$l-$i]["lon"], 0, $this->map_node[$l-$i]["lon"]);
+				$y1 = $this->getDistance($this->map_node[$l-$i]["lat"], $this->map_node[$l-$i]["lon"], $this->map_node[$l-$i]["lat"], 0);
+				$x3 = $this->getDistance($this->map_node[$l+$i]["lat"], $this->map_node[$l+$i]["lon"], 0, $this->map_node[$l+$i]["lon"]);
+				$y3 = $this->getDistance($this->map_node[$l+$i]["lat"], $this->map_node[$l+$i]["lon"], $this->map_node[$l+$i]["lat"], 0);
+				
+				if($distance > 0.2)
+				{
+					break;
+				}
+			}
+			$x2 = $this->getDistance($this->map_node[$l]["lat"], $this->map_node[$l]["lon"], 0, $this->map_node[$l]["lon"]);
+			$y2 = $this->getDistance($this->map_node[$l]["lat"], $this->map_node[$l]["lon"], $this->map_node[$l]["lat"], 0);
+
+			//echo "||".$x1."||".$x2."||".$x3."||";
+			//echo "||".$y1."||".$y2."||".$y3."||";
+			
+			// find circle going through the 3 points to define the radius of the curve
+			if($x1 && $x3)
+			{
+				if( !( ( $x1 == $x2 && $y1 == $y2 ) || ( $x2 == $x3 && $y2 == $y3 ) ) )
+				{
+					/**
+					* system of linear equations:
+					$gl1 = - $A + x1 * B + y1 * C = x1^2 + y1^2
+					$gl1 = - $A + x2 * B + y1 * C = x2^2 + y2^2
+					$gl1 = - $A + x3 * B + y1 * C = x3^2 + y3^2
+					**/
+			
+			
+					//define Matrix
+					$A = Array(
+					Array(-1,$x1,$y1),
+					Array(-1,$x2,$y2),
+					Array(-1,$x3,$y3)
+					);
+					$b = Array(
+					$x1*$x1 + $y1*$y1,
+					$x2*$x2 + $y2*$y2,
+					$x3*$x3 + $y3*$y3
+					);
+			
+					$g = new GaussianElimination;
+			
+					$x = $g->solve($A, $b);
+			
+					$x_m = $x[1]/2;
+					$y_m = $x[2]/2;
+					$r = $x_m * $x_m + $y_m * $y_m - $x[0];
+			
+					$this->radius[$l] = $r*1000;
+					//echo $this->radius[$l]."<br>";
+					
+					//find out whether this is a right or a left curve
+					//find line through first two points:
+					$A = Array(
+							Array(-$x1,1),
+							Array(-$x2,1)
+							);
+					$b = Array(
+							$y1,
+							$y2
+							);
+		
+					$line = new GaussianElimination;
+						
+					$x = $line->solve($A, $b);
+					
+					// check whether 3rd point is below or above line
+					if ( ( $x[0] * $x3 + $x[1] > $y3 && $x2 > $x1 ) || ( $x[0] * $x3 + $x[1] < $y3 && $x2 < $x1 ) )
+					{
+						$this->radius[$l] = - $this->radius[$l];
+					}
+				}
+			}
+		}
+		
+		//Smoothing
+		for($l = 1; isset($this->distance[$l]); $l++)
+		{
+			if(!isset($this->radius[$l]))
+			{
+				continue;
+			}
+			$radius_l = $this->radius[$l];
+			$radius_n = $this->radius[$l];
+			for($k = $l-1; isset($this->distance[$k]);$k--)
+			{
+				if(isset($this->radius[$k]))
+				{
+					$radius_l = $this->radius[$k];
+					$distance_l = $this->distance[$l];
+					//echo $distance_l."|";
+					break;
+				}
+			}
+			for($k = $l+1; isset($this->distance[$k]);$k++)
+			{
+				if(isset($this->radius[$k]))
+				{
+					$radius_n = $this->radius[$k];
+					$distance_n = $this->distance[$k];
+					//echo $distance_n."|";
+					break;
+				}
+			}
+			//prevent division by zero errors
+			if(! isset($distance_n) || $distance_n == 0)
+			{
+				$distance_n = 0.00000001;
+			}
+			if(! isset($distance_l) || $distance_l == 0)
+			{
+				$distance_l = 0.00000001;
+			}
+			$this->radius_smoothed[$l] = (1 / $distance_n * $radius_n + ( 1 / $distance_n + 1 / $distance_l ) * $this->radius[$l] + 1 / $distance_l * $radius_l) * ($distance_n + $distance_l);
+			//echo $this->radius[$l]."<br>";
+		}
+		for($l = 1; isset($this->distance[$l]); $l++)
+		{
+			if(!isset($this->radius[$l]))
+			{
+				continue;
+			}
+			$this->radius[$l] = $this->radius_smoothed[$l];
+		}
+	}
 
 	/**
 	 * This function produces the html output for the homepage
@@ -1198,6 +1367,26 @@ $(function()
 	}
 };
 
+var curviness = [<?php 
+
+		// go through all relation ways
+		$total_distance = 0;
+		for($l=1;isset($this->distance[$l]);$l++)
+		{
+			$total_distance += $this->distance[$l];
+			if(isset($this->radius[$l]) && ($this->radius[$l] > 1 || $this->radius[$l] < -1 ) )
+			{
+				$r = 1 / $this->radius[$l];//min($this->radius[$l],10000);
+				echo "[".$total_distance.",".$r."]";    	
+				
+			}	
+			if ( isset($this->radius[$l+1]) )// this is not the last value
+		    {
+		    	echo ","; 
+		 	} 	
+			
+		}
+?>];
 var startData = [[0,0],<?php 
 
 	//construct matrix for speed data
@@ -1424,12 +1613,19 @@ var startData = [[0,0],<?php
 		<?php 
 		}?>
 		var plotMaxspeed = {
-		data: startData, 
-		lines: 
-		{
-			show: true,
-		}
+			data: startData, 
+			lines: 
+			{
+				show: true,
+			}
 		};
+		var plotCurviness = {
+			data: curviness, 
+			lines: 
+			{
+				show: true,
+			}
+			};
 		var plotStationData = {
 		data: stationData,
 		lines: 
@@ -1445,9 +1641,11 @@ var startData = [[0,0],<?php
 
 		plotdata.push(plotMaxspeed);
 		plotdata.push(plotStationData);
+		//plotdata.push(plotCurviness);
 
-		plotdata_nm.push(plotMaxspeed);
-		plotdata_nm.push(plotStationData);
+		//plotdata_nm.push(plotMaxspeed);
+		//plotdata_nm.push(plotStationData);
+		plotdata_nm.push(plotCurviness);
 		
 	    
 		var plot = $.plot("#maxspeed", plotdata,
@@ -2476,7 +2674,7 @@ if (  $this->relation_distance == 0 )
 	}
 
 	/**
-	 * calculates the distance between two point lat1/lon1 and lat2/lon2
+	 * calculates the distance between two points lat1/lon1 and lat2/lon2
 	 * @param unknown $lat1
 	 * @param unknown $lon1
 	 * @param unknown $lat2
