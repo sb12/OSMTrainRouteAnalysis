@@ -286,7 +286,7 @@ Class Route
 		}
 		
 		// build link to overpass api
-		$link = "http://overpass-api.de/api/interpreter?data=%5Bout%3Axml%5D%3B%28relation%28".round($get_id)."%29%3Brel%28br%29%3B%29%3Bout%3B%28relation%28".$get_id."%29%3B%3E%3B%29%3Bout%3B";
+		$link = "http://overpass-api.de/api/interpreter?data=%5Bout%3Axml%5D%3B%28relation%28".round($get_id)."%29%3Brel%28br%29%3B%29%3Bout%3B%28relation%28".$get_id."%29%3B%3E%3E%3B%29%3Bout%3B";
 		
 		// build file name
 		$file_name = "osmdata/data" . $get_id . ".osm";
