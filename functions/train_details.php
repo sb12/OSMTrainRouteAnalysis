@@ -1,7 +1,7 @@
 <?php 
     /**
     
-    OSMTrainRouteAnalysis Copyright © 2014 sb12 osm.mapper999@gmail.com
+    OSMTrainRouteAnalysis Copyright © 2014, 2015 sb12 osm.mapper999@gmail.com
     
     This file is part of OSMTrainRouteAnalysis.
     
@@ -44,28 +44,30 @@ $tr_image["highspeed"] = "highspeed.svg";
 
 
 // DB ICE 1 (Germany)
+// source: http://www.lok-report.de/ice/ICE-1-Text-.pdf (page 24)
 $tr_name["ICE1"] = "DB ICE 1";
 $tr_type["ICE1"] = "highspeed";
 $tr_maxspeed["ICE1"] = 280; // km/h
-$tr_mass_empty["ICE1"] = 860; // t
+$tr_mass_empty["ICE1"] = 796; // t
 $tr_power["ICE1"] = 9600; // kW
 $tr_torque["ICE1"] = 300; // kN
-$tr_seats["ICE1"] = 206;
-$tr_acc["ICE1"] = 0.6; // m/s²
+$tr_seats["ICE1"] = 703;
+$tr_acc["ICE1"] = 0.5; // m/s²
 $tr_brake["ICE1"] = 0.6; // m/s²
-$tr_length["ICE1"] = 0.410; // with 14 carriages
+$tr_length["ICE1"] = 0.358; // with 12 carriages
 $tr_image["ICE1"] = "ICE1.png";
 
 
 // DB ICE 2 (Germany)
+// source: http://de.wikipedia.org/wiki/ICE_2
 $tr_name["ICE2"] = "DB ICE 2";
 $tr_type["ICE2"] = "highspeed";
 $tr_maxspeed["ICE2"] = 280; // km/h
-$tr_mass_empty["ICE2"] = 420; // t
+$tr_mass_empty["ICE2"] = 412; // t
 $tr_power["ICE2"] = 4800; // kW
 $tr_torque["ICE2"] = 300; // kN
-$tr_seats["ICE2"] = 206;
-$tr_acc["ICE2"] = 0.6; // m/s²
+$tr_seats["ICE2"] = 381;
+$tr_acc["ICE2"] = 0.5; // m/s²
 $tr_brake["ICE2"] = 0.6; // m/s²
 $tr_length["ICE2"] = 0.205;
 $tr_image["ICE2"] = "ICE2.png";
@@ -78,8 +80,8 @@ $tr_maxspeed["ICE3"] = 330; // km/h
 $tr_mass_empty["ICE3"] = 410; // t
 $tr_power["ICE3"] = 8000; // kW
 $tr_torque["ICE3"] = 300; // kN
-$tr_seats["ICE3"] = 206;
-$tr_acc["ICE3"] = 0.6; // m/s²
+$tr_seats["ICE3"] = 454;
+$tr_acc["ICE3"] = 0.5; // m/s²
 $tr_brake["ICE3"] = 0.6; // m/s²
 $tr_length["ICE3"] = 0.201;
 $tr_image["ICE3"] = "ICE3.png";
@@ -92,8 +94,8 @@ $tr_maxspeed["ICE3V"] = 320; // km/h
 $tr_mass_empty["ICE3V"] = 454; // t
 $tr_power["ICE3V"] = 8000; // kW
 $tr_torque["ICE3V"] = 300; // kN
-$tr_seats["ICE3V"] = 460;
-$tr_acc["ICE3V"] = 0.6; // m/s²
+$tr_seats["ICE3V"] = 46;0
+$tr_acc["ICE3V"] = 0.5; // m/s²
 $tr_brake["ICE3V"] = 0.6; // m/s²
 $tr_length["ICE3V"] = 0.201;
 $tr_image["ICE3V"] = "ICE3Velaro.png";
@@ -485,6 +487,7 @@ $tr_acc["light_rail"] = 0.9; // m/s²
 $tr_brake["light_rail"] = 1.6; // m/s²
 $tr_length["light_rail"] = 0.04;
 $tr_image["light_rail"] = "light_rail.svg";
+
 
 //AVG Stadtbahn GT8-100C/2S (Germany -> Karlsruhe)
 $tr_name["GT8-100C"] = "AVG Stadtbahn GT8-100C/2S";
