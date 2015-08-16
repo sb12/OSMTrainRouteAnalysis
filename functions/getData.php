@@ -255,6 +255,12 @@ Class Route
 	protected $maxspeed_point_array;
 	
 	/**
+	 * array that contains all signals that are passed by the train
+	 * @var array[pos][tags[key][value]]
+	 */
+	protected $signals_array;
+	
+	/**
 	 * variable that contains information about successful update from Overpass API
 	 * @var boolean
 	 */
@@ -286,7 +292,7 @@ Class Route
 		}
 		
 		// build link to overpass api
-		$link = "http://overpass-api.de/api/interpreter?data=%5Bout%3Axml%5D%3B%28relation%28".round($get_id)."%29%3Brel%28br%29%3B%29%3Bout%3B%28relation%28".$get_id."%29%3B%3E%3B%29%3Bout%3B";
+		$link = "http://overpass-api.de/api/interpreter?data=%5Bout%3Axml%5D%3B%28relation%28".round($get_id)."%29%3Brel%28br%29%3B%29%3Bout%3B%28relation%28".$get_id."%29%3B%3E%3E%3B%29%3Bout%3B";
 		
 		// build file name
 		$file_name = "osmdata/data" . $get_id . ".osm";
@@ -662,6 +668,9 @@ Class Route
 			$last_first_node = $this->first_node[$b];
 			$last_id = $b;
 		}
+		
+		$s = 0; //counter for signals
+		$distance_node = 0;
 		// go through all relation ways
 		foreach ( $this->relation_ways as $a => $b )
 		{
@@ -900,12 +909,13 @@ Class Route
 				$this->map_node[$l]["lon"] = 0;
 				$l++;
 			}
+			$old_lat = $old_lon = 0;
 			foreach ( $temp_way_nodes as $node_ref => $node_id )
 			{
 				//add nodes to array for drawing the route later;
 				$this->map_node[$l]["lat"] = $this->node[$node_id]["lat"];
 				$this->map_node[$l]["lon"] = $this->node[$node_id]["lon"];
-
+				
 				//get bounds for map
 				if ( !isset($this->min_lat_bounds) )
 				{
@@ -927,7 +937,53 @@ Class Route
 				$this->max_lat_bounds = max($this->max_lat_bounds, $this->node[$node_id]["lat"]);
 				$this->min_lon_bounds = min($this->min_lon_bounds, $this->node[$node_id]["lon"]);
 				$this->max_lon_bounds = max($this->max_lon_bounds, $this->node[$node_id]["lon"]);
+				
+				// find signals on the route
+				if($old_lat != 0 && $old_lon != 0)
+				{
+					$distance_node += $this->getDistance($old_lat,$old_lon,$this->node[$node_id]["lat"],$this->node[$node_id]["lon"]);
+				}
+				if(($old_lat != 0 && $old_lon != 0) || $distance_node == 0)
+				{
+					if(isset($this->node[$node_id]["railway"]) && $this->node[$node_id]["railway"] == "signal")
+					{
+						if(isset($this->node[$node_id]["railway:signal:direction"]) && $this->node[$node_id]["railway:signal:direction"] == $direction[$b])
+						{
+							if( $direction[$b] == "backward" )
+							{
+								if( isset( $this->node[$node_id]["railway:signal:position"] ) )
+								{
+									if( $this->node[$node_id]["railway:signal:position"] == "right" )
+									{
+										$this->node[$node_id]["railway:signal:position"] = "left";
+									}
+									if( $this->node[$node_id]["railway:signal:position"] == "left" )
+									{
+										$this->node[$node_id]["railway:signal:position"] = "right";
+									}
+								}
+								if( isset( $this->node[$node_id]["railway:signal:expected_position"] ) )
+								{
+									if( $this->node[$node_id]["railway:signal:expected_position"] == "right" )
+									{
+										$this->node[$node_id]["railway:signal:expected_position"] = "left";
+									}
+									if( $this->node[$node_id]["railway:signal:expected_position"] == "left" )
+									{
+										$this->node[$node_id]["railway:signal:expected_position"] = "right";
+									}
+								}
+							}
+							$this->signals_array[$s][0] = $distance_node;
+							$this->signals_array[$s][1] = $node_id; 
+							$s++;
+						}
+					}
+				}
 				$l++;
+				$old_lat = $this->node[$node_id]["lat"];
+				$old_lon = $this->node[$node_id]["lon"];
+				
 			}
 		}
 		//add last value to maxspeed_array:
@@ -1882,6 +1938,39 @@ if (  $this->relation_distance == 0 )
 			</div>
 		</div>
 	</div>
+	
+	<div class="panel panel-primary">
+		<div class="panel-heading" data-toggle="collapse" aria-expanded="false" aria-controls="signalsTab" role="tab">
+			<h4 class="panel-title"><a data-toggle="collapse" href="#signalsTab" aria-expanded="false" aria-controls="signalsTab">
+			<?php echo Lang::l_('Signals on Route');?>:
+			</a></h4>
+		</div>
+		<div class="panel-body collapse" id="signalsTab">
+		<?php Signals::analyseSignals($this->signals_array, $this->node, $this->maxspeed_array);?>
+			<table class="table table-striped">
+			<tr>
+				<th><?php echo Lang::l_("Position")?></th>
+				<th><?php echo Lang::l_("Image")?></th>
+				<th><?php echo Lang::l_("Location")?></th>
+				<th><?php echo Lang::l_("Description")?></th>
+				<th><?php echo Lang::l_("Distance to main signal")?></th>
+				<th><?php echo Lang::l_("Distance between main signals")?></th>
+				<th><?php echo Lang::l_("Show on map")?></th>
+			</tr>
+		<?php
+		foreach ($this->signals_array as $signals)
+		{
+			$signal = Signals::getSignal($signals[1], $this->node[$signals[1]], $this->maxspeed_array, $signals[0]);
+			if($signal)
+			{
+				echo $signal;
+			}	
+		}
+		?>
+			</table>
+		</div>
+	</div>
+	
 	
 	<div class="panel panel-primary">
 		<div class="panel-heading">

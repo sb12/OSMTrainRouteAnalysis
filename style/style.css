@@ -317,3 +317,34 @@ table.route_overview > tbody > tr > td.nowrap
 	margin-bottom: 0px;
 	font-weight: normal;
 }
+
+/**
+* Style for signals
+**//*
+.signal_container
+{
+	width:30px;
+}*/
+.signal_ref
+{
+	display:block;
+	width:auto;
+	max-width:30px;
+	padding:1px 0.5px;
+	font-size:7px;
+	background-color:#FFFFFF;
+	border: 1px solid #000000;
+	text-align:center;
+	margin:1px auto;
+}
+/*
+.signal_container .svg.signal{
+	margin:auto;
+}*/
+.svg.signal
+{
+	display: block;
+	width: 40px;
+	margin: 1px auto;
+}
+

@@ -28,6 +28,7 @@ include "functions/getData.php";
 include "functions/lang.php";
 include "functions/start.php";
 include "functions/train.php";
+include "functions/signals.php";
 include "functions/search.php";
 include "po_parser/src/Sepia/PoParser.php";
 //FIXME: add possibility to change language
