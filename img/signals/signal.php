@@ -789,28 +789,7 @@ if ( isset ( $_GET["railway:signal:speed_limit"] ) )
 	}
 	elseif($_GET["railway:signal:speed_limit"] == "DE-ESO:lf7")
 	{
-		if($_GET["railway:signal:speed_limit:form"] == "sign")
-		{
-			$speed = "";
-			if(isset($_GET["railway:signal:speed_limit:speed"]))
-			{
-				$speeds = $_GET["railway:signal:speed_limit:speed"]; // ACHTUNG: gefährlich
-				$speed_array = explode(";",$speeds);
-				$speed = $speed_array[0];
-			}
-
-			if(file_exists("img/railway_signals/DE/EBO/Lf7_".$speed."_Tafel.svg"))
-			{
-				$svg_file = file_get_contents("img/railway_signals/DE/EBO/Lf7_".$speed."_Tafel.svg");
-				$result .='
-						<div class="svg-container">
-							<svg class="svg signal hp signal'.self::$n.'" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 217 277" enable-background="new 0 0 217 277" xml:space="preserve">
-							' . $svg_file . '
-							<image src="img/railway_signals/DE/EBO/HV_Hp-light.svg" class="signal hp fallback">
-	    					</svg>
-	    				</div>';
-			}
-		}
+		//TODO
 	}
 }
 if(isset($_GET["railway:signal:main"]))
@@ -1503,7 +1482,7 @@ if(isset($_GET["railway:signal:distant"]))
 	}*/
 	else //fallback for unknown signals
 	{
-		if($_GET["railway:signal:main:form"] == "semaphore")
+		if( isset($_GET["railway:signal:main:form"]) && $_GET["railway:signal:main:form"] == "semaphore")
 		{
 			$signal[$s] = '
 			<g transform="translate(0 ' . $height . ')">
