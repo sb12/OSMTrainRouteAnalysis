@@ -94,7 +94,7 @@ $tr_maxspeed["ICE3V"] = 320; // km/h
 $tr_mass_empty["ICE3V"] = 454; // t
 $tr_power["ICE3V"] = 8000; // kW
 $tr_torque["ICE3V"] = 300; // kN
-$tr_seats["ICE3V"] = 46;0
+$tr_seats["ICE3V"] = 460;
 $tr_acc["ICE3V"] = 0.5; // m/s²
 $tr_brake["ICE3V"] = 0.6; // m/s²
 $tr_length["ICE3V"] = 0.201;
@@ -204,6 +204,20 @@ $tr_length["regional"] = 0.1;
 $tr_image["regional"] = "regional.svg";
 
 
+//BR 143 + 3 DoSto-Wagen (Germany)
+$tr_name["DoSto-DR"] = "DB Baureihe 143 mit 3 Doppelstockwagen";
+$tr_type["DoSto-DR"] = "regional";
+$tr_maxspeed["DoSto-DR"] = 120; // kmh/
+$tr_mass_empty["DoSto-DR"] = 55*3+82; // t
+$tr_power["DoSto-DR"] = 3500; // kW
+$tr_torque["DoSto-DR"] = 240; // kN
+$tr_seats["DoSto-DR"] = 120;
+$tr_acc["DoSto-DR"] = 0.7;
+$tr_brake["DoSto-DR"] = 0.9;
+$tr_length["DoSto-DR"] = 0.016+3*0.027;
+$tr_image["DoSto-DR"] = "regional.svg";
+
+
 //BR 146 + 5 DoSto-Wagen (Germany)
 $tr_name["DoSto"] = "DB Baureihe 146 mit 5 Doppelstockwagen";
 $tr_type["DoSto"] = "regional";
@@ -246,20 +260,6 @@ $tr_length["BR111"] = 0.017+5*0.027;
 $tr_image["BR111"] = "nWagenBR111.png";
 
 
-//BR 143 + 3 DoSto-Wagen (Germany)
-$tr_name["DoSto-DR"] = "DB Baureihe 143 mit 3 Doppelstockwagen";
-$tr_type["DoSto-DR"] = "regional";
-$tr_maxspeed["DoSto-DR"] = 120; // kmh/
-$tr_mass_empty["DoSto-DR"] = 55*3+82; // t
-$tr_power["DoSto-DR"] = 3500; // kW
-$tr_torque["DoSto-DR"] = 240; // kN
-$tr_seats["DoSto-DR"] = 120;
-$tr_acc["DoSto-DR"] = 0.7;
-$tr_brake["DoSto-DR"] = 0.9;
-$tr_length["DoSto-DR"] = 0.016+3*0.027;
-$tr_image["DoSto-DR"] = "";
-
-
 //DB BR 422 (Germany)
 $tr_name["BR422"] = "DB Baureihe 422";
 $tr_type["BR422"] = "regional";
@@ -273,6 +273,7 @@ $tr_brake["BR422"] = 0.9;
 $tr_length["BR422"] = 0.069;
 $tr_image["BR422"] = "BR422.svg";
 
+
 //DB BR 423 (Germany)
 $tr_name["BR423"] = "DB Baureihe 423";
 $tr_type["BR423"] = "regional";
@@ -285,6 +286,7 @@ $tr_acc["BR423"] = 1;
 $tr_brake["BR423"] = 0.9;
 $tr_length["BR423"] = 0.069;
 $tr_image["BR423"] = "BR423.svg";
+
 
 //DB BR 425 (Germany)
 $tr_name["BR425"] = "DB Baureihe 425";
