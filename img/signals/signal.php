@@ -1093,7 +1093,7 @@ if(isset($_GET["railway:signal:main"]))
 		}
 		$signal[$s] .= '
 				</g>';
-		if ( isset($_GET["railway:signal:main:substitute_signal"]) && $_GET["railway:signal:main:substitute_signal"] == "DE-ESO:dr:zs7" )
+		if ( isset($_GET["railway:signal:main:substitute_signal"]) && $_GET["railway:signal:main:substitute_signal"] == "DE-ESO:db:zs7" )
 		{
 			$signal[$s] .= '
 					<g id="zs7">
@@ -1243,7 +1243,7 @@ if(isset($_GET["railway:signal:combined"]))
 		}
 		$signal[$s] .= '
 				</g>';
-		if ( isset($_GET["railway:signal:combined:substitute_signal"]) && $_GET["railway:signal:combined:substitute_signal"] == "DE-ESO:dr:zs7" )
+		if ( isset($_GET["railway:signal:combined:substitute_signal"]) && $_GET["railway:signal:combined:substitute_signal"] == "DE-ESO:db:zs7" )
 		{
 			$signal[$s] .= '
 					<g id="zs7">
