@@ -67,7 +67,7 @@ Class Signals
 				if ( $signal[0] - $distant[0] > 0 && $signal[0] - $distant[0] < 1.5)
 				{
 					// do not override previous entries
-					if(!isset(self::$signal_property[$distant[1]]["main"]))
+					if( !isset(self::$signal_property[$distant[1]]["main"]))
 					{
 						self::$signal_property[$signal[1]]["distant"] = $distant[1];
 						self::$signal_property[$distant[1]]["main"] = $signal[1];
@@ -75,56 +75,65 @@ Class Signals
 				}
 			}
 			$i++;
-			if(isset($main_signals[$i]))
+			if( isset( $main_signals[$i] ) )
 			{
 				self::$signal_property[$signal[1]]["next_main"] = $main_signals[$i][1];
 			}
 		}
 		
 		// guess speed for signal
-		foreach ($signals as $signal)
+		foreach ($signals as $signal) // go through all signals
 		{
-			$distance = $signal[0];
-			$dis = 0;
-			$last_maxspeed = 0;
-			$next_speed = 0;		
+			$distance = $signal[0]; // distance of signal from start of route
+			$dis = 0; // distance of start point of maxspeed area from start of route
+			$last_maxspeed = 300; // maxspeed value of last area
+			$next_speed = 0; // minimum maxspeed value of area after signal
+			
+			// go through maxspeed array
 			foreach($maxspeed_array as $maxspeed)
 			{
-				if($maxspeed[1]>0)
+				//outside of relevant area
+				if( ( $dis - $distance ) > 1 )
 				{
-	
-					if($dis>$distance)
+					break;
+				}
+				if(  $maxspeed[1] > 0)
+				{
+					//maxspeed is for area behind signal
+					if ( $dis > $distance )
 					{
-						if(($dis-$distance)<1)
+						// area is relevant for this signal ( < 1 km after signal)
+						if ( ( $dis - $distance ) < 1 )
 						{
-							if($next_speed>0)
+							//maxspeed in area before is relevant, when new maxspeed does not start near the signal
+							if ( $dis - $distance > 0.1 )
 							{
-								if($dis-$distance > 0.1)
-								{
-									$next_speed = min($maxspeed[1],$next_speed);
-								}
+								$next_speed = min( $maxspeed[1], $last_maxspeed );
+							}
+							//next speed is set (more than one maxspeed change in area)
+							if ( $next_speed > 0 )
+							{
+								$next_speed = min( $maxspeed[1], $next_speed );
 							}
 							else
 							{
 								$next_speed = $maxspeed[1];
 							}
 						}
-						$speed_message = "maxspeed here: ".$last_maxspeed." km/h, ".$maxspeed[1]." km/h in ".($dis-$distance)." km";
-						break;
 					}
-					elseif(($distance-$dis)<0.2)
+					elseif ( ( $distance - $dis ) < 0.1 ) // tolerance area before signal
 					{
 						$next_speed = $maxspeed[1];
 					}
 					$last_maxspeed = $maxspeed[1];
-				}	
+				}
 				$dis += $maxspeed[0];
 			}
-			if($next_speed == 0)
+			
+			if($next_speed == 0) //fallback if no speed was found
 			{
 				$next_speed = $last_maxspeed;
 			}
-			self::$signal_property[$signal[1]]["last_maxspeed"] = $last_maxspeed;
 			self::$signal_property[$signal[1]]["next_speed"] = $next_speed;
 		}
 	}
@@ -177,7 +186,7 @@ Class Signals
 					$speeds = "";
 					if(isset($tags["railway:signal:speed_limit:speed"]))
 					{
-						$speeds = $tags["railway:signal:speed_limit:speed"]; // ACHTUNG: gefährlich
+						$speeds = $tags["railway:signal:speed_limit:speed"];
 						$speed_array = explode(";",$speeds);
 						if(isset($next_speed) && in_array($next_speed,$speed_array))
 						{
