@@ -458,6 +458,10 @@ Class Signals
 			{
 				$result.=Lang::l_("German H/V");
 			}
+			elseif($tags["railway:signal:main"] == "DE-ESO:hl")
+			{
+				$result.=Lang::l_("German Hl");
+			}
 			else
 			{
 				$result.=Lang::l_("Unknown");
@@ -566,6 +570,10 @@ Class Signals
 			elseif($tags["railway:signal:distant"] == "DE-ESO:vr")
 			{
 				$result.=Lang::l_("German H/V");
+			}
+			elseif($tags["railway:signal:distant"] == "DE-ESO:hl")
+			{
+				$result.=Lang::l_("German Hl");
 			}
 			else
 			{
