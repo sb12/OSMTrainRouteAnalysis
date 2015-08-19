@@ -1464,11 +1464,19 @@ if(isset($_GET["railway:signal:distant"]))
 					<circle fill="' . $colour_ks2 . '" cx="28" cy="29" r="4"/>
 				</g>';
 
-		if( ( isset($_GET["railway:signal:distant:repeated"]) && $_GET["railway:signal:distant:repeated"] == "yes" ) || ( isset($_GET["railway:signal:distant:shortened_distance"]) && $_GET["railway:signal:distant:shortened_distance"] == "yes" ) )
+		if( ( isset($_GET["railway:signal:distant:repeated"]) && $_GET["railway:signal:distant:repeated"] == "yes" ) )
 		{
+			if( ( $_GET["state_distant"] == "ks2" ) || ( $class_ks1 = "signal_blink" ) ) // only when Ks 1 is blinking or Ks 2 is shown
+			{
+				$color_additional_light = "#FFFFFF"; // white
+			}
+			else
+			{
+				$color_additional_light = "#444444"; // gray
+			}
 			$signal[$s] .= '
 				<g id="repeated">
-					<circle fill="#FFFFFF" cx="10" cy="49" r="2"/>
+					<circle fill="' . $color_additional_light . '" cx="10" cy="49" r="2"/>
 				</g>';
 		}
 		$signal[$s] .= '
