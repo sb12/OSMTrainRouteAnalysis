@@ -78,7 +78,7 @@ Lang::defineLanguage();
 
 <?php
 //route id is defined -> get route 
-if(isset($_GET["id"])) 
+if ( isset( $_GET["id"] ) || isset( $_POST["id"] ) ) 
 {
 	$route = new Route();
 	

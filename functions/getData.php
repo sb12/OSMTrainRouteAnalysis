@@ -40,6 +40,18 @@ Class Route
 	public $id;
 
 	/**
+	 * route is a custom route (uploaded by a user)
+	 * @var String
+	 */
+	protected $custom;
+
+	/**
+	 * id of a custom route (uploaded by a user)
+	 * @var String
+	 */
+	protected $custom_id;
+	
+	/**
 	 * name of xml file
 	 * @var String
 	 */
@@ -273,6 +285,16 @@ Class Route
 	 */
 	public function getData() 
 	{
+
+		if( isset($_POST["id"]) ) // post is used when file is uploaded
+		{
+			$_GET["id"] = $_POST["id"];
+			if(isset($_POST["train"]))
+			{
+				$_GET["train"] = $_POST["train"];
+			}
+		}
+		
 		// no id set
 		if ( !isset($_GET["id"]) ) 
 		{
@@ -280,65 +302,121 @@ Class Route
 			return_error("no_id", "full");
 			die();
 		}
+		
 		// get route id
 		$get_id = $_GET["id"];
+		
 		
 		// id is not a valid number
 		if ( !is_numeric($get_id) || round($get_id) != $get_id )
 		{
+			// exception for user routes of the scheme 12345_0
+			if( preg_match( "/^[0-9]+[_][0-9]+$/", $get_id ) )
+			{
+				$file = "./osmdata/user" . $get_id . ".osm";
+				if(file_exists($file))
+				{
+					$spl = preg_split ("[_]", $get_id);
+					$this->id = $spl[0];
+					$this->filexml = $file;
+					$this->custom = true;
+					$this->custom_id = $get_id; 
+					return;
+				}
+				else
+				{
+					return_error("invalid_id", "full");
+					die();
+				}	
+			}
 			// show error
 			return_error("invalid_id", "full");
 			die();
 		}
-		
-		// build link to overpass api
-		$link = "http://overpass-api.de/api/interpreter?data=%5Bout%3Axml%5D%3B%28relation%28".round($get_id)."%29%3Brel%28br%29%3B%29%3Bout%3B%28relation%28".$get_id."%29%3B%3E%3E%3B%29%3Bout%3B";
-		
-		// build file name
-		$file_name = "osmdata/data" . $get_id . ".osm";
+
 		// save id
 		$this->id = $get_id;
 		
-		// check if data needs to be refreshed
-		
-		$refresh = true; // default value
-		
-		// relation was already loaded
-		if ( file_exists($file_name) )
+		if(isset($_FILES["osmfile"])) // user uploaded route file
 		{
-			// check age of data
-			$this->filemtime = filemtime($file_name);
-			
-			// data is older than 40 days
-			if( $this->filemtime > ( time() - ( 40 * 24 * 60 * 60 ) ) )
+			$uploaddir = './osmdata/';
+			$uploadfile = $uploaddir . "user".$this->id."_";
+			$i = 0;
+			while(file_exists( $uploadfile . $i . ".osm")) // do not override existing custom routes
 			{
-				$refresh = false;
+				$i++;
 			}
-		}
-		
-		// forced refresh
-		if ( isset($_GET["rf"]) && $_GET["rf"] == "1" )
-		{
-			$refresh = true;
-		}
-		
-		// get data from overpass-api when needed
-		if ( $refresh )
-		{
-			$content = @file_get_contents($link);
-			if( $content )
+			$uploadfile .= $i . ".osm";
+			// try uploading file
+			if ( move_uploaded_file($_FILES['osmfile']['tmp_name'], $uploadfile)) 
 			{
-				$this->refresh_success = true;
-				file_put_contents($file_name, $content);
-				$this->filemtime = time();
+				if( !@simplexml_load_file($uploadfile) )
+				{
+					return_error("invalid_xml_file","full");
+					unlink($uploadfile);
+					die();
+				}
 			}
 			else
 			{
-				$this->refresh_success = false;
+				return_error("upload_error", "full");
+				print_r($_FILES);
+				log_error( "File upload error:" . print_r($_FILES["osmfile"]["error"]) );
+				die();
 			}
+			$this->filexml = $uploadfile;
+			$this->custom = true;
+			$this->custom_id = $get_id . "_" . $i;
 		}
-		
-		$this->filexml = $file_name;
+		else
+		{
+			// build link to overpass api
+			$link = "http://overpass-api.de/api/interpreter?data=%5Bout%3Axml%5D%3B%28relation%28".round($get_id)."%29%3Brel%28br%29%3B%29%3Bout%3B%28relation%28".$get_id."%29%3B%3E%3E%3B%29%3Bout%3B";
+			
+			// build file name
+			$file_name = "osmdata/data" . $this->id . ".osm";
+			
+			// check if data needs to be refreshed
+			
+			$refresh = true; // default value
+			
+			// relation was already loaded
+			if ( file_exists($file_name) )
+			{
+				// check age of data
+				$this->filemtime = filemtime($file_name);
+				
+				// data is younger than 40 days
+				if( $this->filemtime > ( time() - ( 40 * 24 * 60 * 60 ) ) )
+				{
+					$refresh = false;
+				}
+			}
+			
+			// forced refresh
+			if ( isset($_GET["rf"]) && $_GET["rf"] == "1" )
+			{
+				$refresh = true;
+			}
+			
+			// get data from overpass-api when needed
+			if ( $refresh )
+			{
+				$content = @file_get_contents($link);
+				if( $content )
+				{
+					$this->refresh_success = true;
+					file_put_contents($file_name, $content);
+					$this->filemtime = time();
+				}
+				else
+				{
+					$this->refresh_success = false;
+				}
+			}
+			
+			$this->filexml = $file_name;
+		}
 	}
 	 
 	/**
@@ -1212,6 +1290,16 @@ Class Route
 		?>
 	<title><?php echo LANG::l_("Train Analysis: ") . $this->relation_tags["ref"]; ?> <?php echo Route::showfromviato($this->relation_tags["to"], $this->relation_tags["from"], $this->relation_tags["via"]); ?></title>
 		<?php 
+		//update location for custom_files
+		if( $this->custom && $this->custom_id )
+		{
+			?>
+<script type="text/javascript">
+var stateObj = {};
+history.pushState(stateObj, "", "?id=<?php echo $this->custom_id;?>&train=<?php echo $this->train->ref;?>");
+</script>
+			<?php
+		} 
 		//javascript for speed profile
 		?>
 <!-- flot implementation -->
@@ -2021,33 +2109,36 @@ if (  $this->relation_distance == 0 )
 		//connect to database
 		$con = connectToDB();
 
-		// add route to database
-		$query = "SELECT id FROM osm_train_details WHERE id=" . @$con->real_escape_string($this->id);
-		$result = @$con->query($query) or log_error(@$con->error);
-		while ( $row = @$result->fetch_array() )
+		if( !$this->custom )
 		{
-			$mysql_id = $row["id"];
-		}
-		if ( isset($mysql_id) && $mysql_id == $this->id )
-		{
-			if ( $this->relation_distance > 0 ) //only update when route includes ways
+			// add route to database
+			$query = "SELECT id FROM osm_train_details WHERE id=" . @$con->real_escape_string($this->id);
+			$result = @$con->query($query) or log_error(@$con->error);
+			while ( $row = @$result->fetch_array() )
 			{
-				$query2 = "UPDATE osm_train_details SET id=" . @$con->real_escape_string($this->id) . ", ref='" . @$con->real_escape_string($this->relation_tags["ref"]) . "', ref_colour='" . @$con->real_escape_string($this->relation_tags["colour"]) . "', ref_textcolour='" . @$con->real_escape_string($this->relation_tags["text_colour"]) . "', `from`='" . @$con->real_escape_string($this->relation_tags["from"]) . "', `to`='" . @$con->real_escape_string($this->relation_tags["to"]) . "', operator='" . @$con->real_escape_string($this->relation_tags["operator"]) . "', route='" . @$con->real_escape_string($this->relation_tags["route"]) . "', service='" . @$con->real_escape_string($this->relation_tags["service"]) . "', length='" . @$con->real_escape_string($this->relation_distance) . "', time='" . @$con->real_escape_string($travel_time) . "', ave_speed='" . @$con->real_escape_string($average_speed) . "',max_speed='" . @$con->real_escape_string($this->maxspeed_max) . "', date='" . @$con->real_escape_string($this->filemtime) . "' WHERE id=" . @$con->real_escape_string($this->id) . ";";
+				$mysql_id = $row["id"];
 			}
-			else // delete otherwise
+			if ( isset($mysql_id) && $mysql_id == $this->id )
 			{
-				$query2 = "DELETE FROM osm_train_details WHERE id=" . @$con->real_escape_string($this->id) . ";";
-			}
-			@$con->query($query2) or log_error(@$con->error);
-		}
-		else
-		{
-			if ( $this->relation_distance > 0 ) //only add when route includes ways
-			{
-				$query2 = "INSERT INTO osm_train_details VALUES( '" . @$con->real_escape_string($this->id) . "','" . @$con->real_escape_string($this->relation_tags["ref"]). "','" . @$con->real_escape_string($this->relation_tags["colour"]) . "','" . @$con->real_escape_string($this->relation_tags["text_colour"]) . "','" . @$con->real_escape_string($this->relation_tags["from"]) . "','" . @$con->real_escape_string($this->relation_tags["to"]) . "', '" . @$con->real_escape_string($this->relation_tags["operator"]) . "', '" . @$con->real_escape_string($this->relation_tags["route"]) . "', '" . @$con->real_escape_string($this->relation_tags["service"]) . "','" . @$con->real_escape_string($this->relation_distance) . "','" . @$con->real_escape_string($travel_time) . "', '" . @$con->real_escape_string($average_speed) . "','" . @$con->real_escape_string($this->maxspeed_max) . "','" . @$con->real_escape_string($this->train->ref) . "','" . @$con->real_escape_string($this->filemtime) . "');";
+				if ( $this->relation_distance > 0 ) //only update when route includes ways
+				{
+					$query2 = "UPDATE osm_train_details SET id=" . @$con->real_escape_string($this->id) . ", ref='" . @$con->real_escape_string($this->relation_tags["ref"]) . "', ref_colour='" . @$con->real_escape_string($this->relation_tags["colour"]) . "', ref_textcolour='" . @$con->real_escape_string($this->relation_tags["text_colour"]) . "', `from`='" . @$con->real_escape_string($this->relation_tags["from"]) . "', `to`='" . @$con->real_escape_string($this->relation_tags["to"]) . "', operator='" . @$con->real_escape_string($this->relation_tags["operator"]) . "', route='" . @$con->real_escape_string($this->relation_tags["route"]) . "', service='" . @$con->real_escape_string($this->relation_tags["service"]) . "', length='" . @$con->real_escape_string($this->relation_distance) . "', time='" . @$con->real_escape_string($travel_time) . "', ave_speed='" . @$con->real_escape_string($average_speed) . "',max_speed='" . @$con->real_escape_string($this->maxspeed_max) . "', date='" . @$con->real_escape_string($this->filemtime) . "' WHERE id=" . @$con->real_escape_string($this->id) . ";";
+				}
+				else // delete otherwise
+				{
+					$query2 = "DELETE FROM osm_train_details WHERE id=" . @$con->real_escape_string($this->id) . ";";
+				}
 				@$con->query($query2) or log_error(@$con->error);
-
-				Train::setDefaultTrain($this->train->ref, $this->id, $this->relation_tags["service"], $this->relation_tags["route"], true);
+			}
+			else
+			{
+				if ( $this->relation_distance > 0 ) //only add when route includes ways
+				{
+					$query2 = "INSERT INTO osm_train_details VALUES( '" . @$con->real_escape_string($this->id) . "','" . @$con->real_escape_string($this->relation_tags["ref"]). "','" . @$con->real_escape_string($this->relation_tags["colour"]) . "','" . @$con->real_escape_string($this->relation_tags["text_colour"]) . "','" . @$con->real_escape_string($this->relation_tags["from"]) . "','" . @$con->real_escape_string($this->relation_tags["to"]) . "', '" . @$con->real_escape_string($this->relation_tags["operator"]) . "', '" . @$con->real_escape_string($this->relation_tags["route"]) . "', '" . @$con->real_escape_string($this->relation_tags["service"]) . "','" . @$con->real_escape_string($this->relation_distance) . "','" . @$con->real_escape_string($travel_time) . "', '" . @$con->real_escape_string($average_speed) . "','" . @$con->real_escape_string($this->maxspeed_max) . "','" . @$con->real_escape_string($this->train->ref) . "','" . @$con->real_escape_string($this->filemtime) . "');";
+					@$con->query($query2) or log_error(@$con->error);
+	
+					Train::setDefaultTrain($this->train->ref, $this->id, $this->relation_tags["service"], $this->relation_tags["route"], true);
+				}
 			}
 		}
 		?>

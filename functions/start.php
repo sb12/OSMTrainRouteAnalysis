@@ -27,6 +27,8 @@ function start()
 {
 	loadHeader();
 	enterID();
+	uploadRoute();
+	Search::showSearchBox(); 
 	showRoutes();
 	loadFooter();
 }
@@ -137,9 +139,52 @@ function enterID()
 			</form>
 		</div>
 	</div>
-	<?php
-	Search::showSearchBox(); 
+	<?php	
+}
+
+/**
+ * generates form to upload route
+ */
+function uploadRoute()
+{
+	?>
 	
+	<div class="panel panel-primary">
+		<div class="panel-heading" data-toggle="collapse" aria-expanded="false" aria-controls="idForm" role="tab">
+			<h3 class="panel-title"><a data-toggle="collapse" href="#uploadForm" aria-expanded="false" aria-controls="uploadForm"><?php echo Lang::l_("By uploading an osm file:");?></a></h3>
+		</div>
+		<div class="panel-body collapse" id="uploadForm">
+			<?php echo Lang::l_('This can be used to edit routes locally and upload them to the tool without entering data into OSM, e.g. for case studies.');?><br>
+			<?php echo Lang::l_('All osm files can be processed as long as they contain the relation itself and all relevant ways and nodes, e.g. you can edit a route in JOSM, save it locally and upload it.');?>
+			<form action="index.php" method="post" id="osmid" class=".form-horizontal" enctype="multipart/form-data">
+				<div class="form-group">
+					<label for="id" class="col-sm-2 control-label"><?php echo Lang::l_('Route file');?>:</label>
+					<div class="col-sm-10">
+						<input type="file" name="osmfile" id="osmfile" class="form-control" required>
+					</div>
+				</div>		
+				<div class="form-group">
+					<label for="id" class="col-sm-2 control-label"><?php echo Lang::l_('Relation ID');?>:</label>
+					<div class="col-sm-10">
+						<input type="number" name="id" id="id" class="form-control" required>
+					</div>
+				</div>		
+				<div class="form-group">
+					<label for="train" class="col-sm-2 control-label"><?php echo Lang::l_('Train');?>:</label>
+					<div class="col-sm-10">
+						<?php echo Train::changeTrain();?>
+					</div>
+				</div>
+				<div class="form-group">
+					<div class="col-sm-offset-2 col-sm-10">
+						<button type="submit" class="btn btn-default"><?php echo Lang::l_("Upload route");?></button>
+					</div>
+				</div>
+		
+			</form>
+		</div>
+	</div>
+	<?php	
 }
 
 /**
@@ -420,6 +465,7 @@ function return_error($value, $type = "message", $dbcon = "")
 	$errormsg["no_xml_file"] = Lang::l_("error_noxmlfile");
 	$errormsg["invalid_xml_file"] = Lang::l_("error_invalidxmlfile");
 	$errormsg["no_route"] = Lang::l_("error_noroute");
+	$errormsg["upload_error"] = Lang::l_("error_uploaderror");
 	$errormsg["mysql"] = Lang::l_("error_mysql");
 
 	if ( $value == "mysql" ) // log mysql error message (only working when dbcon is set)
@@ -449,7 +495,7 @@ function return_error($value, $type = "message", $dbcon = "")
 			<?php echo $errormsg[$value]; ?>
 	<?php 
 	//show link to update route if necessary
-	if ( $value == "invalid_xml_file" )
+	if ( $value == "invalid_xml_file" && isset($route->train) )
 	{
 		?>
 			<a href="?id=<?php echo $route->id;?>&train=<?php echo $route->train->ref;?>&rf=1" class="alert-link"><?php echo Lang::l_("Update data");?></a>
@@ -467,6 +513,8 @@ function return_error($value, $type = "message", $dbcon = "")
 	</div>
 		<?php			
 		enterID();
+		uploadRoute();
+		Search::showSearchBox(); 
 		showRoutes();
 		loadFooter();
 	}
