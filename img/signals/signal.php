@@ -1133,6 +1133,11 @@ if(isset($_GET["railway:signal:combined"]))
 {
 	if($_GET["railway:signal:combined"] == "DE-ESO:ks")
 	{
+		// zs3v is not shown when distant speed is same or higher than speed
+		if( isset($_GET["speed_distant"]) && isset($_GET["speed"]) && $_GET["speed_distant"] >= $_GET["speed"])
+		{
+			unset($_GET["speed_distant"]);
+		}
 		$colour_hp0 = "red";
 		$colour_ks1 = "#00FF00";
 		$colour_ks2 = "yellow";
@@ -1230,6 +1235,22 @@ if(isset($_GET["railway:signal:combined"]))
 						<circle fill="' . $colour_zs7 . '" cx="25" cy="39" r="2"/>
 						<circle fill="' . $colour_zs7 . '" cx="20" cy="49" r="2"/>
 					</g>';
+		}
+		// signals with shortened distance to main
+		if( ( isset($_GET["railway:signal:combined:shortened"]) && $_GET["railway:signal:combined:shortened"] == "yes" ) )
+		{
+			if( ( $_GET["state_combined"] == "ks2" ) || ( $class_ks1 == "signal_blink" ) ) // only when Ks 1 is blinking or Ks 2 is shown
+			{
+				$color_shortened = "#FFFFFF"; // white
+			}
+			else
+			{
+				$color_shortened = "#444444"; // gray
+			}
+			$signal[$s] .= '
+				<g id="shortened">
+					<circle fill="' . $color_shortened . '" cx="12" cy="8" r="2"/>
+				</g>';
 		}
 		$signal[$s] .= '
 		</g>';
@@ -1463,10 +1484,10 @@ if(isset($_GET["railway:signal:distant"]))
 				<g id="ks2">
 					<circle fill="' . $colour_ks2 . '" cx="28" cy="29" r="4"/>
 				</g>';
-
+		// repeated signals
 		if( ( isset($_GET["railway:signal:distant:repeated"]) && $_GET["railway:signal:distant:repeated"] == "yes" ) )
 		{
-			if( ( $_GET["state_distant"] == "ks2" ) || ( $class_ks1 = "signal_blink" ) ) // only when Ks 1 is blinking or Ks 2 is shown
+			if( ( $_GET["state_distant"] == "ks2" ) || ( $class_ks1 == "signal_blink" ) ) // only when Ks 1 is blinking or Ks 2 is shown
 			{
 				$color_additional_light = "#FFFFFF"; // white
 			}
@@ -1477,6 +1498,22 @@ if(isset($_GET["railway:signal:distant"]))
 			$signal[$s] .= '
 				<g id="repeated">
 					<circle fill="' . $color_additional_light . '" cx="10" cy="49" r="2"/>
+				</g>';
+		}
+		// signals with shortened distance to main
+		if( ( isset($_GET["railway:signal:distant:shortened"]) && $_GET["railway:signal:distant:shortened"] == "yes" ) )
+		{
+			if( ( $_GET["state_distant"] == "ks2" ) || ( $class_ks1 == "signal_blink" ) ) // only when Ks 1 is blinking or Ks 2 is shown
+			{
+				$color_shortened = "#FFFFFF"; // white
+			}
+			else
+			{
+				$color_shortened = "#444444"; // gray
+			}
+			$signal[$s] .= '
+				<g id="repeated">
+					<circle fill="' . $color_shortened . '" cx="12" cy="10" r="2"/>
 				</g>';
 		}
 		$signal[$s] .= '
