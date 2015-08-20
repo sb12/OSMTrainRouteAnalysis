@@ -342,12 +342,13 @@ Class Signals
 			$k=="railway:signal:combined" || 
 			$k=="railway:signal:combined:states" || 
 			$k=="railway:signal:combined:substitute_signal" || 
+			$k=="railway:signal:combined:shortened" ||
 			$k=="railway:signal:combined:form" ||
 			$k=="railway:signal:distant" || 
 			$k=="railway:signal:distant:states" || 
 			$k=="railway:signal:distant:repeated" || 
 			$k=="railway:signal:distant:form" || 
-			$k=="railway:signal:distant:shortened_distance" ||
+			$k=="railway:signal:distant:shortened" ||
 			$k=="railway:signal:speed_limit" ||
 			$k=="railway:signal:speed_limit:form" ||
 			$k=="railway:signal:speed_limit:speed" ||
