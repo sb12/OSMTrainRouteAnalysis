@@ -759,7 +759,14 @@ Class Route
 			}
 				
 			// check if way is railway
-			if ( !isset($this->way_tags[$b]["railway"]) || ( $this->way_tags[$b]["railway"] != "rail" && $this->way_tags[$b]["railway"] != "light_rail" && $this->way_tags[$b]["railway"] != "tram" && $this->way_tags[$b]["railway"] != "narrow_gauge") && $this->way_tags[$b]["railway"] != "miniature" && $this->way_tags[$b]["railway"] != "subway" )
+			if ( !isset($this->way_tags[$b]["railway"]) ||
+				( $this->way_tags[$b]["railway"] != "rail" &&
+				$this->way_tags[$b]["railway"] != "light_rail" &&
+				$this->way_tags[$b]["railway"] != "tram" &&
+				$this->way_tags[$b]["railway"] != "narrow_gauge") &&
+				$this->way_tags[$b]["railway"] != "miniature" &&
+				$this->way_tags[$b]["railway"] != "subway" &&
+				$this->way_tags[$b]["railway"] != "construction")
 			{
 				continue;
 			}
