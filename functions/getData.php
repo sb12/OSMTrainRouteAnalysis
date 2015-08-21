@@ -2034,6 +2034,9 @@ if (  $this->relation_distance == 0 )
 			</a></h4>
 		</div>
 		<div class="panel-body collapse" id="signalsTab">
+		<div class="panel-body">
+			<div class="col-md-12"><b><?php echo Lang::l_('Number of signals');?>:</b> <?php echo $s;?></div>
+		</div>
 		<?php Signals::analyseSignals($this->signals_array, $this->node, $this->maxspeed_array);?>
 			<table class="table table-striped">
 			<tr>
