@@ -71,14 +71,13 @@ Class HV_distant_light
 				$marker = true;
 			}
 		}
-		if( ( isset($_GET["railway:signal:distant:repeated"]) && $_GET["railway:signal:distant:repeated"] == "yes" ) || ( isset($_GET["railway:signal:distant:shortened_distance"]) && $_GET["railway:signal:distant:shortened_distance"] == "yes" ) )
+		if( ( isset($_GET["railway:signal:distant:repeated"]) &&
+			$_GET["railway:signal:distant:repeated"] == "yes" ) ||
+				( isset($_GET["railway:signal:distant:shortened"]) &&
+				$_GET["railway:signal:distant:shortened"] == "yes" ) )
 		{
+			// marker light when it is a repeater or in shortened distance to main signal
 			$colour_marker = "&white;";
-			$marker = true;
-		}
-		else
-		{
-			$colour_marker = "&gray;";
 			$marker = true;
 		}
 		
