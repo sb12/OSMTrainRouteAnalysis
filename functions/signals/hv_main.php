@@ -37,7 +37,7 @@ Class HV_main
 	 */
 	public static function findState($tags, $next_speed, $main_distance)
 	{
-		$state = "";
+		$state = "hp0"; // default state
 		if(isset($tags["railway:signal:main:states"]))
 		{
 			if ( $next_speed == 0 && strpos($tags["railway:signal:main:states"], "hp0" )) // signal at end of route
