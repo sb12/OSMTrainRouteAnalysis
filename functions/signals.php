@@ -255,7 +255,7 @@ Class Signals
 			//German hl signals
 			elseif($tags["railway:signal:distant"] == "DE-ESO:hl")
 			{
-				$state_main = HL_distant::findState($tags, $next_speed_distant, $main_distance);
+				$state_distant = HL_distant::findState($tags, $next_speed_distant, $main_distance);
 			}
 		}
 		
