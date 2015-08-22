@@ -57,24 +57,23 @@ Class Speedlimit_zs3_sign
 	 */
 	public static function generateImage($height)
 	{
-			$speed = "";
-			if(isset($_GET["railway:signal:speed_limit:speed"]))
-			{
-				$speed = $_GET["railway:signal:speed_limit:speed"];
-			}
-			$image = '
+		$speed = "";
+		if(isset($_GET["railway:signal:speed_limit:speed"]))
+		{
+			$speed = $_GET["railway:signal:speed_limit:speed"];
+		}
+		$image = '
 <g>
 	<polygon fill="#000000" stroke="#999999" points="3,37 20,6 37,37" stroke-width="2"/>';
-			$path = Signal_path::getPath($speed);
-			if(isset($path))
-			{
-				$image .= '
+		$path = Signal_path::getPath($speed);
+		if(isset($path))
+		{
+			$image .= '
 	<path d="' . $path . '" style="&white;" />';
 				
-			}
-			$image .= '
+		}
+		$image .= '
 </g>';
-		$s++;
 		$height = 40;
 		return array($image, $height);
 	}
