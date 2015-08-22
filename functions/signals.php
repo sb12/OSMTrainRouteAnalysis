@@ -64,7 +64,7 @@ Class Signals
 		{
 			foreach ( $distant_signals as $distant)
 			{
-				if ( $signal[0] - $distant[0] > 0 && $signal[0] - $distant[0] < 1.5)
+				if ( $signal[0] - $distant[0] > 0 && $signal[0] - $distant[0] < 1.6)
 				{
 					// do not override previous entries
 					if( !isset(self::$signal_property[$distant[1]]["main"]))
