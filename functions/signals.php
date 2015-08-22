@@ -21,6 +21,17 @@
     */
 ?>
 <?php
+
+include "signals/hv_main.php";
+include "signals/hv_distant.php";
+
+include "signals/ks_main.php";
+include "signals/ks_combined.php";
+include "signals/ks_distant.php";
+
+include "signals/speedlimit_zs3.php";
+include "signals/speedlimit_zs3v.php";
+
 /**
  * describes a signal on the route
  * @author sb12
@@ -57,8 +68,8 @@ Class Signals
 			}
 			self::$signal_property[$signal[1]]["distance"] = $signal[0]; 
 		}
-		$i = 0;
 		
+		$i = 0;
 		//attach main signals to distant signals
 		foreach ($main_signals as $signal)
 		{
@@ -181,25 +192,7 @@ Class Signals
 		{
 			if($tags["railway:signal:speed_limit"] == "DE-ESO:zs3")
 			{
-				if( isset($tags["railway:signal:speed_limit:form"]) && $tags["railway:signal:speed_limit:form"] == "light" )
-				{
-					$speed = "";
-					$speeds = "";
-					if(isset($tags["railway:signal:speed_limit:speed"]))
-					{
-						$speeds = $tags["railway:signal:speed_limit:speed"];
-						$speed_array = explode(";",$speeds);
-						if(isset($next_speed) && in_array($next_speed,$speed_array))
-						{
-							$speed = $next_speed;
-							$speed_signal = true;
-						}
-					}
-				}
-				else
-				{
-					$speed="";
-				}
+				$speed = Speedlimit_zs3::findState($tags, $next_speed);
 			}
 		}
 		
@@ -208,24 +201,7 @@ Class Signals
 		{
 			if($tags["railway:signal:speed_limit_distant"] == "DE-ESO:zs3v")
 			{
-				if($tags["railway:signal:speed_limit_distant:form"] == "light")
-				{
-					$speeds = "";
-					if(isset($tags["railway:signal:speed_limit_distant:speed"]))
-					{
-						$speeds = $tags["railway:signal:speed_limit_distant:speed"]; // ACHTUNG: gefährlich
-						$speed_array = explode(";",$speeds);
-						if(isset($next_speed_distant) && in_array($next_speed_distant,$speed_array))
-						{
-							$speed_distant = $next_speed_distant;
-							$speed_signal = true;
-						}
-					}
-				}
-				else
-				{
-					$speed="";
-				}
+				$speed_distant = Speedlimit_zs3v::findState($tags, $next_speed_distant);
 			}
 		}
 		
@@ -235,31 +211,12 @@ Class Signals
 			//German Hp signals
 			if($tags["railway:signal:main"] == "DE-ESO:hp")
 			{
-				if(isset($tags["railway:signal:main:states"]))
-				{
-					$state_main = "hp0";
-					if ( $main_distance < 600 && strpos($tags["railway:signal:main:states"], "kennlicht" ) )
-					{
-						$state_main = "kennlicht";
-					}
-					elseif ( $next_speed > 60 && strpos($tags["railway:signal:main:states"], "hp1" ) )
-					{
-						$state_main = "hp1"; 
-					}
-					elseif ( $next_speed <= 60 && strpos ( $tags["railway:signal:main:states"], "hp2" ) )
-					{
-						$state_main = "hp2"; 
-					}
-					elseif ( $next_speed > 60 && strpos ( $tags["railway:signal:main:states"], "hp2" ) )
-					{
-						$state_main = "hp2"; 
-					}
-				}
+				$state_main = HV_main::findState($tags, $next_speed, $main_distance);
 			}
 			// German Ks signals
 			elseif($tags["railway:signal:main"] == "DE-ESO:ks")
 			{
-				$state_main = "ks1";
+				$state_main = KS_main::findState($tags, $next_speed, $main_distance);
 			}
 			elseif($tags["railway:signal:main"] == "DE-ESO:hl")
 			{
@@ -269,15 +226,7 @@ Class Signals
 		//German combined ks signals
 		if(isset($tags["railway:signal:combined"]) && $tags["railway:signal:combined"]=="DE-ESO:ks")
 		{
-			// There are ks signals that can only show ks2
-			if ( isset($tags["railway:signal:combined:states"] ) && strstr ( $tags["railway:signal:combined:states"], "ks1" ) )
-			{
-				$state_combined = "ks1";
-			}
-			else
-			{
-				$state_combined = "ks2";
-			}		
+			$state_combined = KS_combined::findState($tags, $next_speed, $next_speed_distant, $main_distance);	
 		}
 		//Find state for distant signals
 		if(isset($tags["railway:signal:distant"]))
@@ -285,35 +234,12 @@ Class Signals
 			//German vr signals
 			if($tags["railway:signal:distant"] == "DE-ESO:vr")
 			{
-				if(isset($tags["railway:signal:distant:states"]))
-				{
-					$state_distant = "vr0"; 
-					if ( $next_speed_distant > 60 && strstr($tags["railway:signal:distant:states"], "vr1" ) )
-					{
-						$state_distant = "vr1"; 
-					}
-					elseif ( $next_speed_distant <= 60 && $next_speed_distant > 0 && strstr ( $tags["railway:signal:distant:states"], "vr2" ) )
-					{
-						$state_distant = "vr2"; 
-					}
-					elseif ( $next_speed_distant > 60 && strstr ( $tags["railway:signal:distant:states"], "vr2" ) )
-					{
-						$state_distant = "vr2"; 
-					}
-				}
+				$state_distant = HV_distant::findState($tags, $next_speed_distant, $main_distance);
 			}
 			//German ks signals
 			elseif($tags["railway:signal:distant"] == "DE-ESO:ks")
 			{
-				// There are ks signals that can only show ks2
-				if ( isset($tags["railway:signal:distant:states"] ) && strstr ( $tags["railway:signal:distant:states"], "ks1" ) )
-				{
-					$state_distant = "ks1";
-				}
-				else
-				{
-					$state_distant = "ks2";
-				}
+				$state_distant = KS_distant::findState($tags, $next_speed_distant, $main_distance);
 			}
 			//German hl signals
 			elseif($tags["railway:signal:distant"] == "DE-ESO:hl")
@@ -365,7 +291,7 @@ Class Signals
 		{
 			$get .= "&speed=".$speed;
 		}
-		if(isset($speed_distant))
+		if( isset($speed_distant) && $speed_distant )
 		{
 			$get .= "&speed_distant=".$speed_distant;
 		}
@@ -454,19 +380,19 @@ Class Signals
 			}
 			if($tags["railway:signal:main"] == "DE-ESO:ks")
 			{
-				$result.=Lang::l_("German Ks");
+				$result .= KS_main::showDescription();
 			}
 			elseif($tags["railway:signal:main"] == "DE-ESO:hp")
 			{
-				$result.=Lang::l_("German H/V");
+				$result .= HV_main::showDescription();
 			}
 			elseif($tags["railway:signal:main"] == "DE-ESO:hl")
 			{
-				$result.=Lang::l_("German Hl");
+				$result .= Lang::l_("German Hl");
 			}
 			else
 			{
-				$result.=Lang::l_("Unknown");
+				$result.=main::showDescription();
 			}
 			if( isset($tags["railway:signal:combined:function"]))
 			{
@@ -476,29 +402,29 @@ Class Signals
 			{
 				if($tags["railway:signal:main:function"] == "entry")
 				{
-					$result.=Lang::l_(" Entry Signal");
+					$result .= Lang::l_(" Entry Signal");
 				}
 				elseif($tags["railway:signal:main:function"] == "intermediate")
 				{
-					$result.=Lang::l_(" Intermediate Signal");
+					$result .= Lang::l_(" Intermediate Signal");
 				}
 				elseif($tags["railway:signal:main:function"] == "exit")
 				{
-					$result.=Lang::l_(" Exit Signal");
+					$result .= Lang::l_(" Exit Signal");
 				}
 				elseif($tags["railway:signal:main:function"] == "block")
 				{
-					$result.=Lang::l_(" Block Signal");
+					$result .= Lang::l_(" Block Signal");
 				}
 				else
 				{
-					$result.=Lang::l_(" Main Signal");
+					$result .= Lang::l_(" Main Signal");
 				}
 			}
 			else
 			{
 
-				$result.=Lang::l_(" Main Signal");
+				$result .= Lang::l_(" Main Signal");
 			}
 		}
 		if(isset($tags["railway:signal:speed_limit"]))
@@ -506,19 +432,19 @@ Class Signals
 			$result.="<br>";
 			if( isset($tags["railway:signal:main"]) || isset($tags["railway:signal:combined"]) )
 			{
-				$result.=Lang::l_("with ");
+				$result .= Lang::l_("with ");
 			}
 			if($tags["railway:signal:speed_limit"]=="DE-ESO:zs3")
 			{
-				$result.=Lang::l_("German Zs3 Speed signal");
+				$result .= Speedlimit_zs3::showDescription();
 			}
 			elseif($tags["railway:signal:speed_limit"]=="DE-ESO:lf7")
 			{
-				$result.=Lang::l_("German Lf7 Speed signal");
+				$result .= Lang::l_("German Lf7 Speed signal");
 			}
 			else
 			{
-				$result.=Lang::l_("Unknown Speed signal");
+				$result .= Lang::l_("Unknown Speed signal");
 			}
 			// Show available speed limits
 			if( isset($tags["railway:signal:speed_limit:speed"]))
@@ -557,57 +483,57 @@ Class Signals
 		{
 			if(isset($tags["railway:signal:main"]) || isset($tags["railway:signal:speed_limit"]) || isset($tags["railway:signal:combined"]))
 			{
-				$result.="<br>";
+				$result .= "<br>";
 			}
 			if(isset($tags["railway:signal:combined"]))
 			{
-				$result.=Lang::l_("combined with ");
+				$result .= Lang::l_("combined with ");
 				$tags["railway:signal:distant"] = $tags["railway:signal:combined"];
 			}
 
 			if($tags["railway:signal:distant"] == "DE-ESO:ks")
 			{
-				$result.=Lang::l_("German Ks");
+				$result .= KS_distant::showDescription();
 			}
 			elseif($tags["railway:signal:distant"] == "DE-ESO:vr")
 			{
-				$result.=Lang::l_("German H/V");
+				$result .= HV_distant::showDescription();
 			}
 			elseif($tags["railway:signal:distant"] == "DE-ESO:hl")
 			{
-				$result.=Lang::l_("German Hl");
+				$result .= Lang::l_("German Hl");
 			}
 			else
 			{
-				$result.=Lang::l_("Unknown");
+				$result .= distant::showDescription();
 			}
 
 			if(isset($tags["railway:signal:distant:repeated"]) && $tags["railway:signal:distant:repeated"] == "yes")
 			{
-				$result.=Lang::l_(" Repeated");
+				$result .= Lang::l_(" Repeated");
 			}
 			
-			$result.=Lang::l_(" Distant Signal");
+			$result .= Lang::l_(" Distant Signal");
 			
 		}
 		if(isset($tags["railway:signal:speed_limit_distant"]))
 		{
-			$result.="<br>";
+			$result .= "<br>";
 			if(isset($tags["railway:signal:distant"]))
 			{
-				$result.=Lang::l_("with ");
+				$result .= Lang::l_("with ");
 			}
 			if($tags["railway:signal:speed_limit_distant"]=="DE-ESO:zs3v")
 			{
-				$result.=Lang::l_("German Zs3v Distant Speed signal");
+				$result .=  Speedlimit_zs3v::showDescription();
 			}
 			elseif($tags["railway:signal:speed_limit_distant"]=="DE-ESO:lf6")
 			{
-				$result.=Lang::l_("German Lf6 Distant Speed signal");
+				$result .= Lang::l_("German Lf6 Distant Speed signal");
 			}
 			else
 			{
-				$result.=Lang::l_("Unknown Distant Speed signal");
+				$result .= Lang::l_("Unknown Distant Speed signal");
 			}
 			if( isset($tags["railway:signal:speed_limit_distant:speed"]))
 			{
