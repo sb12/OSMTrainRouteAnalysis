@@ -68,6 +68,12 @@ Class Route
 	 * @var Train
 	 */
 	public $train;
+	
+	/**
+	 * VMZ (maxspeed of the train route - independent of chosen vehicles)
+	 * @var int
+	 */
+	public $vmz;
 
 	/**
 	 * length of the whole relation
@@ -399,6 +405,11 @@ Class Route
 				$refresh = true;
 			}
 			
+			if ( isset($_GET["maxspeed"]) && $_GET["maxspeed"] > 0 )
+			{
+				$vmz = $_GET["maxspeed"];
+			}
+			
 			// get data from overpass-api when needed
 			if ( $refresh )
 			{
@@ -689,7 +700,15 @@ Class Route
 		$maxspeed_before = $maxspeed_before_max = $maxspeed_before_min = $distance_before = $distance_before_min = $distance_before_max = $exact_before = $maxspeed_total_max = $maxspeed_total_min = $maxspeed_total = $last_id = 0;
 
 		// set maxspeed of train
-		$maxspeed_train = $this->train->maxspeed;
+		$maxspeed_train = 0;
+		if( isset($vmz) && $vmz > 0 ) // if a VMZ exists, first use this
+		{
+			$maxspeed_train = $vmz; // use set VMZ
+		}
+		if($this->train->maxspeed < $vmz || $maxspeed_train == 0) // check if a VMZ exists or if vehicles are slower
+		{
+			$maxspeed_train = $this->train->maxspeed; // use slower or standalone vehicle maxspeed
+		}
 		
 		$this->count_holes = 0; // start value for holes in relation
 		$l = 0; // counter for map nodes
