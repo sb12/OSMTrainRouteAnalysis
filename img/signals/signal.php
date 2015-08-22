@@ -18,6 +18,10 @@ include "../../functions/signals/ks_main.php";
 include "../../functions/signals/ks_combined.php";
 include "../../functions/signals/ks_distant.php";
 
+include "../../functions/signals/hl_main.php";
+include "../../functions/signals/hl_combined.php";
+include "../../functions/signals/hl_distant.php";
+
 include "../../functions/signals/signal_matrix.php";
 include "../../functions/signals/signal_path.php";
 
@@ -80,11 +84,14 @@ if(isset($_GET["railway:signal:main"]))
 		$signal[$s] = $result[0];
 		$height += $result[1];
 		$s++;
-	}/*
+	}
 	elseif($_GET["railway:signal:main"] == "DE-ESO:hl")
 	{
-		// TODO
-	}*/
+		$result = HL_main::generateImage($height);
+		$signal[$s] = $result[0];
+		$height += $result[1];
+		$s++;
+	}
 	else //fallback for unknown signals
 	{
 		if($_GET["railway:signal:main:form"] == "semaphore")
@@ -109,6 +116,13 @@ if(isset($_GET["railway:signal:combined"]))
 	if($_GET["railway:signal:combined"] == "DE-ESO:ks")
 	{
 		$result = KS_combined::generateImage($height);
+		$signal[$s] = $result[0];
+		$height += $result[1];
+		$s++;
+	}
+	elseif($_GET["railway:signal:combined"] == "DE-ESO:hl")
+	{
+		$result = HL_combined::generateImage($height);
 		$signal[$s] = $result[0];
 		$height += $result[1];
 		$s++;
@@ -147,11 +161,14 @@ if(isset($_GET["railway:signal:distant"]))
 		$signal[$s] = $result[0];
 		$height += $result[1];
 		$s++;
-	}/*
+	}
 	elseif($_GET["railway:signal:distant"] == "DE-ESO:hl")
 	{
-		// TODO
-	}*/
+		$result = HL_distant::generateImage($height);
+		$signal[$s] = $result[0];
+		$height += $result[1];
+		$s++;
+	}
 	else //fallback for unknown signals
 	{
 		if( isset($_GET["railway:signal:distant:form"]) && $_GET["railway:signal:distant:form"] == "semaphore")

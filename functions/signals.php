@@ -29,6 +29,10 @@ include "signals/ks_main.php";
 include "signals/ks_combined.php";
 include "signals/ks_distant.php";
 
+include "signals/hl_main.php";
+include "signals/hl_combined.php";
+include "signals/hl_distant.php";
+
 include "signals/speedlimit_zs3.php";
 include "signals/speedlimit_zs3v.php";
 
@@ -220,13 +224,20 @@ Class Signals
 			}
 			elseif($tags["railway:signal:main"] == "DE-ESO:hl")
 			{
-				// TODO
+				$state_main = HL_main::findState($tags, $next_speed, $main_distance);
 			}
 		}
 		//German combined ks signals
-		if(isset($tags["railway:signal:combined"]) && $tags["railway:signal:combined"]=="DE-ESO:ks")
+		if(isset($tags["railway:signal:combined"]) )
 		{
-			$state_combined = KS_combined::findState($tags, $next_speed, $next_speed_distant, $main_distance);	
+			if($tags["railway:signal:combined"]=="DE-ESO:ks")
+			{
+				$state_combined = KS_combined::findState($tags, $next_speed, $next_speed_distant, $main_distance);	
+			}
+			if($tags["railway:signal:combined"]=="DE-ESO:hl")
+			{
+				$state_combined = HL_combined::findState($tags, $next_speed, $next_speed_distant, $main_distance);	
+			}
 		}
 		//Find state for distant signals
 		if(isset($tags["railway:signal:distant"]))
@@ -244,7 +255,7 @@ Class Signals
 			//German hl signals
 			elseif($tags["railway:signal:distant"] == "DE-ESO:hl")
 			{
-				//TODO
+				$state_main = HL_distant::findState($tags, $next_speed_distant, $main_distance);
 			}
 		}
 		
@@ -388,7 +399,7 @@ Class Signals
 			}
 			elseif($tags["railway:signal:main"] == "DE-ESO:hl")
 			{
-				$result .= Lang::l_("German Hl");
+				$result .= HL_main::showDescription();
 			}
 			else
 			{
@@ -501,7 +512,7 @@ Class Signals
 			}
 			elseif($tags["railway:signal:distant"] == "DE-ESO:hl")
 			{
-				$result .= Lang::l_("German Hl");
+				$result .= HL_distant::showDescription();
 			}
 			else
 			{
