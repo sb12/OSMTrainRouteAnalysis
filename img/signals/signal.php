@@ -705,6 +705,12 @@ $path[110] = "M 14,21 14,21 l 0,3 1.8,-2 0,11.6 2,0 0,-14.6 -1.9,0 z m 6,0 0,0 l
 $path[120] = "M 14,21 14,21 l 0,3 1.8,-2 0,11.6 2,0 0,-15 -1.9,0 z m 12,12.5 -6.3,0 0,-1.9 4.1,-7.8 c 0.2,-0.4 0.4,-0.7 0.4,-1.1 l 0,-1.1 c 0,-0.8 -0.6,-1.3 -1.4,-1.3 -0.6,0 -1.3,0.5 -1.3,1.3 l 0,1.2 -1.9,0 0,-1.1 c 0,-2 1.4,-3.3 3.2,-3.3 1.7,0 3.2,1.2 3.2,3.2 l 0,1.3 c 0,0.6 -0.4,1.3 -0.7,1.8 l -3.6,6.8 4.2,0 0,1.9";
 $path[130] = "M 14,21 14,21 l 0,3 1.8,-2 0,11.6 2,0 0,-14.6 -1.9,0 z m 6,1 0,1.1 1.8,0 0,-1.2 c 0,-0.8 0.7,-1.2 1.3,-1.2 0.8,0 1.4,0.5 1.4,1.3 l 0,2 c 0,0.8 -0.8,1.2 -2.0,1.2 l 0,0 c 0,0 0,0.8 0,0.8 l 0,0.8 c 0,0 0,0 0,0 1.2,0 2,0.4 2,1.2 l 0,2.5 c 0,0.8 -0.6,1.3 -1.4,1.3 -0.6,0 -1.3,-0.5 -1.3,-1.2 l 0,-1.2 -1.8,0 0,1.1 c 0,2 1.3,3.3 3.2,3.3 1.7,0 3.1,-1.2 3.1,-3.2 l 0,-2.6 c 0,-0.7 -0.3,-1.5 -1.2,-2 0.9,-0.5 1.2,-1.3 1.2,-2 l 0,-2 c 0,-2 -1.4,-3.2 -3.1,-3.2 -1.8,0 -3.2,1.3 -3.2,3.3 z";
 
+$white = "#FFFFFF";
+$gray = "#444444";
+$red = "red";
+$yellow = "yellow";
+$green = "#00FF00;
+
 
 $s = 0;
 $height = 0;
@@ -778,7 +784,7 @@ if ( isset ( $_GET["railway:signal:speed_limit"] ) )
 			if(isset($path[$speed]))
 			{
 				$signal[$s] .= '
-	<path d="' . $path[$speed] . '" fill="#FFFFFF" />';
+	<path d="' . $path[$speed] . '" fill="' . $white . '" />';
 				
 			}
 			$signal[$s] .= '
@@ -796,80 +802,70 @@ if(isset($_GET["railway:signal:main"]))
 {
 	if($_GET["railway:signal:main"] == "DE-ESO:hp")
 	{
-		$colour_hp0 = "red";
-		$colour_hp00 = "red";
-		$colour_hp1 = "#00FF00";
-		$colour_hp2 = "yellow";
-		$colour_zs1 = "#444444";
-		$colour_zs7 = "#444444";
-		$colour_sh1 = "#444444";
-		$colour_marker = "#444444";
+		$colour_hp0 = $red;
+		$colour_hp00 = $red;
+		$colour_hp1 = $green;
+		$colour_hp2 = $yellow;
+		$colour_zs1 = $gray;
+		$colour_zs7 = $gray;
+		$colour_sh1 = $gray;
+		$colour_marker = $gray;
 		$class_zs1 = "";
 		
 		if(isset($_GET["state_main"]))
 		{
 			if($_GET["state_main"] == "hp0")
 			{
-				$colour_hp0 = "red";
-				$colour_hp00 = "red";
-				$colour_hp1 = "#444444";
-				$colour_hp2 = "#444444";				
+				$colour_hp0 = $red;
+				$colour_hp00 = $red;
+				$colour_hp1 = $gray;
+				$colour_hp2 = $gray;				
 			}
 			if($_GET["state_main"] == "hp1")
 			{
-				$colour_hp0 = "#444444";
-				$colour_hp00 = "#444444";
-				$colour_hp1 = "#00FF00";
-				$colour_hp2 = "#444444";
+				$colour_hp0 = $gray;
+				$colour_hp00 = $gray;
+				$colour_hp1 = $green;
+				$colour_hp2 = $gray;
 			}
 			if($_GET["state_main"] == "hp2")
 			{
-				$colour_hp0 = "#444444";
-				$colour_hp00 = "#444444";
-				$colour_hp1 = "#00ff00";
-				$colour_hp2 = "yellow";
+				$colour_hp0 = $gray;
+				$colour_hp00 = $gray;
+				$colour_hp1 = $green;
+				$colour_hp2 = $yellow;
+			}
+			if($_GET["state_main"] == "sh1" || $_GET["state_main"] == "zs1" || $_GET["state_main"] == "zs7" || $_GET["state_main"] == "zs8")
+			{
+				$colour_hp0 = $red;
+				$colour_hp00 = $gray;
+				$colour_hp1 = $gray";
+				$colour_hp2 = $gray;
 			}
 			if($_GET["state_main"] == "sh1")
 			{
-				$colour_hp0 = "red";
-				$colour_hp00 = "#444444";
-				$colour_hp1 = "#444444";
-				$colour_hp2 = "#444444";	
-				$colour_sh1 = "#FFFFFF";				
+				$colour_sh1 = $white;				
 			}
 			if($_GET["state_main"] == "zs1")
 			{
-				$colour_hp0 = "red";
-				$colour_hp00 = "red";
-				$colour_hp1 = "#444444";
-				$colour_hp2 = "#444444";	
-				$colour_zs1 = "#FFFFFF";				
+				$colour_zs1 = $white;				
 			}
 			if($_GET["state_main"] == "zs8")
 			{
-				$colour_hp0 = "red";
-				$colour_hp00 = "red";
-				$colour_hp1 = "#444444";
-				$colour_hp2 = "#444444";	
-				$colour_zs1 = "#FFFFFF";	
+				$colour_zs1 = $white;	
 				$class_zs1 = "signal_blink";			
 			}
 			if($_GET["state_main"] == "zs7")
-			{
-				$colour_hp0 = "red";
-				$colour_hp00 = "red";
-				$colour_hp1 = "#444444";
-				$colour_hp2 = "#444444";	
-				$colour_zs7 = "yellow";	
-				$colour_marker = "yellow";				
+			{	
+				$colour_zs7 = $yellow;
 			}
 			if($_GET["state_main"] == "kennlicht")
 			{
-				$colour_hp0 = "#444444";
-				$colour_hp00 = "#444444";
-				$colour_hp1 = "#444444";
-				$colour_hp2 = "#444444";	
-				$colour_marker = "#FFFFFF";				
+				$colour_hp0 = $gray;
+				$colour_hp00 = $gray;
+				$colour_hp1 = $gray;
+				$colour_hp2 = $gray;	
+				$colour_marker = $white;				
 			}
 		}
 		if($_GET["railway:signal:main:form"] == "light")
@@ -1005,42 +1001,42 @@ if(isset($_GET["railway:signal:main"]))
 	}
 	elseif($_GET["railway:signal:main"] == "DE-ESO:ks")
 	{
-		$colour_hp0 = "red";
-		$colour_ks1 = "#00FF00";
-		$colour_sh1 = "#444444";
-		$colour_zs1 = "#444444";
-		$colour_zs7 = "#444444";
+		$colour_hp0 = $red;
+		$colour_ks1 = $green;
+		$colour_sh1 = $gray;
+		$colour_zs1 = $gray;
+		$colour_zs7 = $gray;
 		$class_zs1 = "";
 		if(isset($_GET["state_main"]))
 		{
 			if($_GET["state_main"] == "hp0")
 			{
-				$colour_hp0 = "red";
-				$colour_ks1 = "#444444";				
+				$colour_hp0 = $red;
+				$colour_ks1 = $gray;				
 			}
 			if($_GET["state_main"] == "ks1")
 			{
-				$colour_hp0 = "#444444";
-				$colour_ks1 = "#00FF00";
+				$colour_hp0 = $gray;
+				$colour_ks1 = $green;
 			}
 			if($_GET["state_main"] == "sh1")
 			{
-				$colour_hp0 = "red";
-				$colour_ks1 = "#444444";
-				$colour_sh1 = "#FFFFFF";
-				$colour_zs1 = "#FFFFFF";
+				$colour_hp0 = $red;
+				$colour_ks1 = $gray;
+				$colour_sh1 = $white;
+				$colour_zs1 = $white;
 			}
 			if($_GET["state_main"] == "zs1" && isset($_GET["railway:signal:main:substitute_signal"]) && $_GET["railway:signal:main:substitute_signal"] == "DE-ESO:dr:zs1")
 			{
-				$colour_hp0 = "red";
-				$colour_ks1 = "#444444";
-				$colour_zs1 = "#FFFFFF";
+				$colour_hp0 = $red;
+				$colour_ks1 = $gray;
+				$colour_zs1 = $white;
 				$class_zs1 = "signal_blink";
 			}
 			if($_GET["state_main"] == "zs7" && isset($_GET["railway:signal:main:substitute_signal"]) && $_GET["railway:signal:main:substitute_signal"] == "DE-ESO:db:zs7")
 			{
-				$colour_hp0 = "red";
-				$colour_ks1 = "#444444";
+				$colour_hp0 = $red;
+				$colour_ks1 = $gray;
 				$colour_zs7 = "yellow";
 			}
 		}
@@ -1138,27 +1134,27 @@ if(isset($_GET["railway:signal:combined"]))
 		{
 			unset($_GET["speed_distant"]);
 		}
-		$colour_hp0 = "red";
-		$colour_ks1 = "#00FF00";
-		$colour_ks2 = "yellow";
-		$colour_sh1 = "#444444";
-		$colour_zs1 = "#444444";
-		$colour_zs7 = "#444444";
+		$colour_hp0 = $red;
+		$colour_ks1 = $green;
+		$colour_ks2 = $yellow;
+		$colour_sh1 = $gray;
+		$colour_zs1 = $gray;
+		$colour_zs7 = $gray;
 		$class_zs1 = "";
 		$class_ks1 = "";
 		if( isset($_GET["state_combined"]) )
 		{
 			if($_GET["state_combined"] == "hp0")
 			{
-				$colour_hp0 = "red";
-				$colour_ks1 = "#444444";	
-				$colour_ks2 = "#444444";			
+				$colour_hp0 = $red;
+				$colour_ks1 = $gray;	
+				$colour_ks2 = $gray;			
 			}
 			if($_GET["state_combined"] == "ks1")
 			{
-				$colour_hp0 = "#444444";
-				$colour_ks1 = "#00FF00";
-				$colour_ks2 = "#444444";
+				$colour_hp0 = $gray;
+				$colour_ks1 = $green;
+				$colour_ks2 = $gray;
 				if( isset($_GET["speed_distant"]) )
 				{
 					$class_ks1 = "signal_blink";
@@ -1166,32 +1162,33 @@ if(isset($_GET["railway:signal:combined"]))
 			}
 			if($_GET["state_combined"] == "ks2")
 			{
-				$colour_hp0 = "#444444";
-				$colour_ks1 = "#444444";
-				$colour_ks2 = "yellow";
+				$colour_hp0 = $gray;
+				$colour_ks1 = $gray;
+				$colour_ks2 = $yellow;
 			}
 			if($_GET["state_combined"] == "sh1")
 			{
-				$colour_hp0 = "red";
-				$colour_ks1 = "#444444";
-				$colour_ks2 = "#444444";
-				$colour_sh1 = "#FFFFFF";
-				$colour_zs1 = "#FFFFFF";
+				$colour_hp0 = $red;
+				$colour_ks1 = $gray;
+				$colour_ks2 = $gray;
+				$colour_sh1 = $white;
+				$colour_zs1 = $white;
 			}
 			if($_GET["state_combined"] == "zs1" && isset( $_GET["railway:signal:combined:substitute_signal"] ) && $_GET["railway:signal:combined:substitute_signal"] == "DE-ESO:dr:zs1")
 			{
-				$colour_hp0 = "red";
-				$colour_ks1 = "#444444";
-				$colour_ks2 = "#444444";
-				$colour_zs1 = "#FFFFFF";
+				$colour_hp0 = $red;
+				$colour_ks1 = $gray;
+				$colour_ks2 = $gray;
+				$colour_sh1 = $white;
+				$colour_zs1 = $white;
 				$class_zs1 = "signal_blink";
 			}
 			if($_GET["state_combined"] == "zs7" && isset($_GET["railway:signal:combined:substitute_signal"]) && $_GET["railway:signal:combined:substitute_signal"] == "DE-ESO:db:zs7")
 			{
-				$colour_hp0 = "red";
-				$colour_ks1 = "#444444";
-				$colour_ks2 = "#444444";
-				$colour_zs7 = "yellow";
+				$colour_hp0 = $red;
+				$colour_ks1 = $gray;
+				$colour_ks2 = $gray;
+				$colour_zs7 = $yellow;
 			}
 		}
 		
@@ -1241,11 +1238,11 @@ if(isset($_GET["railway:signal:combined"]))
 		{
 			if( ( $_GET["state_combined"] == "ks2" ) || ( $class_ks1 == "signal_blink" ) ) // only when Ks 1 is blinking or Ks 2 is shown
 			{
-				$color_shortened = "#FFFFFF"; // white
+				$color_shortened = $white;
 			}
 			else
 			{
-				$color_shortened = "#444444"; // gray
+				$color_shortened = $gray;
 			}
 			$signal[$s] .= '
 				<g id="shortened">
@@ -1266,15 +1263,15 @@ if(isset($_GET["railway:signal:combined"]))
 				</g>
 					
 				<g id="green">
-					<circle fill="#00FF00" cx="20" cy="15" r="4"/>
+					<circle fill="' . $green . '" cx="20" cy="15" r="4"/>
 				</g>
 					
 				<g id="yellow">
-					<circle fill="yellow" cx="20" cy="30" r="4"/>
+					<circle fill="' . $yellow . '" cx="20" cy="30" r="4"/>
 				</g>
 					
 				<g id="red">
-					<circle fill="red" cx="20" cy="45" r="4"/>
+					<circle fill="' . $red . '" cx="20" cy="45" r="4"/>
 				</g>
 			</g>';
 		$height += 60;
@@ -1286,10 +1283,10 @@ if(isset($_GET["railway:signal:distant"]))
 {
 	if($_GET["railway:signal:distant"] == "DE-ESO:vr")
 	{
-		$colour_vr0 = "yellow";
-		$colour_vr1 = "#00FF00";
-		$colour_vr12 = "#00FF00";
-		$colour_vr2 = "yellow";
+		$colour_vr0 = $yellow;
+		$colour_vr1 = $green;
+		$colour_vr12 = $green;
+		$colour_vr2 = $yellow;
 
 		$marker = false;
 		if ( isset ( $_GET["railway:signal:distant:states"] ) )
@@ -1301,12 +1298,12 @@ if(isset($_GET["railway:signal:distant"]))
 		}
 		if( ( isset($_GET["railway:signal:distant:repeated"]) && $_GET["railway:signal:distant:repeated"] == "yes" ) || ( isset($_GET["railway:signal:distant:shortened_distance"]) && $_GET["railway:signal:distant:shortened_distance"] == "yes" ) )
 		{
-			$colour_marker = "#FFFFFF";
+			$colour_marker = $white;
 			$marker = true;
 		}
 		else
 		{
-			$colour_marker = "#444444";
+			$colour_marker = $gray;
 			$marker = true;
 		}
 		
@@ -1314,32 +1311,32 @@ if(isset($_GET["railway:signal:distant"]))
 		{
 			if($_GET["state_distant"] == "vr0")
 			{
-				$colour_vr0 = "yellow";
-				$colour_vr1 = "#444444";
-				$colour_vr12 = "#444444";
-				$colour_vr2 = "yellow";				
+				$colour_vr0 = $yellow;
+				$colour_vr1 = $gray;
+				$colour_vr12 = $gray;
+				$colour_vr2 = $yellow;				
 			}
 			if($_GET["state_distant"] == "vr1")
 			{
-				$colour_vr0 = "#444444";
-				$colour_vr1 = "#00FF00";
-				$colour_vr12 = "#00FF00";
-				$colour_vr2 = "#444444";				
+				$colour_vr0 = $gray;
+				$colour_vr1 = $green;
+				$colour_vr12 = $green;
+				$colour_vr2 = $gray;				
 			}
 			if($_GET["state_distant"] == "vr2")
 			{
-				$colour_vr0 = "#444444";
-				$colour_vr1 = "#444444";
-				$colour_vr12 = "#00FF00";
-				$colour_vr2 = "yellow";				
+				$colour_vr0 = $gray;
+				$colour_vr1 = $gray;
+				$colour_vr12 = $green;
+				$colour_vr2 = $yellow;				
 			}
 			if($_GET["state_distant"] == "kennlicht")
 			{
-				$colour_vr0 = "#444444";
-				$colour_vr1 = "#444444";
-				$colour_vr12 = "#444444";
-				$colour_vr2 = "#444444";	
-				$colour_marker = "#FFFFFF";				
+				$colour_vr0 = $gray;
+				$colour_vr1 = $gray;
+				$colour_vr12 = $gray;
+				$colour_vr2 = $gray;	
+				$colour_marker = $white;				
 			}
 		}
 		if($_GET["railway:signal:distant:form"] == "light")
@@ -1390,22 +1387,22 @@ if(isset($_GET["railway:signal:distant"]))
 			if( isset ( $_GET["state_distant"] ) && $_GET["state_distant"] == "vr1" ) 
 			{
 				$show_vr1 = ' display="none"';
-				$light_vr2 = '#00FF00';
-				$light_vr1 = '#00FF00';
+				$light_vr2 = $green;
+				$light_vr1 = $green;
 				$rotate_vr1_light = ' transform="rotate(135 26.5 22.5)"';
 				$rotate_vr2_light = ' transform="rotate(135 13.5 42.5)"';
 			}
 			else
 			{
 				$show_vr0 = ' display="none"';
-				$light_vr1 = 'yellow';
-				$light_vr2 = 'yellow';
+				$light_vr1 = $yellow;
+				$light_vr2 = $yellow;
 			}
 			if( isset ( $_GET["state_distant"] ) && $_GET["state_distant"] == "vr2")
 			{
 				$rotate_vr2 = ' transform="rotate(-45 20 36)"';
 				$rotate_vr1_light = ' transform="rotate(135 26.5 22.5)"';
-				$light_vr1 = '#00FF00';
+				$light_vr1 = $green;
 			}
 			$signal[$s] = '
 			<g transform="translate(0 ' . $height . ')">
@@ -1447,16 +1444,15 @@ if(isset($_GET["railway:signal:distant"]))
 	}
 	elseif($_GET["railway:signal:distant"] == "DE-ESO:ks")
 	{
-		$colour_ks1 = "#00FF00";
-		$colour_ks2 = "yellow";
+		$colour_ks1 = $green;
+		$colour_ks2 = $yellow;
 		$class_ks1 = "";
 		if(isset($_GET["state_distant"]))
 		{
 			if($_GET["state_distant"] == "ks1")
 			{
-				$colour_hp0 = "#444444";
-				$colour_ks1 = "#00FF00";
-				$colour_ks2 = "#444444";
+				$colour_ks1 = $green;
+				$colour_ks2 = $gray;
 				if(isset($_GET["speed_distant"]))
 				{
 					$class_ks1 = "signal_blink";
@@ -1464,9 +1460,8 @@ if(isset($_GET["railway:signal:distant"]))
 			}
 			if($_GET["state_distant"] == "ks2")
 			{
-				$colour_hp0 = "#444444";
-				$colour_ks1 = "#444444";
-				$colour_ks2 = "yellow";
+				$colour_ks1 = $gray;
+				$colour_ks2 = $yellow;
 			}
 		}
 		
@@ -1489,11 +1484,11 @@ if(isset($_GET["railway:signal:distant"]))
 		{
 			if( ( $_GET["state_distant"] == "ks2" ) || ( $class_ks1 == "signal_blink" ) ) // only when Ks 1 is blinking or Ks 2 is shown
 			{
-				$color_additional_light = "#FFFFFF"; // white
+				$color_additional_light = $white;
 			}
 			else
 			{
-				$color_additional_light = "#444444"; // gray
+				$color_additional_light = $gray;
 			}
 			$signal[$s] .= '
 				<g id="repeated">
@@ -1505,11 +1500,11 @@ if(isset($_GET["railway:signal:distant"]))
 		{
 			if( ( $_GET["state_distant"] == "ks2" ) || ( $class_ks1 == "signal_blink" ) ) // only when Ks 1 is blinking or Ks 2 is shown
 			{
-				$color_shortened = "#FFFFFF"; // white
+				$color_shortened = $white;
 			}
 			else
 			{
-				$color_shortened = "#444444"; // gray
+				$color_shortened = $gray;
 			}
 			$signal[$s] .= '
 				<g id="repeated">
@@ -1535,7 +1530,7 @@ if(isset($_GET["railway:signal:distant"]))
 					<polygon fill="#000000" points="8,15 10,15 10,50 8,50"/>
 				</g>
 				<g>
-					<polygon fill="yellow" stroke="yellow" stroke-width="1" points="0.5,20.5 30.5,20.5 30.5,25.5 0.5,25.5"/>
+					<polygon fill="' . $yellow . '" stroke="yellow" stroke-width="1" points="0.5,20.5 30.5,20.5 30.5,25.5 0.5,25.5"/>
 				</g>
 			</g>';
 		$height += 50;
@@ -1551,11 +1546,11 @@ if(isset($_GET["railway:signal:distant"]))
 					</g>
 						
 					<g id="green">
-						<circle fill="#00FF00" cx="20" cy="20" r="4"/>
+						<circle fill="' . $green . '" cx="20" cy="20" r="4"/>
 					</g>
 						
 					<g id="yellow">
-						<circle fill="yellow" cx="20" cy="40" r="4"/>
+						<circle fill="' . $yellow . '" cx="20" cy="40" r="4"/>
 					</g>
 				</g>';
 			$height += 60;
