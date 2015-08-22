@@ -35,16 +35,16 @@ if ( isset ( $_GET["railway:signal:speed_limit"] ) )
 {
 	if ( $_GET["railway:signal:speed_limit"] == "DE-ESO:zs3" )
 	{
-		if ( isset($_GET["railway:signal:speed_limit:form"]) && $_GET["railway:signal:speed_limit:form"] == "light")
+		if ( isset($_GET["railway:signal:speed_limit:form"] && ($_GET["railway:signal:speed_limit:form"] == "light" || $_GET["railway:signal:speed_limit:form"] == "sign"))
 		{
-			$result = Speedlimit_zs3_light::generateImage($height);
-			$signal[$s] = $result[0];
-			$height += $result[1];
-			$s++;
-		}
-		elseif( isset($_GET["railway:signal:speed_limit:form"]) && $_GET["railway:signal:speed_limit:form"] == "sign")
-		{
-			$result = Speedlimit_zs3_sign::generateImage($height);
+			if($_GET["railway:signal:speed_limit:form"] == "light")
+			{
+				$result = Speedlimit_zs3_light::generateImage($height);
+			}
+			elseif( $_GET["railway:signal:speed_limit:form"] == "sign")
+			{
+				$result = Speedlimit_zs3_sign::generateImage($height);
+			}
 			$signal[$s] = $result[0];
 			$height += $result[1];
 			$s++;
@@ -57,29 +57,26 @@ if ( isset ( $_GET["railway:signal:speed_limit"] ) )
 }
 if(isset($_GET["railway:signal:main"]))
 {
+	$valid_signal = false;
 	if($_GET["railway:signal:main"] == "DE-ESO:hp")
 	{
-		if($_GET["railway:signal:main:form"] == "light")
+		if($_GET["railway:signal:main:form"] == "light" || $_GET["railway:signal:main:form"] == "semaphore")
 		{
-			$result = HV_main_light::generateImage($height);
-			$signal[$s] = $result[0];
-			$height += $result[1];
-			$s++;
-		}
-		elseif($_GET["railway:signal:main:form"] == "semaphore")
-		{
-			$result = HV_main_semaphore::generateImage($height);
-			$signal[$s] = $result[0];
-			$height += $result[1];
-			$s++;
+			if($_GET["railway:signal:main:form"] == "light")
+			{
+				$result = HV_main_light::generateImage($height);
+			}
+			elseif($_GET["railway:signal:main:form"] == "semaphore")
+			{
+				$result = HV_main_semaphore::generateImage($height);
+			}
+			$valid_signal = true;
 		}
 	}
 	elseif($_GET["railway:signal:main"] == "DE-ESO:ks")
 	{
 		$result = KS_main::generateImage($height);
-		$signal[$s] = $result[0];
-		$height += $result[1];
-		$s++;
+		$valid_signal = true;
 	}/*
 	elseif($_GET["railway:signal:main"] == "DE-ESO:hl")
 	{
@@ -90,18 +87,18 @@ if(isset($_GET["railway:signal:main"]))
 		if($_GET["railway:signal:main:form"] == "semaphore")
 		{
 			$result = Main_semaphore::generateImage($height);
-			$signal[$s] = $result[0];
-			$height += $result[1];
-			$s++;
 		}
 		else
 		{
 			$result = Main_light::generateImage($height);
-			$signal[$s] = $result[0];
-			$height += $result[1];
-			$s++;
 		}
-		
+		$valid_signal = true;
+	}
+	if($valid_signal)
+	{
+		$signal[$s] = $result[0];
+		$height += $result[1];
+		$s++;
 	}
 }
 if(isset($_GET["railway:signal:combined"]))
