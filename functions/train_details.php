@@ -407,6 +407,19 @@ $tr_length["BR642"] = 0.042; //in Einzeltraktion
 $tr_image["BR642"] = "BR642.svg";
 
 
+//DB BR 642 (Germany)
+$tr_name["BR644"] = "DB Baureihe 644 Bombardier Talent 3-teilig";
+$tr_type["BR644"] = "regional";
+$tr_maxspeed["BR644"] = 120; // km/h
+$tr_mass_empty["BR644"] = 96; // t
+$tr_power["BR644"] = 1520; // kW
+$tr_torque["BR644"] = 150; // estimated
+$tr_seats["BR644"] = 161;
+$tr_acc["BR644"] = 1; // m/s²
+$tr_brake["BR644"] = 1.2; // m/s²
+$tr_length["BR644"] = 0.052; //in Einzeltraktion
+
+
 //Stadler FLIRT 3 (Germany)
 $tr_name["Flirt3_5t"] = "Stadler FLIRT 3 5-teilig";
 $tr_type["Flirt3_5t"] = "regional";
