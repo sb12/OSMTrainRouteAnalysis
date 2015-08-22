@@ -709,7 +709,7 @@ $white = "#FFFFFF";
 $gray = "#444444";
 $red = "red";
 $yellow = "yellow";
-$green = "#00FF00;
+$green = "#00FF00";
 
 
 $s = 0;
@@ -839,7 +839,7 @@ if(isset($_GET["railway:signal:main"]))
 			{
 				$colour_hp0 = $red;
 				$colour_hp00 = $gray;
-				$colour_hp1 = $gray";
+				$colour_hp1 = $gray;
 				$colour_hp2 = $gray;
 			}
 			if($_GET["state_main"] == "sh1")
@@ -858,6 +858,7 @@ if(isset($_GET["railway:signal:main"]))
 			if($_GET["state_main"] == "zs7")
 			{	
 				$colour_zs7 = $yellow;
+				$colour_marker = $yellow; // the marker light is part of zs7
 			}
 			if($_GET["state_main"] == "kennlicht")
 			{
@@ -1179,7 +1180,6 @@ if(isset($_GET["railway:signal:combined"]))
 				$colour_hp0 = $red;
 				$colour_ks1 = $gray;
 				$colour_ks2 = $gray;
-				$colour_sh1 = $white;
 				$colour_zs1 = $white;
 				$class_zs1 = "signal_blink";
 			}
@@ -1522,7 +1522,7 @@ if(isset($_GET["railway:signal:distant"]))
 	}*/
 	else //fallback for unknown signals
 	{
-		if( isset($_GET["railway:signal:main:form"]) && $_GET["railway:signal:main:form"] == "semaphore")
+		if( isset($_GET["railway:signal:distant:form"]) && $_GET["railway:signal:distant:form"] == "semaphore")
 		{
 			$signal[$s] = '
 			<g transform="translate(0 ' . $height . ')">
@@ -1530,7 +1530,7 @@ if(isset($_GET["railway:signal:distant"]))
 					<polygon fill="#000000" points="8,15 10,15 10,50 8,50"/>
 				</g>
 				<g>
-					<polygon fill="' . $yellow . '" stroke="yellow" stroke-width="1" points="0.5,20.5 30.5,20.5 30.5,25.5 0.5,25.5"/>
+					<polygon fill="' . $yellow . '" stroke="' . $yellow . '" stroke-width="1" points="0.5,20.5 30.5,20.5 30.5,25.5 0.5,25.5"/>
 				</g>
 			</g>';
 		$height += 50;
