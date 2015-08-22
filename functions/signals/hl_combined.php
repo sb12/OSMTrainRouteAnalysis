@@ -167,7 +167,7 @@ Class HL_combined
 		$colour_rot2 = "&gray;";
 		$colour_stripes1 = "&yellow;";
 		$colour_stripes2 = "&green;";
-		$colour_sh1 = "&gray;";
+		$colour_ra12 = "&gray;";
 		$colour_zs1 = "&gray;";
 		$class_zs1 = "";
 		$class_gelb1 = "";
@@ -398,7 +398,7 @@ Class HL_combined
 				$colour_rot1 = "&red;";	
 				$colour_stripes1 = "&gray;";
 				$colour_stripes2 = "&gray;";
-				$colour_sh1 = "&white;";
+				$colour_ra12 = "&white;";
 				$colour_zs1 = "&white;";
 			}
 			if($_GET["state_combined"] == "zs1" && isset( $_GET["railway:signal:combined:substitute_signal"] ) && $_GET["railway:signal:combined:substitute_signal"] == "DE-ESO:dr:zs1")
@@ -466,7 +466,7 @@ Class HL_combined
 		}
 		$image .= '
 						
-				<g id="sh1">';
+				<g id="ra12">';
 		if ( ( isset($_GET["railway:signal:combined:substitute_signal"]) && $_GET["railway:signal:combined:substitute_signal"] == "DE-ESO:dr:zs1" ) || ( isset($_GET["railway:signal:minor"]) && $_GET["railway:signal:minor"] == "DE-ESO:sh1" ) )
 		{
 			$image .= '
@@ -476,7 +476,7 @@ Class HL_combined
 		if ( isset($_GET["railway:signal:minor"]) && $_GET["railway:signal:minor"] == "DE-ESO:sh1" )
 		{
 			$image .= '
-					<circle style="' . $colour_sh1 . '" cx="28" cy="21" r="2"/>';
+					<circle style="' . $colour_ra12 . '" cx="28" cy="21" r="2"/>';
 		}
 		$image .= '
 				</g>
