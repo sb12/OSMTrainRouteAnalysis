@@ -105,8 +105,9 @@ Class Signals
 						// area is relevant for this signal ( < 1 km after signal)
 						if ( ( $dis - $distance ) < 1 )
 						{
+
 							//maxspeed in area before is relevant, when new maxspeed does not start near the signal
-							if ( $dis - $distance > 0.1 )
+							if ( !$next_speed && $dis - $distance > 0.02 )
 							{
 								$next_speed = min( $maxspeed[1], $last_maxspeed );
 							}
@@ -121,7 +122,7 @@ Class Signals
 							}
 						}
 					}
-					elseif ( ( $distance - $dis ) < 0.1 ) // tolerance area before signal
+					elseif ( ( $distance - $dis ) < 0.02 ) // tolerance area before signal
 					{
 						$next_speed = $maxspeed[1];
 					}
@@ -360,7 +361,7 @@ Class Signals
 				$get .= urlencode($k) . "=" . urlencode($v) . "&";
 			}
 		}
-		if(isset($speed))
+		if( isset($speed) && $speed )
 		{
 			$get .= "&speed=".$speed;
 		}
