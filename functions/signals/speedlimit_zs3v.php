@@ -22,7 +22,7 @@
 ?>
 <?php
 /**
- * German Zs3 Speed signal
+ * German Zs 3v Distant Speed Signal
  * @author sb12
  *
  */

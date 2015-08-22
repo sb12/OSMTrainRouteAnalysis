@@ -407,7 +407,7 @@ Class Route
 			
 			if ( isset($_GET["maxspeed"]) && $_GET["maxspeed"] > 0 )
 			{
-				$vmz = $_GET["maxspeed"];
+				$this->vmz = $_GET["maxspeed"];
 			}
 			
 			// get data from overpass-api when needed
@@ -701,11 +701,11 @@ Class Route
 
 		// set maxspeed of train
 		$maxspeed_train = 0;
-		if( isset($vmz) && $vmz > 0 ) // if a VMZ exists, first use this
+		if( isset($this->vmz) && $this->vmz > 0 ) // if a VMZ exists, first use this
 		{
-			$maxspeed_train = $vmz; // use set VMZ
+			$maxspeed_train = $this->vmz; // use set VMZ
 		}
-		if($this->train->maxspeed < $vmz || $maxspeed_train == 0) // check if a VMZ exists or if vehicles are slower
+		if($this->train->maxspeed < $this->vmz || $maxspeed_train == 0) // check if a VMZ exists or if vehicles are slower
 		{
 			$maxspeed_train = $this->train->maxspeed; // use slower or standalone vehicle maxspeed
 		}
@@ -865,9 +865,9 @@ Class Route
 				$exact = false;
 			}
 			//maxspeeds can not be higher than train maxspeed
-			$maxspeed = min($maxspeed, $this->train->maxspeed);
-			$maxspeed_min = min($maxspeed_min, $this->train->maxspeed);
-			$maxspeed_max = min($maxspeed_max, $this->train->maxspeed);
+			$maxspeed = min($maxspeed, $maxspeed_train);
+			$maxspeed_min = min($maxspeed_min, $maxspeed_train);
+			$maxspeed_max = min($maxspeed_max, $maxspeed_train);
 				
 			// get total maximum speed for whole route
 			$maxspeed_total_max = max($maxspeed_total_max, $maxspeed);

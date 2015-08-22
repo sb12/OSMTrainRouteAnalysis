@@ -407,7 +407,7 @@ $tr_length["BR642"] = 0.042; //in Einzeltraktion
 $tr_image["BR642"] = "BR642.svg";
 
 
-//DB BR 642 (Germany)
+//DB BR 644 (Germany)
 $tr_name["BR644"] = "DB Baureihe 644 Bombardier Talent 3-teilig";
 $tr_type["BR644"] = "regional";
 $tr_maxspeed["BR644"] = 120; // km/h
