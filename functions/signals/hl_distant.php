@@ -56,6 +56,10 @@ Class HL_distant
 			{
 				$state = "hl7";
 			}
+			elseif ( strpos($tags["railway:signal:distant:states"], "hl1" ) ) // signal can only show hp0
+			{
+				$state = "hl1";
+			}
 			elseif ( strpos($tags["railway:signal:distant:states"], "hl10" ) ) // signal can only show hp0
 			{
 				$state = "hl10";
