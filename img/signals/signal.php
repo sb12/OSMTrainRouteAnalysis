@@ -32,6 +32,8 @@ include "../../functions/signals/speedlimit_zs3v.php";
 include "../../functions/signals/speedlimit_zs3v_light.php";
 include "../../functions/signals/speedlimit_zs3v_sign.php";
 
+include "../../functions/signals/lzb_blockkennzeichen.php";
+
 
 $s = 0;
 $height = 0;
@@ -207,6 +209,13 @@ if(isset($_GET["railway:signal:speed_limit_distant"]) && urldecode($_GET["railwa
 			$s++;
 		}
 	}
+}
+if(isset($_GET["railway:signal:train_protection"]) && urldecode($_GET["railway:signal:train_protection"]) == "DE-ESO:blockkennzeichen")
+{
+	$result = LZB_blockkennzeichen::generateImage($height);
+	$signal[$s] = $result[0];
+	$height += $result[1];
+	$s++;
 }
 
 echo '<?xml version="1.0" encoding="utf-8"?>';

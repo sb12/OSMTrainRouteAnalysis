@@ -36,6 +36,9 @@ include "signals/hl_distant.php";
 include "signals/speedlimit_zs3.php";
 include "signals/speedlimit_zs3v.php";
 
+
+include "signals/lzb_blockkennzeichen.php";
+
 /**
  * describes a signal on the route
  * @author sb12
@@ -60,8 +63,9 @@ Class Signals
 	{
 		foreach ($signals as $signal)
 		{
-			/* all main signals (including combined): */
-			if(isset($nodes[$signal[1]]["railway:signal:main"]) || isset($nodes[$signal[1]]["railway:signal:combined"]))
+			/* all main signals (including combined and block markers): */
+			if(isset($nodes[$signal[1]]["railway:signal:main"]) || isset($nodes[$signal[1]]["railway:signal:combined"])
+					 || ( isset($nodes[$signal[1]]["railway:signal:train_protection:type"]) && $nodes[$signal[1]]["railway:signal:train_protection:type"] == "block_marker" ) ) 
 			{
 				$main_signals[] = $signal;
 			}
@@ -183,7 +187,7 @@ Class Signals
 
 		//find distance between main signals
 		$main_distance = "";
-		if ( isset($tags["railway:signal:main"] ) || isset ( $tags["railway:signal:combined"] ) )
+		if ( isset($tags["railway:signal:main"] ) || isset ( $tags["railway:signal:combined"] )  || ( isset ( $tags["railway:signal:train_protection:type"] ) && $tags["railway:signal:train_protection:type"] == "block_marker" ) )
 		{
 			if(isset(self::$signal_property[$id]["next_main"]))
 			{
@@ -259,7 +263,13 @@ Class Signals
 			}
 		}
 		
-		if(!isset($tags["railway:signal:main"]) && !isset($tags["railway:signal:combined"]) && !isset($tags["railway:signal:distant"]) && !isset($tags["railway:signal:speed"]) && !isset($tags["railway:signal:speed_distant"]))
+		if(!isset($tags["railway:signal:main"])
+			&& !isset($tags["railway:signal:combined"]) 
+			&& !isset($tags["railway:signal:distant"]) 
+			&& !isset($tags["railway:signal:speed"]) 
+			&& !isset($tags["railway:signal:speed_distant"])
+			&& !( isset ( $tags["railway:signal:train_protection:type"] ) && $tags["railway:signal:train_protection:type"] == "block_marker" )
+				)
 		{
 			return;
 		}
@@ -270,33 +280,48 @@ Class Signals
 		
 		//write query for svg file
 		$get = "?";
+		$get_ref = false;
 		foreach($tags as $k => $v)
 		{
 			if( 
-			$k=="railway:signal:main" || 
-			$k=="railway:signal:main:states" || 
-			$k=="railway:signal:main:substitute_signal" || 
-			$k=="railway:signal:main:form" ||
-			$k=="railway:signal:combined" || 
-			$k=="railway:signal:combined:states" || 
-			$k=="railway:signal:combined:substitute_signal" || 
-			$k=="railway:signal:combined:shortened" ||
-			$k=="railway:signal:combined:form" ||
-			$k=="railway:signal:distant" || 
-			$k=="railway:signal:distant:states" || 
-			$k=="railway:signal:distant:repeated" || 
-			$k=="railway:signal:distant:form" || 
-			$k=="railway:signal:distant:shortened" ||
-			$k=="railway:signal:speed_limit" ||
-			$k=="railway:signal:speed_limit:form" ||
-			$k=="railway:signal:speed_limit:speed" ||
-			$k=="railway:signal:speed_limit_distant" ||
-			$k=="railway:signal:speed_limit_distant:form" ||
-			$k=="railway:signal:speed_limit_distant:speed" ||
-			$k=="railway:signal:minor" )
+			$k == "railway:signal:main" || 
+			$k == "railway:signal:main:states" || 
+			$k == "railway:signal:main:substitute_signal" || 
+			$k == "railway:signal:main:form" ||
+			$k == "railway:signal:combined" || 
+			$k == "railway:signal:combined:states" || 
+			$k == "railway:signal:combined:substitute_signal" || 
+			$k == "railway:signal:combined:shortened" ||
+			$k == "railway:signal:combined:form" ||
+			$k == "railway:signal:distant" || 
+			$k == "railway:signal:distant:states" || 
+			$k == "railway:signal:distant:repeated" || 
+			$k == "railway:signal:distant:form" || 
+			$k == "railway:signal:distant:shortened" ||
+			$k == "railway:signal:speed_limit" ||
+			$k == "railway:signal:speed_limit:form" ||
+			$k == "railway:signal:speed_limit:speed" ||
+			$k == "railway:signal:speed_limit_distant" ||
+			$k == "railway:signal:speed_limit_distant:form" ||
+			$k == "railway:signal:speed_limit_distant:speed" ||
+			$k == "railway:signal:train_protection" ||
+			$k == "railway:signal:minor" )
 			{
 				$get .= urlencode($k) . "=" . urlencode($v) . "&";
 			}
+			// ref only needed for train_protection sign
+			if( $k == "ref" )
+			{
+				$ref = $v;
+			}
+			if( $k == "railway:signal:train_protection" )
+			{
+				$get_ref = true;
+			}
+		}
+		if($get_ref && isset($ref) )
+		{
+			$get .= "ref=" . urlencode($ref) . "&";
 		}
 		if( isset($speed) && $speed )
 		{
@@ -333,8 +358,12 @@ Class Signals
 		// add ref
 		if(isset($tags["ref"]))
 		{
-			$result.='
+			// ref not needed for German LZB Blockkennzeichen
+			if( !isset($tags["railway:signal:train_protection"]) || !$tags["railway:signal:train_protection"] == "DE-ESO:blockkennzeichen" )
+			{
+				$result.='
 						<span class="signal_ref">'.$tags["ref"].'</span>';
+			}
 		}
 		$result.='</td>';
 		
@@ -578,6 +607,17 @@ Class Signals
 				$result .=")";
 			}
 		}
+		if( isset($tags["railway:signal:train_protection"]) )
+		{
+			if( $tags["railway:signal:train_protection"] == "DE-ESO:blockkennzeichen" )
+			{
+				$result .=  LZB_blockkennzeichen::showDescription();
+			}
+			else
+			{
+				$result .= Lang::l_("Unknown train protection sign");
+			}
+		}
 		$result.='</td>';
 		
 		
@@ -611,7 +651,9 @@ Class Signals
 		{
 			$main_distance = '<span class="text-muted">x</span>';
 		}
-		if ( isset($tags["railway:signal:main"] ) || isset ( $tags["railway:signal:combined"] ) )
+		if ( isset($tags["railway:signal:main"] ) || isset ( $tags["railway:signal:combined"] ) 
+			|| ( isset ( $tags["railway:signal:train_protection:type"] ) && $tags["railway:signal:train_protection:type"] == "block_marker" )
+				)
 		{
 			if(isset(self::$signal_property[$id]["next_main"]))
 			{
