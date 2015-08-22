@@ -63,7 +63,7 @@ Class Speedlimit_zs3v_sign
 				$speed = $_GET["railway:signal:speed_limit:speed"];
 			}
 			$image = '
-<g>
+<g transform="translate(0, ' . $height . ')">
 	<polygon fill="#000000" stroke="yellow" points="3,1 20,32 37,1" stroke-width="2"/>';
 			$path = Signal_path::getPath($speed);
 			if(isset($path))
@@ -74,7 +74,6 @@ Class Speedlimit_zs3v_sign
 			}
 			$image .= '
 </g>';
-		$s++;
 		$height = 33;
 		return array($image, $height);
 	}
