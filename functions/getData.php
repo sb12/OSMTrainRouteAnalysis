@@ -405,7 +405,7 @@ Class Route
 				$refresh = true;
 			}
 			
-			if ( isset($_GET["maxspeed"]) && $_GET["maxspeed"] > 100 )
+			if ( isset($_GET["maxspeed"]) && $_GET["maxspeed"] > 0 )
 			{
 				$vmz = $_GET["maxspeed"];
 			}
