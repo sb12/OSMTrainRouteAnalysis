@@ -62,6 +62,7 @@ Class HV_distant_light
 		$colour_vr1 = "&green;";
 		$colour_vr12 = "&green;";
 		$colour_vr2 = "&yellow;";
+		$colour_marker = "&gray;";
 
 		$marker = false;
 		if ( isset ( $_GET["railway:signal:distant:states"] ) )
