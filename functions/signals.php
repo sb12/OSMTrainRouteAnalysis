@@ -713,6 +713,7 @@ Class Signals
 				</td>';
 		$result .= '<td>
 				<a href="http://www.openstreetmap.org/node/'.$id.'">'.Lang::l_("Show on map").'</a>
+				<br>' . $id . '
 				</td>';
 		$result .= "</td>
 				</tr>
