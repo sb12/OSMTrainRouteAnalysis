@@ -190,7 +190,7 @@ function uploadRoute()
 /**
  * generates overview over routes
  */
-function showRoutes($amount = 50)
+function showRoutes($amount = 100)
 {
 	//get page number
 	$page = 1;
