@@ -21,6 +21,8 @@
     */
 ?>
 <?php
+include "signals/distant_light.php";
+include "signals/main_light.php";
 
 include "signals/hv_main.php";
 include "signals/hv_distant.php";
@@ -35,7 +37,6 @@ include "signals/hl_distant.php";
 
 include "signals/speedlimit_zs3.php";
 include "signals/speedlimit_zs3v.php";
-
 
 include "signals/lzb_blockkennzeichen.php";
 
@@ -432,7 +433,7 @@ Class Signals
 			}
 			else
 			{
-				$result.=main::showDescription();
+				$result.=main_light::showDescription();
 			}
 			if( isset($tags["railway:signal:combined:function"]))
 			{
@@ -545,7 +546,7 @@ Class Signals
 			}
 			else
 			{
-				$result .= distant::showDescription();
+				$result .= distant_light::showDescription();
 			}
 
 			if(isset($tags["railway:signal:distant:repeated"]) && $tags["railway:signal:distant:repeated"] == "yes")
