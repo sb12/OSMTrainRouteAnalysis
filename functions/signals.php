@@ -39,6 +39,7 @@ include "signals/speedlimit_zs3.php";
 include "signals/speedlimit_zs3v.php";
 
 include "signals/blockkennzeichen.php";
+include "signals/ETCS_markerboard.php";
 
 /**
  * describes a signal on the route
@@ -281,7 +282,7 @@ Class Signals
 		
 		//write query for svg file
 		$get = "?";
-		$get_ref = false;
+		$get_ref = $get_position = false;
 		foreach($tags as $k => $v)
 		{
 			if( 
@@ -310,19 +311,32 @@ Class Signals
 			{
 				$get .= urlencode($k) . "=" . urlencode($v) . "&";
 			}
-			// ref only needed for train_protection sign
+			// ref only needed for train_protection sign "blockkennzeichen"
 			if( $k == "ref" )
 			{
 				$ref = $v;
 			}
-			if( $k == "railway:signal:train_protection" )
+			if( $k == "railway:signal:train_protection" && $v == "DE-ESO:blockkennzeichen" )
 			{
 				$get_ref = true;
+			}
+			// position only needed for train_protection sign "ETCS marker board"
+			if( $k == "railway:signal:position" )
+			{
+				$position = $v;
+			}
+			if( $k == "railway:signal:train_protection" && $v == "DE-ESO:ne14" )
+			{
+				$get_position = true;
 			}
 		}
 		if($get_ref && isset($ref) )
 		{
 			$get .= "ref=" . urlencode($ref) . "&";
+		}
+		if($get_position && isset($position) )
+		{
+			$get .= "railway:signal:position=" . urlencode($position) . "&";
 		}
 		if( isset($speed) && $speed )
 		{
@@ -613,6 +627,10 @@ Class Signals
 			if( $tags["railway:signal:train_protection"] == "DE-ESO:blockkennzeichen" )
 			{
 				$result .=  Blockkennzeichen::showDescription();
+			}
+			elseif( $tags["railway:signal:train_protection"] == "DE-ESO:ne14" )
+			{
+				$result .=  ETCS_markerboard::showDescription();
 			}
 			else
 			{

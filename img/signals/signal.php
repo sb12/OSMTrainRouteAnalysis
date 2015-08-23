@@ -33,6 +33,7 @@ include "../../functions/signals/speedlimit_zs3v_light.php";
 include "../../functions/signals/speedlimit_zs3v_sign.php";
 
 include "../../functions/signals/blockkennzeichen.php";
+include "../../functions/signals/ETCS_markerboard.php";
 
 
 $s = 0;
@@ -225,6 +226,11 @@ if( isset($_GET["railway:signal:train_protection"]) )
 	if( urldecode($_GET["railway:signal:train_protection"]) == "DE-ESO:blockkennzeichen" )
 	{
 		$result = Blockkennzeichen::generateImage($height);
+		$valid_signal = true;
+	}
+	elseif( urldecode($_GET["railway:signal:train_protection"]) == "DE-ESO:ne14" )
+	{
+		$result = ETCS_markerboard::generateImage($height);
 		$valid_signal = true;
 	}
 	
