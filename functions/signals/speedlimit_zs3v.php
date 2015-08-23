@@ -71,7 +71,7 @@ Class Speedlimit_zs3v
 	 */
 	public static function showDescription()
 	{
-		return Lang::l_("German Zs3 Speed Signal");
+		return Lang::l_("German Zs 3v Speed Announcement Signal");
 	}
 	
 
