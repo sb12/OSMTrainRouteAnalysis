@@ -38,7 +38,7 @@ include "signals/hl_distant.php";
 include "signals/speedlimit_zs3.php";
 include "signals/speedlimit_zs3v.php";
 
-include "signals/lzb_blockkennzeichen.php";
+include "signals/blockkennzeichen.php";
 
 /**
  * describes a signal on the route
@@ -359,7 +359,7 @@ Class Signals
 		// add ref
 		if(isset($tags["ref"]))
 		{
-			// ref not needed for German LZB Blockkennzeichen
+			// ref not needed for German Blockkennzeichen
 			if( !isset($tags["railway:signal:train_protection"]) || !$tags["railway:signal:train_protection"] == "DE-ESO:blockkennzeichen" )
 			{
 				$result.='
@@ -612,7 +612,7 @@ Class Signals
 		{
 			if( $tags["railway:signal:train_protection"] == "DE-ESO:blockkennzeichen" )
 			{
-				$result .=  LZB_blockkennzeichen::showDescription();
+				$result .=  Blockkennzeichen::showDescription();
 			}
 			else
 			{

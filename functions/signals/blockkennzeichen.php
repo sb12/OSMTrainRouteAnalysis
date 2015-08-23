@@ -22,11 +22,11 @@
 ?>
 <?php
 /**
- * German LZB Blockkennzeichen
+ * German Blockkennzeichen
  * @author sb12
  *
  */
-Class LZB_blockkennzeichen
+Class Blockkennzeichen
 {
 
 	/**
@@ -47,7 +47,7 @@ Class LZB_blockkennzeichen
 	 */
 	public static function showDescription()
 	{
-		return Lang::l_("German LZB Blockkennzeichen");
+		return Lang::l_("German Blockkennzeichen");
 	}
 	
 	/**
@@ -56,26 +56,41 @@ Class LZB_blockkennzeichen
 	 */
 	public static function generateImage($height)
 	{
-		$image = '
-			<g transform="translate(0 ' . $height . ')">
-				<circle stroke="#000000" fill="#FFFFFF" cx="20" cy="20" r="15"/>
-    		
-    			<text x="20" y="27" fill="#000000" text-anchor="middle" font-size="20" style="font-family:\'DIN 1451 Engschrift\', Impact, Sans Serif">';
-		
-		$ref = $_GET["ref"];
-		if ( strlen($ref) <= 3 && $ref > 0) // number with 3 digits or less
+		$ref = "";
+		if( isset($_GET["ref"]) )
 		{
-			$image .= $ref;
+			$ref = $_GET["ref"];
+		}
+		$show_ref = "";
+		$font_size = 20;
+		$y = 27;
+		if ( strlen($ref) <= 5 && $ref > 0 && !strstr($ref, " ") ) // number with 5 digits or less and no spaces
+		{
+			$show_ref = $ref;
+			if ( strlen($ref) == 5 )
+			{
+				$font_size = 12;
+				$y = 25;
+			}
+			elseif ( strlen($ref) == 4 )
+			{
+				$font_size = 13;
+				$y = 25;
+			}
 		}
 		else
 		{
 			$refs = explode(" ", $ref);
 			if( count($refs) == 2 && $refs[0] > 0 && $refs[1] > 0) // 2 numbers with 2 digits or less
 			{
-			$image .= '<tspan x="20" y="18" font-size="14">' . $refs[0] . '</tspan><tspan x="20" y="32" font-size="14">' . $refs[1] . '</tspan>';
+				$show_ref = '<tspan x="20" y="18" font-size="14">' . $refs[0] . '</tspan><tspan x="20" y="32" font-size="14">' . $refs[1] . '</tspan>';
 			}
 		}
-		$image .= '</text>
+		$image = '
+			<g transform="translate(0 ' . $height . ')">
+				<circle stroke="#000000" fill="#FFFFFF" cx="20" cy="20" r="15"/>
+    		
+    			<text x="20" y="' . $y . '" fill="#000000" text-anchor="middle" font-size="' . $font_size . '" style="font-family:\'DIN 1451 Engschrift\', Impact, Sans Serif">' . $show_ref . '</text>
 			</g>';
 		$height = 40;
 		return array($image, $height);

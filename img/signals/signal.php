@@ -32,7 +32,7 @@ include "../../functions/signals/speedlimit_zs3v.php";
 include "../../functions/signals/speedlimit_zs3v_light.php";
 include "../../functions/signals/speedlimit_zs3v_sign.php";
 
-include "../../functions/signals/lzb_blockkennzeichen.php";
+include "../../functions/signals/blockkennzeichen.php";
 
 
 $s = 0;
@@ -224,7 +224,8 @@ if( isset($_GET["railway:signal:train_protection"]) )
 	$valid_signal = false;
 	if( urldecode($_GET["railway:signal:train_protection"]) == "DE-ESO:blockkennzeichen" )
 	{
-		$result = LZB_blockkennzeichen::generateImage($height);
+		$result = Blockkennzeichen::generateImage($height);
+		$valid_signal = true;
 	}
 	
 	if($valid_signal)
