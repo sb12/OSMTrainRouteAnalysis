@@ -44,7 +44,7 @@ Class HL_main
 			{
 				$state = "hp0";
 			}
-			if( $next_speed == 100 && strpos($tags["railway:signal:main:states"], "hl2" ))
+			if( ( $next_speed == 100 || $main_distance < 700 ) && strpos($tags["railway:signal:main:states"], "hl2" ))
 			{
 				$state = "hl2";
 			}
@@ -60,7 +60,7 @@ Class HL_main
 			{
 				$state = "hl1";
 			}
-			elseif( $next_speed == 100 && strpos($tags["railway:signal:main:states"], "hl5" ))
+			elseif( ( $next_speed == 100 || $main_distance < 700 ) && strpos($tags["railway:signal:main:states"], "hl5" ))
 			{
 				$state = "hl5";
 			}
@@ -108,10 +108,10 @@ Class HL_main
 		$class_zs1 = "";
 		$class_gruen = "";
 
-		$show_rot = $show_gruen = $show_gelb2 = true;
+		$show_rot = $show_gruen = $show_gelb2 = $show_stripes1 = $show_stripes2 = true;
 		if( isset($_GET["railway:signal:main:states"]) )
 		{
-			$show_rot = $show_gruen = $show_gelb2 = false;
+			$show_rot = $show_gruen = $show_gelb2 = $show_stripes1 = $show_stripes2 = false;
 			
 			if( strpos($_GET["railway:signal:main:states"], "hp0"))
 			{
@@ -140,6 +140,20 @@ Class HL_main
 					)
 			{
 				$show_gelb2 = true;
+			}
+			
+			if( strpos($_GET["railway:signal:main:states"], "hl3b")
+					|| strpos($_GET["railway:signal:main:states"], "hl6b")
+					)
+			{
+				$show_stripes1 = true;
+			}
+			
+			if( strpos($_GET["railway:signal:main:states"], "hl2")
+					|| strpos($_GET["railway:signal:main:states"], "hl5")
+					)
+			{
+				$show_stripes2 = true;
 			}
 		}
 		
@@ -299,25 +313,39 @@ Class HL_main
 					<circle style="' . $colour_sh1 . '" cx="28" cy="21" r="2"/>';
 		}
 		$image .= '
-				</g>
+				</g>';
+		$height = 55;
+		if ( $show_stripes1 || $show_stripes2 )
+		{
+			$image .= '
 				<g>
 					<polygon style="&background;" points="6,57 34,57 34,68 6,68"/>
-							
+						';
+			if( $show_stripes1 )
+			{
+				$image .= '
 					<circle style="' . $colour_stripes1 . '" cx="11" cy="60" r="2"/>
 					<circle style="' . $colour_stripes1 . '" cx="17" cy="60" r="2"/>
 					<circle style="' . $colour_stripes1 . '" cx="23" cy="60" r="2"/>
 					<circle style="' . $colour_stripes1 . '" cx="29" cy="60" r="2"/>
-							
+						';
+			}
+			if( $show_stripes2 )
+			{
+				$image .= '
 					<circle style="' . $colour_stripes2 . '" cx="11" cy="65" r="2"/>
 					<circle style="' . $colour_stripes2 . '" cx="17" cy="65" r="2"/>
 					<circle style="' . $colour_stripes2 . '" cx="23" cy="65" r="2"/>
 					<circle style="' . $colour_stripes2 . '" cx="29" cy="65" r="2"/>
-							
+							';
+			}
+			$image .= '
 				</g>
 							';
+			$height = 68;
+		}
 		$image .= '
 		</g>';
-		$height = 68;
 		return array($image, $height);
 	}
 }
