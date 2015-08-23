@@ -126,7 +126,7 @@ Class KS_main
 		{
 			$image .= '
 					<circle style="&gray;" cx="20" cy="39" r="2"/>
-					<circle class="' . $class_zs1 . '" fill="' . $colour_zs1 . '" cx="20" cy="39" r="2"/>';
+					<circle class="' . $class_zs1 . '" style="' . $colour_zs1 . '" cx="20" cy="39" r="2"/>';
 		}
 		if ( isset($_GET["railway:signal:minor"]) && $_GET["railway:signal:minor"] == "DE-ESO:sh1" )
 		{
