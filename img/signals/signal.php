@@ -39,99 +39,102 @@ $s = 0;
 $height = 0;
 if ( isset ( $_GET["railway:signal:speed_limit"] ) )
 {
+	$valid_signal = false;
 	if ( $_GET["railway:signal:speed_limit"] == "DE-ESO:zs3" )
 	{
-		if ( isset($_GET["railway:signal:speed_limit:form"]) && $_GET["railway:signal:speed_limit:form"] == "light")
+		if ( isset($_GET["railway:signal:speed_limit:form"]) ) 
 		{
-			$result = Speedlimit_zs3_light::generateImage($height);
-			$signal[$s] = $result[0];
-			$height += $result[1];
-			$s++;
-		}
-		elseif( isset($_GET["railway:signal:speed_limit:form"]) && $_GET["railway:signal:speed_limit:form"] == "sign")
-		{
-			$result = Speedlimit_zs3_sign::generateImage($height);
-			$signal[$s] = $result[0];
-			$height += $result[1];
-			$s++;
+			if ( $_GET["railway:signal:speed_limit:form"] == "light" )
+			{
+				$result = Speedlimit_zs3_light::generateImage($height);
+				$valid_signal = true;
+			}
+			elseif ( $_GET["railway:signal:speed_limit:form"] == "light" )
+			{
+				$result = Speedlimit_zs3_sign::generateImage($height);
+				$valid_signal = true;
+			}
 		}
 	}
-	elseif($_GET["railway:signal:speed_limit"] == "DE-ESO:lf7")
+
+	if($valid_signal)
 	{
-		//TODO
+		$signal[$s] = $result[0];
+		$height += $result[1];
+		$s++;
 	}
 }
 if(isset($_GET["railway:signal:main"]))
 {
+	$valid_signal = false;
 	if($_GET["railway:signal:main"] == "DE-ESO:hp")
 	{
-		if($_GET["railway:signal:main:form"] == "light")
+		if( isset($_GET["railway:signal:main:form"]) )
 		{
-			$result = HV_main_light::generateImage($height);
-			$signal[$s] = $result[0];
-			$height += $result[1];
-			$s++;
-		}
-		elseif($_GET["railway:signal:main:form"] == "semaphore")
-		{
-			$result = HV_main_semaphore::generateImage($height);
-			$signal[$s] = $result[0];
-			$height += $result[1];
-			$s++;
+			if($_GET["railway:signal:main:form"] == "light")
+			{
+				$result = HV_main_light::generateImage($height);
+				$valid_signal = true;
+			}
+			elseif($_GET["railway:signal:main:form"] == "semaphore")
+			{
+				$result = HV_main_semaphore::generateImage($height);
+				$valid_signal = true;
+			}
 		}
 	}
 	elseif($_GET["railway:signal:main"] == "DE-ESO:ks")
 	{
 		$result = KS_main::generateImage($height);
-		$signal[$s] = $result[0];
-		$height += $result[1];
-		$s++;
+		$valid_signal = true;
 	}
 	elseif($_GET["railway:signal:main"] == "DE-ESO:hl")
 	{
 		$result = HL_main::generateImage($height);
-		$signal[$s] = $result[0];
-		$height += $result[1];
-		$s++;
+				$valid_signal = true;
 	}
 	else //fallback for unknown signals
 	{
 		if($_GET["railway:signal:main:form"] == "semaphore")
 		{
 			$result = Main_semaphore::generateImage($height);
-			$signal[$s] = $result[0];
-			$height += $result[1];
-			$s++;
+			$valid_signal = true;
 		}
 		else
 		{
 			$result = Main_light::generateImage($height);
-			$signal[$s] = $result[0];
-			$height += $result[1];
-			$s++;
-		}
-		
+			$valid_signal = true;
+		}	
+	}
+
+	if($valid_signal)
+	{
+		$signal[$s] = $result[0];
+		$height += $result[1];
+		$s++;
 	}
 }
 if(isset($_GET["railway:signal:combined"]))
 {
+	$valid_signal = false;
 	if($_GET["railway:signal:combined"] == "DE-ESO:ks")
 	{
 		$result = KS_combined::generateImage($height);
-		$signal[$s] = $result[0];
-		$height += $result[1];
-		$s++;
+		$valid_signal = true;
 	}
 	elseif($_GET["railway:signal:combined"] == "DE-ESO:hl")
 	{
 		$result = HL_combined::generateImage($height);
-		$signal[$s] = $result[0];
-		$height += $result[1];
-		$s++;
+		$valid_signal = true;
 	}
 	else //fallback for unknown signals
 	{
 		$result = Combined_light::generateImage($height);
+		$valid_signal = true;
+	}
+
+	if($valid_signal)
+	{
 		$signal[$s] = $result[0];
 		$height += $result[1];
 		$s++;
@@ -140,82 +143,96 @@ if(isset($_GET["railway:signal:combined"]))
 }
 if(isset($_GET["railway:signal:distant"]))
 {
+	$valid_signal = false;
 	if($_GET["railway:signal:distant"] == "DE-ESO:vr")
 	{
-		if($_GET["railway:signal:distant:form"] == "light")
+		if( isset($_GET["railway:signal:distant:form"]) )
 		{
-			$result = HV_distant_light::generateImage($height);
-			$signal[$s] = $result[0];
-			$height += $result[1];
-			$s++;
-		}
-		elseif($_GET["railway:signal:distant:form"] == "semaphore")
-		{
-			$result = HV_distant_semaphore::generateImage($height);
-			$signal[$s] = $result[0];
-			$height += $result[1];
-			$s++;			
+			if($_GET["railway:signal:distant:form"] == "light")
+			{
+				$result = HV_distant_light::generateImage($height);
+				$valid_signal = true;
+			}
+			elseif($_GET["railway:signal:distant:form"] == "semaphore")
+			{
+				$result = HV_distant_semaphore::generateImage($height);
+				$valid_signal = true;
+			}
 		}
 	}
 	elseif($_GET["railway:signal:distant"] == "DE-ESO:ks")
 	{
 		$result = KS_distant::generateImage($height);
-		$signal[$s] = $result[0];
-		$height += $result[1];
-		$s++;
+		$valid_signal = true;
 	}
 	elseif($_GET["railway:signal:distant"] == "DE-ESO:hl")
 	{
 		$result = HL_distant::generateImage($height);
-		$signal[$s] = $result[0];
-		$height += $result[1];
-		$s++;
+		$valid_signal = true;
 	}
 	else //fallback for unknown signals
 	{
 		if( isset($_GET["railway:signal:distant:form"]) && $_GET["railway:signal:distant:form"] == "semaphore")
 		{
 			$result = Distant_semaphore::generateImage($height);
-			$signal[$s] = $result[0];
-			$height += $result[1];
-			$s++;
+			$valid_signal = true;
 		}
 		else
 		{
 			$result = Distant_light::generateImage($height);
-			$signal[$s] = $result[0];
-			$height += $result[1];
-			$s++;
+			$valid_signal = true;
 		}
+	}
+
+	if($valid_signal)
+	{
+		$signal[$s] = $result[0];
+		$height += $result[1];
+		$s++;
 	}
 	
 }
-if(isset($_GET["railway:signal:speed_limit_distant"]) && urldecode($_GET["railway:signal:speed_limit_distant"]) == "DE-ESO:zs3v")
+if( isset($_GET["railway:signal:speed_limit_distant"]) )
 {
-	if( isset($_GET["railway:signal:speed_limit_distant:form"]) )
+	$valid_signal = false;
+	if( urldecode($_GET["railway:signal:speed_limit_distant"]) == "DE-ESO:zs3v" )
 	{
-		if( $_GET["railway:signal:speed_limit_distant:form"] == "light")
+		if( isset($_GET["railway:signal:speed_limit_distant:form"]) )
 		{
-			$result = Speedlimit_zs3v_light::generateImage($height);
-			$signal[$s] = $result[0];
-			$height += $result[1];
-			$s++;
-		}
-		elseif($_GET["railway:signal:speed_limit_distant:form"] == "sign")
-		{
-			$result = Speedlimit_zs3v_sign::generateImage($height);
-			$signal[$s] = $result[0];
-			$height += $result[1];
-			$s++;
+			if( $_GET["railway:signal:speed_limit_distant:form"] == "light")
+			{
+				$result = Speedlimit_zs3v_light::generateImage($height);
+				$valid_signal = true;
+			}
+			elseif($_GET["railway:signal:speed_limit_distant:form"] == "sign")
+			{
+				$result = Speedlimit_zs3v_sign::generateImage($height);
+				$valid_signal = true;
+			}
 		}
 	}
+
+	if($valid_signal)
+	{
+		$signal[$s] = $result[0];
+		$height += $result[1];
+		$s++;
+	}
 }
-if(isset($_GET["railway:signal:train_protection"]) && urldecode($_GET["railway:signal:train_protection"]) == "DE-ESO:blockkennzeichen")
+if( isset($_GET["railway:signal:train_protection"]) )
 {
-	$result = LZB_blockkennzeichen::generateImage($height);
-	$signal[$s] = $result[0];
-	$height += $result[1];
-	$s++;
+	$valid_signal = false;
+	if( urldecode($_GET["railway:signal:train_protection"]) == "DE-ESO:blockkennzeichen" )
+	{
+		$result = LZB_blockkennzeichen::generateImage($height);
+	}
+	
+	if($valid_signal)
+	{
+		$signal[$s] = $result[0];
+		$height += $result[1];
+		$s++;
+	}
 }
 
 echo '<?xml version="1.0" encoding="utf-8"?>';
