@@ -58,9 +58,9 @@ Class Speedlimit_zs3v_sign
 	public static function generateImage($height)
 	{
 			$speed = "";
-			if(isset($_GET["railway:signal:speed_limit:speed"]))
+			if(isset($_GET["railway:signal:speed_limit_distant:speed"]))
 			{
-				$speed = $_GET["railway:signal:speed_limit:speed"];
+				$speed = $_GET["railway:signal:speed_limit_distant:speed"];
 			}
 			$image = '
 <g transform="translate(0, ' . $height . ')">

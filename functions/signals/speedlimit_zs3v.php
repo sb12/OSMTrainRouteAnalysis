@@ -37,7 +37,7 @@ Class Speedlimit_zs3v
 	public static function findState($tags, $next_speed_distant)
 	{
 		$speed_distant="";
-		if($tags["railway:signal:speed_limit_distant:form"] == "light")
+		if( isset($tags["railway:signal:speed_limit_distant:form"]) && $tags["railway:signal:speed_limit_distant:form"] == "light")
 		{
 			$speeds = "";
 			if(isset($tags["railway:signal:speed_limit_distant:speed"]))
@@ -53,13 +53,13 @@ Class Speedlimit_zs3v
 					$speed_distant = $next_speed_distant;
 				}
 			}
-			else
+		}	
+		else
+		{
+			if( isset ($tags["railway:signal:speed_limit_distant:speed"]) && $tags["railway:signal:speed_limit_distant:speed"] > 0 )
 			{
-				if( isset ($tags["railway:signal:speed_limit_distant:speed"]) && $tags["railway:signal:speed_limit_distant:speed"] > 0 )
-				{
-					$speed_distant = $tags["railway:signal:speed_limit_distant:speed"];
-				}
-			}
+				$speed_distant = $tags["railway:signal:speed_limit_distant:speed"];
+			}		
 		}
 		return $speed_distant;
 	}
