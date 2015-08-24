@@ -128,16 +128,16 @@ Class HV_main_light
 		$image = '
 			<g transform="translate(0 ' . $height . ')">
 				<g>
-					<polygon style="&background;" points="6,1 34,1 34,69 6,69"/>
+					<polygon style="&background;" points="6,1 34,1 34,59 6,59"/>
 				</g>';
 	
 	
 		$image .= '
 				<g id="hp0">
-					<circle style="' . $colour_hp0 . '" cx="13" cy="25" r="4"/>
+					<circle style="' . $colour_hp0 . '" cx="13" cy="23" r="4"/>
 				</g>
 				<g id="hp1">
-					<circle style="' . $colour_hp1 . '" cx="13" cy="12" r="4"/>
+					<circle style="' . $colour_hp1 . '" cx="13" cy="11" r="4"/>
 				</g>';
 	
 		$marker = false;
@@ -147,7 +147,7 @@ Class HV_main_light
 			{
 				$image .= '
 				<g id="hp2">
-					<circle style="' . $colour_hp2 . '" cx="13" cy="60" r="4"/>
+					<circle style="' . $colour_hp2 . '" cx="13" cy="50" r="4"/>
 				</g>';
 			}
 			if ( strpos( $_GET["railway:signal:main:states"], "kennlicht" ) )
@@ -159,50 +159,50 @@ Class HV_main_light
 		{
 			$image .= '
 				<g id="hp2">
-					<circle style="' . $colour_hp2 . '" cx="13" cy="60" r="4"/>
+					<circle style="' . $colour_hp2 . '" cx="13" cy="50" r="4"/>
 				</g>';
 		}
 		if ( isset($_GET["railway:signal:minor"]) && $_GET["railway:signal:minor"] == "DE-ESO:sh1" )
 		{
 			$image .= '
 				<g id="hp00">
-					<circle style="' . $colour_hp00 . '" cx="27" cy="25" r="4"/>
+					<circle style="' . $colour_hp00 . '" cx="27" cy="23" r="4"/>
 				</g>
 				<g id="sh1">
-					<circle style="' . $colour_sh1 . '" cx="20" cy="37" r="2"/>
-					<circle style="' . $colour_sh1 . '" cx="10" cy="48" r="2"/>
+					<circle style="' . $colour_sh1 . '" cx="20" cy="33" r="1.5"/>
+					<circle style="' . $colour_sh1 . '" cx="12" cy="41" r="1.5"/>
 				</g>';
 		}
 		if ( isset($_GET["railway:signal:main:substitute_signal"]) && $_GET["railway:signal:main:substitute_signal"] == "DE-ESO:db:zs1" )
 		{
 			$image .= '
 				<g id="zs1">
-					<circle style="&gray;" cx="25" cy="37" r="2"/>
-					<circle class="' . $class_zs1 . '" style="' . $colour_zs1 . '" cx="25" cy="37" r="2"/>
-					<circle style="&gray;" cx="20" cy="48" r="2"/>
-					<circle class="' . $class_zs1 . '" style="' . $colour_zs1 . '" cx="20" cy="48" r="2"/>
-					<circle style="&gray;" cx="30" cy="48" r="2"/>
-					<circle class="' . $class_zs1.'" style="' . $colour_zs1 . '" cx="30" cy="48" r="2"/>
+					<circle style="&gray;" cx="24" cy="33" r="1.5"/>
+					<circle class="' . $class_zs1 . '" style="' . $colour_zs1 . '" cx="24" cy="33" r="1.5"/>
+					<circle style="&gray;" cx="20" cy="41" r="1.5"/>
+					<circle class="' . $class_zs1 . '" style="' . $colour_zs1 . '" cx="20" cy="41" r="1.5"/>
+					<circle style="&gray;" cx="28" cy="41" r="1.5"/>
+					<circle class="' . $class_zs1.'" style="' . $colour_zs1 . '" cx="28" cy="41" r="1.5"/>
 				</g>';
 		}
 		if ( isset($_GET["railway:signal:main:substitute_signal"]) && $_GET["railway:signal:main:substitute_signal"] == "DE-ESO:db:zs7" )
 		{
 			$image .= '
 				<g id="zs1">
-					<circle style="' . $colour_zs7 . '" cx="25" cy="37" r="2"/>
-					<circle style="' . $colour_zs7 . '" cx="20" cy="48" r="2"/>
+					<circle style="' . $colour_zs7 . '" cx="24" cy="33" r="1.5"/>
+					<circle style="' . $colour_zs7 . '" cx="20" cy="41" r="1.5"/>
 				</g>';
 		}
 		if ( ( isset($_GET["railway:signal:main:substitute_signal"]) && $_GET["railway:signal:main:substitute_signal"] == "DE-ESO:db:zs7") || $marker)
 		{
 			$image .= '
 				<g id="marker">
-					<circle style="' . $colour_marker . '" cx="15" cy="37" r="2"/>
+					<circle style="' . $colour_marker . '" cx="16" cy="33" r="1.5"/>
 				</g>';
 		}
 		$image .= '
 			</g>';
-		$height = 70;
+		$height = 60;
 		return array($image, $height);
 	}
 }

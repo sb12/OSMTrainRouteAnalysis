@@ -117,34 +117,34 @@ Class HV_distant_light
 		$image = '
 			<g transform="translate(0 ' . $height . ')">
 				<g>
-					<polygon style="&background;" points="6,1 34,1 34,59 6,59"/>
+					<polygon style="&background;" points="6,1 34,1 34,49 6,49"/>
 				</g>';
 
 
 		$image .= '
 				<g id="vr0">
-					<circle style="' . $colour_vr0 . '" cx="27" cy="25" r="4"/>
+					<circle style="' . $colour_vr0 . '" cx="27" cy="22" r="4"/>
 				</g>
 				<g id="vr12">
 					<circle style="' . $colour_vr12 . '" cx="27" cy="12" r="4"/>
 				</g>
 				<g id="vr1">
-					<circle style="' . $colour_vr1 . '" cx="13" cy="38" r="4"/>
+					<circle style="' . $colour_vr1 . '" cx="13" cy="30" r="4"/>
 				</g>
 				<g id="vr2">
-					<circle style="' . $colour_vr2 . '" cx="13" cy="50" r="4"/>
+					<circle style="' . $colour_vr2 . '" cx="13" cy="40" r="4"/>
 				</g>';
 
 		if ( $marker )
 		{
 			$image .= '
 				<g id="marker">
-					<circle style="' . $colour_marker . '" cx="12" cy="11" r="2"/>
+					<circle style="' . $colour_marker . '" cx="12" cy="12" r="2"/>
 				</g>';
 		}
 		$image .= '
 			</g>';
-		$height = 60;
+		$height = 50;
 		return array($image, $height);
 	}
 }
