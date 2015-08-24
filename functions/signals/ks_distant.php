@@ -97,16 +97,16 @@ Class KS_distant
 		$image = '
 			<g transform="translate(0 ' . $height . ')">
 				<g>
-					<polygon style="&background;" points="6,1 34,1 34,59 6,59"/>
+					<polygon style="&background;" points="6,1 34,1 34,49 6,49"/>
 				</g>
 					
 				<g id="ks1">
-					<circle style="&gray;" cx="12" cy="29" r="4"/>
-					<circle class="' . $class_ks1 . '" style="' . $colour_ks1 . '" cx="12" cy="29" r="4"/>
+					<circle style="&gray;" cx="12" cy="24" r="4"/>
+					<circle class="' . $class_ks1 . '" style="' . $colour_ks1 . '" cx="12" cy="24" r="4"/>
 				</g>
 					
 				<g id="ks2">
-					<circle style="' . $colour_ks2 . '" cx="28" cy="29" r="4"/>
+					<circle style="' . $colour_ks2 . '" cx="28" cy="24" r="4"/>
 				</g>';
 		// repeated signals
 		if( ( isset($_GET["railway:signal:distant:repeated"]) && $_GET["railway:signal:distant:repeated"] == "yes" ) )
@@ -121,7 +121,7 @@ Class KS_distant
 			}
 			$image .= '
 				<g id="repeated">
-					<circle style="' . $color_additional_light . '" cx="10" cy="49" r="2"/>
+					<circle style="' . $color_additional_light . '" cx="10" cy="39" r="2"/>
 				</g>';
 		}
 		// signals with shortened distance to main
@@ -142,7 +142,7 @@ Class KS_distant
 		}
 		$image .= '
 		</g>';
-		$height = 60;
+		$height = 50;
 		return array($image, $height);
 	}
 }
