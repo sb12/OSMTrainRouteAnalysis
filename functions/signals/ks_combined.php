@@ -106,7 +106,7 @@ Class KS_combined
 			else
 			{
 				// can the signal show Ks2 instead?
-				if(in_array("ks1", $possible_states))
+				if(in_array("ks2", $possible_states))
 				{
 					// TODO: warning: signal shall show Ks1, but only Ks2 coded!
 					$state = "ks2";
