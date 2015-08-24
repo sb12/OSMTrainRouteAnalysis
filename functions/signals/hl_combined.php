@@ -498,6 +498,7 @@ Class HL_combined
 		}
 		$image .= '
 				</g>';
+		$height = 55;
 		if ( $show_stripes1 || $show_stripes2 )
 		{
 			$image .= '
@@ -525,10 +526,10 @@ Class HL_combined
 			$image .= '
 				</g>
 							';
+			$height = 68;
 		}
 		$image .= '
 		</g>';
-		$height = 68;
 		return array($image, $height);
 	}
 }

@@ -81,7 +81,7 @@ Class Blockkennzeichen
 		else
 		{
 			$refs = explode(" ", $ref);
-			if( count($refs) == 2 && $refs[0] > 0 && $refs[1] > 0) // 2 numbers with 2 digits or less
+			if( count($refs) == 2 && $refs[0] > 0 && $refs[1] > 0 && strlen ( $refs[0] ) <= 4 && strlen ( $refs[1] ) <= 4 ) // 2 numbers with space in between with 4 digits or less each
 			{
 				$show_ref = '<tspan x="20" y="18" font-size="14">' . $refs[0] . '</tspan><tspan x="20" y="32" font-size="14">' . $refs[1] . '</tspan>';
 			}

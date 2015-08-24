@@ -575,6 +575,7 @@ Class Signals
 			}
 			
 			$result .= Lang::l_(" Distant Signal");
+			$description_set = true;
 			
 		}
 		if(isset($tags["railway:signal:speed_limit_distant"]))
