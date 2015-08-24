@@ -50,7 +50,7 @@ if ( isset ( $_GET["railway:signal:speed_limit"] ) )
 				$result = Speedlimit_zs3_light::generateImage($height);
 				$valid_signal = true;
 			}
-			elseif ( $_GET["railway:signal:speed_limit:form"] == "light" )
+			elseif ( $_GET["railway:signal:speed_limit:form"] == "sign" )
 			{
 				$result = Speedlimit_zs3_sign::generateImage($height);
 				$valid_signal = true;
@@ -92,7 +92,7 @@ if(isset($_GET["railway:signal:main"]))
 	elseif($_GET["railway:signal:main"] == "DE-ESO:hl")
 	{
 		$result = HL_main::generateImage($height);
-				$valid_signal = true;
+		$valid_signal = true;
 	}
 	else //fallback for unknown signals
 	{
