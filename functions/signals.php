@@ -566,7 +566,19 @@ Class Signals
 			}
 			else
 			{
-				$result .= distant_light::showDescription();
+				if($tags["railway:signal:distant:form"] == "light")
+				{
+					$result .= distant_light::showDescription();
+				}
+				elseif($tags["railway:signal:distant:form"] == "sign")
+				{
+					// TODO
+					// $result .= distant_sign::showDescription();
+				}
+				else
+				{
+					// TODO: warning
+				}
 			}
 
 			if(isset($tags["railway:signal:distant:repeated"]) && $tags["railway:signal:distant:repeated"] == "yes")
