@@ -47,7 +47,7 @@ Class KS_combined
 		{
 			// explode possible states
 			$possible_states_raw = explode(";", $tags["railway:signal:combined:states"]);
-			foreach($possible_states as $curr_state)
+			foreach($possible_states_raw as $curr_state)
 			{
 				$namespace = explode(":", $curr_state);
 				// convert format "DE-ESO:state" to "state"
