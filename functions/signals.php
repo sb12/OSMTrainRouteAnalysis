@@ -374,7 +374,7 @@ Class Signals
 		if(isset($tags["ref"]))
 		{
 			// ref not needed for German Blockkennzeichen
-			if( !isset($tags["railway:signal:train_protection"]) || !$tags["railway:signal:train_protection"] == "DE-ESO:blockkennzeichen" )
+			if( !isset($tags["railway:signal:train_protection"]) || $tags["railway:signal:train_protection"] != "DE-ESO:blockkennzeichen" )
 			{
 				$result.='
 						<span class="signal_ref">'.$tags["ref"].'</span>';
@@ -423,9 +423,10 @@ Class Signals
 				</td>';
 
 
+		$result .= '<td>';
 
 		//show description of signal
-		$result.='<td>';
+		$description_set = false;
 		if(isset($tags["railway:signal:main"]) || isset($tags["railway:signal:combined"]))
 		{
 
@@ -481,10 +482,14 @@ Class Signals
 
 				$result .= Lang::l_(" Main Signal");
 			}
+			$description_set = true;
 		}
 		if(isset($tags["railway:signal:speed_limit"]))
 		{
-			$result.="<br>";
+			if($description_set)
+			{
+				$result .= "<br />";
+			}
 			if( isset($tags["railway:signal:main"]) || isset($tags["railway:signal:combined"]) )
 			{
 				$result .= Lang::l_("with ");
@@ -533,12 +538,13 @@ Class Signals
 				}
 				$result .= ")";
 			}
+			$description_set = true;
 		}
 		if(isset($tags["railway:signal:distant"]) || isset($tags["railway:signal:combined"]))
 		{
-			if(isset($tags["railway:signal:main"]) || isset($tags["railway:signal:speed_limit"]) || isset($tags["railway:signal:combined"]))
+			if($description_set)
 			{
-				$result .= "<br>";
+				$result .= "<br />";
 			}
 			if(isset($tags["railway:signal:combined"]))
 			{
@@ -573,7 +579,10 @@ Class Signals
 		}
 		if(isset($tags["railway:signal:speed_limit_distant"]))
 		{
-			$result .= "<br>";
+			if($description_set)
+			{
+				$result .= "<br />";
+			}
 			if(isset($tags["railway:signal:distant"]))
 			{
 				$result .= Lang::l_("with ");
@@ -621,9 +630,14 @@ Class Signals
 				}
 				$result .=")";
 			}
+			$description_set = true;
 		}
 		if( isset($tags["railway:signal:train_protection"]) )
 		{
+			if($description_set)
+			{
+				$result .= "<br />";
+			}
 			if( $tags["railway:signal:train_protection"] == "DE-ESO:blockkennzeichen" )
 			{
 				$result .=  Blockkennzeichen::showDescription();
@@ -636,6 +650,7 @@ Class Signals
 			{
 				$result .= Lang::l_("Unknown train protection sign");
 			}
+			$description_set = true;
 		}
 		$result.='</td>';
 		

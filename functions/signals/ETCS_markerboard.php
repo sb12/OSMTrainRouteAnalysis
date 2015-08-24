@@ -56,30 +56,30 @@ Class ETCS_markerboard
 	 */
 	public static function generateImage($height)
 	{
-		$polygon = "6,10 20,10 20,3 33,15 20,27 20,20 6,20";
-		$rect = 'x="5" y="0" width="2" height="30"';
+		$polygon = "10,8 20,8 20,2 28,10 20,18 20,12 10,12";
+		$rect = 'x="10" y="0" width="1" height="20"';
 		if( isset($_GET["railway:signal:position"]) )
 		{
 			if( $_GET["railway:signal:position"] == "right")
 			{
-				$polygon = "34,10 20,10 20,3 7,15 20,27 20,20 34,20";
-				$rect = 'x="33" y="0" width="2" height="30"';	
+				$polygon = "30,8 20,8 20,2 11,10 20,18 20,12 30,12";
+				$rect = 'x="29" y="0" width="1" height="20"';	
 			}
 			elseif( $_GET["railway:signal:position"] == "overhead")
 			{
-				$polygon = "15,1 15,15 8,15 20,28 32,15 25,15 25,1";
-				$rect = 'x="5" y="0" width="30" height="2"';	
+				$polygon = "18,1 18,10 12,10 20,19 28,10 22,10 22,1";
+				$rect = 'x="10" y="0" width="20" height="1"';	
 			}
 		}	
 		$image = '
 			<g transform="translate(0 ' . $height . ')">
-    			<rect fill="#3366FF" x="5" y="0" width="30" height="30" />
+    			<rect fill="#3366FF" x="10" y="0" width="20" height="20" />
     			
-				<polygon fill="#FFFF00" stroke="#FFFFFF" stroke-width="2" points="' . $polygon . '"/>
+				<polygon fill="#FFFF00" stroke="#FFFFFF" stroke-width="1" points="' . $polygon . '"/>
     			<rect fill="#3366FF" ' . $rect . ' />
 			
 			</g>';
-		$height = 30;
+		$height = 20;
 		return array($image, $height);
 	}
 }
