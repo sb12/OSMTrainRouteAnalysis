@@ -118,31 +118,31 @@ Class KS_main
 		$image = '
 			<g transform="translate(0 ' . $translation_height . ')">
 				<g>
-					<polygon style="&background;" points="6,1 ' . $width-6 . ',1 ' . $width-6 . ',' . $height+1 . ' 6,' . $height+1 . '"/>
+					<polygon style="&background;" points="6,1 ' . ($width-6) . ',1 ' . ($width-6) . ',' . ($height+1) . ' 6,' . ($height+1) . '"/>
 				</g>
 					
 				<g id="hp0">
-					<circle style="' . $colour_hp0 . '" cx="' . $width/2 . '" cy="16" r="' . $radius_main_lamp . '"/>
+					<circle style="' . $colour_hp0 . '" cx="' . ($width/2) . '" cy="16" r="' . $radius_main_lamp . '"/>
 				</g>
 					
 				<g id="ks1">
-					<circle style="' . $colour_ks1 . '" cx="' . $width/2 . '" cy="29" r="' . $radius_main_lamp . '"/>
+					<circle style="' . $colour_ks1 . '" cx="' . ($width/2) . '" cy="28" r="' . $radius_main_lamp . '"/>
 				</g>
 				
 		if ( ( isset($_GET["railway:signal:main:substitute_signal"]) && $_GET["railway:signal:main:substitute_signal"] == "DE-ESO:dr:zs1" ) || ( isset($_GET["railway:signal:minor"]) && $_GET["railway:signal:minor"] == "DE-ESO:sh1" ) )
 		{
 			$image .= '
 				<g id="sh1">
-					<circle style="' . $colour_sh1 . '" cx="' . $width/2 - 10 . '" cy="49" r="' . $radius_small_lamp . '"/>';
+					<circle style="' . $colour_sh1 . '" cx="' . ($width/2 - 10) . '" cy="48" r="' . $radius_small_lamp . '"/>';
 			if ( isset($_GET["railway:signal:minor"]) && $_GET["railway:signal:minor"] == "DE-ESO:sh1" )
 			{
 				$center_y = 39;
 				$image .= '
-					<circle style="&gray;" cx="' . $width/2 . '" cy="' . $center_y . '" r="' . $radius_small_lamp . '"/>';
+					<circle style="&gray;" cx="' . ($width/2) . '" cy="' . $center_y . '" r="' . $radius_small_lamp . '"/>';
 				if($class_zs1 == "signal_blink")
 				{
 					$image .= '
-					<circle class="' . $class_zs1 . '" style="' . $colour_zs1 . '" cx="' . $width/2 . '" cy="' . $center_y . '" r="' . $radius_small_lamp . '"/>';
+					<circle class="' . $class_zs1 . '" style="' . $colour_zs1 . '" cx="' . ($width/2) . '" cy="' . $center_y . '" r="' . $radius_small_lamp . '"/>';
 				}}
 			}
 			
