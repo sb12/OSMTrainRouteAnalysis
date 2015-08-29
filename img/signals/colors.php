@@ -1,7 +1,7 @@
 <?php
 
-define("color_red", "#E02E45");
-define("color_yellow", "#FF9714");
-define("color_green", "#38FFF5");
+define("COLOR_RED", "#E02E45");
+define("COLOR_YELLOW", "#FF9714");
+define("COLOR_GREEN", "#38FFF5");
 
 ?>
