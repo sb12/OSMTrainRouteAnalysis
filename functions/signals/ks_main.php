@@ -69,9 +69,10 @@ Class KS_main
 	 * generate image
 	 * @param $tags array tags of the signal
 	 */
-	public static function generateImage($height)
+	public static function generateImage($translation_height)
 	{
 		$height = 62;
+		$width = 44;
 		$colour_hp0 = "&red;";
 		$colour_ks1 = "&green;";
 		$colour_sh1 = "&gray;";
@@ -116,7 +117,7 @@ Class KS_main
 		$radius_small_lamp = 2.25;
 		
 		$image = '
-			<g transform="translate(0 ' . $height . ')">
+			<g transform="translate(0 ' . $translation_height . ')">
 				<g>
 					<polygon style="&background;" points="6,1 ' . $width-6 . ',1 ' . $width-6 . ',' . $height+1 . ' 6,' . $height+1 . '"/>
 				</g>
