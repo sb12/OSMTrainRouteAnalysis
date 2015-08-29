@@ -275,7 +275,7 @@ echo '<?xml version="1.0" encoding="utf-8"?>';
 	<!ENTITY stv2 "fill:#444444;">
 
 ]>
-<svg  version="1.1" xmlns="&ns_svg;" xmlns:xlink="&ns_xlink;" width="<?php echo $width;?>" height="<?php echo $height;?>" viewBox="0 0 ' . $width . '<?php echo $height;?>"
+<svg  version="1.1" xmlns="&ns_svg;" xmlns:xlink="&ns_xlink;" width="<?php echo $width;?>" height="<?php echo $height;?>" viewBox="0 0 <?php echo $width . ' ' . $height;?>"
 	 overflow="visible" enable-background="new 0 0 <?php echo $width . ' ' . $height;?>" xml:space="preserve">
 	 
 <style>
