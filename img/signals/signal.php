@@ -253,7 +253,7 @@ echo '<?xml version="1.0" encoding="utf-8"?>';
 	<!ENTITY gray "fill:#444444;">	
 	<!ENTITY red "fill:red;">	
 	<!ENTITY yellow "fill:yellow;">	
-	<!ENTITY green "fill:#00FF00;">
+	<!ENTITY green "fill:#38FFF5;">
 		
 	<!ENTITY st1 "fill:#FFFFFF;">
 	<!ENTITY stv1 "fill:yellow;">
