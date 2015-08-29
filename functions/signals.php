@@ -102,6 +102,13 @@ Class Signals
 			}
 		}
 		
+		//FIXME: This should not be entered in maxspeed array and should be fixed in the maxspeed array creation
+		if(isset($maxspeed_array[-1]))
+		{
+			$maxspeed_array[-1][0]=0;
+			$maxspeed_array[-1][1]=0;
+		}
+		
 		// guess speed for signal
 		foreach ($signals as $signal) // go through all signals
 		{
@@ -109,6 +116,7 @@ Class Signals
 			$dis = 0; // distance of start point of maxspeed area from start of route
 			$last_maxspeed = 300; // maxspeed value of last area
 			$next_speed = 0; // minimum maxspeed value of area after signal
+			$outside_of_area = false; // the last maxspeed is outside the relevant area
 			
 			// go through maxspeed array
 			foreach($maxspeed_array as $maxspeed)
@@ -117,6 +125,7 @@ Class Signals
 				if( ( $dis - $distance ) > 1 )
 				{
 					break;
+					$outside_of_area=true;
 				}
 				if(  $maxspeed[1] > 0)
 				{
@@ -152,7 +161,7 @@ Class Signals
 				$dis += $maxspeed[0];
 			}
 			
-			if($next_speed == 0) //fallback if no speed was found
+			if( $next_speed == 0 && ( abs( $dis - $distance ) > 0.005 && !$outside_of_area ) ) //fallback if no speed was found and signal is not the last of the route
 			{
 				$next_speed = $last_maxspeed;
 			}
