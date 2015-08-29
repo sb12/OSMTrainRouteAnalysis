@@ -22,7 +22,7 @@
 ?>
 <?php
 
-include "zs7.php"
+include "zs7.php";
 
 /**
  * German Ks Main Signal
@@ -113,7 +113,7 @@ Class KS_main
 		}
 		
 		$radius_main_lamp = 3.5;
-		$radius_small_lamp = 2.25;
+		$radius_small_lamp = 2;
 		
 		$image = '
 			<g transform="translate(0 ' . $translation_height . ')">
@@ -128,21 +128,29 @@ Class KS_main
 				<g id="ks1">
 					<circle style="' . $colour_ks1 . '" cx="' . $width/2 . '" cy="29" r="' . $radius_main_lamp . '"/>
 				</g>
-				<g id="sh1">';
+				
 		if ( ( isset($_GET["railway:signal:main:substitute_signal"]) && $_GET["railway:signal:main:substitute_signal"] == "DE-ESO:dr:zs1" ) || ( isset($_GET["railway:signal:minor"]) && $_GET["railway:signal:minor"] == "DE-ESO:sh1" ) )
 		{
-			$center_y = 39;
 			$image .= '
-					<circle style="&gray;" cx="' . $width/2 . '" cy="' . $center_y . '" r="' . $radius_small_lamp . '"/>
+				<g id="sh1">
+					<circle style="' . $colour_sh1 . '" cx="' . $width/2 - 10 . '" cy="49" r="' . $radius_small_lamp . '"/>';
+			if ( isset($_GET["railway:signal:minor"]) && $_GET["railway:signal:minor"] == "DE-ESO:sh1" )
+			{
+				$center_y = 39;
+				$image .= '
+					<circle style="&gray;" cx="' . $width/2 . '" cy="' . $center_y . '" r="' . $radius_small_lamp . '"/>';
+				if($class_zs1 == "signal_blink")
+				{
+					$image .= '
 					<circle class="' . $class_zs1 . '" style="' . $colour_zs1 . '" cx="' . $width/2 . '" cy="' . $center_y . '" r="' . $radius_small_lamp . '"/>';
-		}
-		if ( isset($_GET["railway:signal:minor"]) && $_GET["railway:signal:minor"] == "DE-ESO:sh1" )
-		{
+				}}
+			}
+			
 			$image .= '
-					<circle style="' . $colour_sh1 . '" cx="10" cy="49" r="' . $radius_small_lamp . '"/>';
-		}
-		$image .= '
 				</g>';
+		}
+		
+		
 		if ( isset($_GET["railway:signal:main:substitute_signal"]) && $_GET["railway:signal:main:substitute_signal"] == "DE-ESO:db:zs7" )
 		{
 			$image .= Zs7::generateImage($width/2, 44, $colour_zs7);
