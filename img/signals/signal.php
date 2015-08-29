@@ -1,8 +1,13 @@
 <?php
 header("Content-type: image/svg+xml");
 
-include "colors.php"
+// load settings
+include "../../functions/settings.php";
 
+// load colors
+include "colors.php";
+
+//load signal classes
 include "../../functions/signals/main_light.php";
 include "../../functions/signals/main_semaphore.php";
 include "../../functions/signals/distant_light.php";
