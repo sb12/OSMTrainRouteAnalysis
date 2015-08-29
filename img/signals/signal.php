@@ -257,8 +257,8 @@ echo '<?xml version="1.0" encoding="utf-8"?>';
 	<!ENTITY ns_xlink "http://www.w3.org/1999/xlink">	
 	<!ENTITY background "fill:#000000;">	
 	<!ENTITY white "fill:#FFFFFF;">	
-	<!ENTITY gray "fill:#444444;">
 <?php
+	echo '<!ENTITY gray "fill:' . COLOR_GRAY . ';">';
 	echo '<!ENTITY red "fill:' . COLOR_RED . ';">';	
 	echo '<!ENTITY yellow "fill:' . COLOR_YELLOW . ';">';
 	echo '<!ENTITY green "fill:' . COLOR_GREEN . ';">';
