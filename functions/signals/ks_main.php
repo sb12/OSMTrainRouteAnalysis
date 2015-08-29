@@ -132,9 +132,10 @@ Class KS_main
 				<g id="sh1">';
 		if ( ( isset($_GET["railway:signal:main:substitute_signal"]) && $_GET["railway:signal:main:substitute_signal"] == "DE-ESO:dr:zs1" ) || ( isset($_GET["railway:signal:minor"]) && $_GET["railway:signal:minor"] == "DE-ESO:sh1" ) )
 		{
+			$center_y = 39;
 			$image .= '
-					<circle style="&gray;" cx="' . $width/2 . '" cy="44" r="' . $radius_small_lamp . '"/>
-					<circle class="' . $class_zs1 . '" style="' . $colour_zs1 . '" cx="' . $width/2 . '" cy="39" r="' . $radius_small_lamp . '"/>';
+					<circle style="&gray;" cx="' . $width/2 . '" cy="' . $center_y . '" r="' . $radius_small_lamp . '"/>
+					<circle class="' . $class_zs1 . '" style="' . $colour_zs1 . '" cx="' . $width/2 . '" cy="' . $center_y . '" r="' . $radius_small_lamp . '"/>';
 		}
 		if ( isset($_GET["railway:signal:minor"]) && $_GET["railway:signal:minor"] == "DE-ESO:sh1" )
 		{
