@@ -71,6 +71,7 @@ Class KS_main
 	 */
 	public static function generateImage($height)
 	{
+		$height = 62;
 		$colour_hp0 = "&red;";
 		$colour_ks1 = "&green;";
 		$colour_sh1 = "&gray;";
@@ -111,40 +112,43 @@ Class KS_main
 			}
 		}
 		
+		$radius_main_lamp = 3.5;
+		$radius_small_lamp = 2.25;
+		
 		$image = '
 			<g transform="translate(0 ' . $height . ')">
 				<g>
-					<polygon style="&background;" points="6,1 38,1 38,61 6,61"/>
+					<polygon style="&background;" points="6,1 ' . $width-6 . ',1 ' . $width-6 . ',' . $height+1 . ' 6,' . $height+1 . '"/>
 				</g>
 					
 				<g id="hp0">
-					<circle style="' . $colour_hp0 . '" cx="20" cy="16" r="4"/>
+					<circle style="' . $colour_hp0 . '" cx="' . $width/2 . '" cy="16" r="' . $radius_main_lamp . '"/>
 				</g>
 					
 				<g id="ks1">
-					<circle style="' . $colour_ks1 . '" cx="20" cy="29" r="4"/>
+					<circle style="' . $colour_ks1 . '" cx="' . $width/2 . '" cy="29" r="' . $radius_main_lamp . '"/>
 				</g>
 				<g id="sh1">';
 		if ( ( isset($_GET["railway:signal:main:substitute_signal"]) && $_GET["railway:signal:main:substitute_signal"] == "DE-ESO:dr:zs1" ) || ( isset($_GET["railway:signal:minor"]) && $_GET["railway:signal:minor"] == "DE-ESO:sh1" ) )
 		{
 			$image .= '
-					<circle style="&gray;" cx="20" cy="39" r="2"/>
-					<circle class="' . $class_zs1 . '" style="' . $colour_zs1 . '" cx="20" cy="39" r="2"/>';
+					<circle style="&gray;" cx="' . $width/2 . '" cy="44" r="' . $radius_small_lamp . '"/>
+					<circle class="' . $class_zs1 . '" style="' . $colour_zs1 . '" cx="' . $width/2 . '" cy="39" r="' . $radius_small_lamp . '"/>';
 		}
 		if ( isset($_GET["railway:signal:minor"]) && $_GET["railway:signal:minor"] == "DE-ESO:sh1" )
 		{
 			$image .= '
-					<circle style="' . $colour_sh1 . '" cx="10" cy="49" r="2"/>';
+					<circle style="' . $colour_sh1 . '" cx="10" cy="49" r="' . $radius_small_lamp . '"/>';
 		}
 		$image .= '
 				</g>';
 		if ( isset($_GET["railway:signal:main:substitute_signal"]) && $_GET["railway:signal:main:substitute_signal"] == "DE-ESO:db:zs7" )
 		{
-			$image .= Zs7::generateImage(22, 44, $colour_zs7);
+			$image .= Zs7::generateImage($width/2, 44, $colour_zs7);
 		}
 		$image .= '
 		</g>';
-		$height = 60;
+		
 		return array($image, $height);
 	}
 }
