@@ -21,6 +21,9 @@
     */
 ?>
 <?php
+
+include "zs7.php"
+
 /**
  * German Ks Main Signal
  * @author sb12
@@ -111,7 +114,7 @@ Class KS_main
 		$image = '
 			<g transform="translate(0 ' . $height . ')">
 				<g>
-					<polygon style="&background;" points="6,1 34,1 34,59 6,59"/>
+					<polygon style="&background;" points="6,1 38,1 38,61 6,61"/>
 				</g>
 					
 				<g id="hp0">
@@ -137,12 +140,7 @@ Class KS_main
 				</g>';
 		if ( isset($_GET["railway:signal:main:substitute_signal"]) && $_GET["railway:signal:main:substitute_signal"] == "DE-ESO:db:zs7" )
 		{
-			$image .= '
-					<g id="zs7">
-						<circle style="' . $colour_zs7 . '" cx="15" cy="39" r="2"/>
-						<circle style="' . $colour_zs7 . '" cx="25" cy="39" r="2"/>
-						<circle style="' . $colour_zs7 . '" cx="20" cy="49" r="2"/>
-					</g>';
+			$image .= Zs7::generateImage(22, 44, $colour_zs7);
 		}
 		$image .= '
 		</g>';
