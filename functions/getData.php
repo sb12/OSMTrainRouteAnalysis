@@ -599,16 +599,20 @@ Class Route
 				}
 				$temp_relation_array[$k] = $v; //store tags temporary
 			}
-			// check if tags are relevant (type of relation is either route or route_master)
-			if ( isset($temp_relation_array["type"]) && ( $temp_relation_array["type"] == "route" || $temp_relation_array["type"] == "route_master" ) )
+			// check if tags are relevant (type of relation is either (future) route or route_master)
+			if ( isset($temp_relation_array["type"]) &&
+				( $temp_relation_array["type"] == "route"
+				|| $temp_relation_array["type"] == "future_route"
+				|| $temp_relation_array["type"] == "route_master"
+				) )
 			{
 				foreach ( $temp_relation_array as $c => $d )
 				{
 					//do not overwrite tags for route_master when tag is already set in route
 					if ( $temp_relation_array["type"] != "route_master" || !isset($this -> relation_tags[$c]) )
 					{
-						// type tag should only be route
-						if ( $c != "type" || $d == "route" )
+						// type tag should only be (future) route
+						if ( $c != "type" || $d == "route" || $d == "future_route" )
 						{
 							// add tags to relation
 							$this->relation_tags[$c] = $d;
@@ -3376,7 +3380,7 @@ if (  $this->relation_distance == 0 )
 		"unknown"       => Lang::l_('N/A'),
 		);
 		
-		if ( $route == "train" )
+		if ( $route == "train" || $route == "train:future" )
 		{
 			$route_type = "train";
 			if ( $service == "high_speed" )
