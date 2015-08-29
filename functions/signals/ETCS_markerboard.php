@@ -56,21 +56,30 @@ Class ETCS_markerboard
 	 */
 	public static function generateImage($height)
 	{
-		$polygon = "10,8 20,8 20,2 28,10 20,18 20,12 10,12";
-		$rect = 'x="10" y="0" width="1" height="20"';
+		$position = ""; // fallback: unknown
+		// try to determine position from database
 		if( isset($_GET["railway:signal:position"]) )
 		{
-			if( $_GET["railway:signal:position"] == "right")
-			{
-				$polygon = "30,8 20,8 20,2 11,10 20,18 20,12 30,12";
-				$rect = 'x="29" y="0" width="1" height="20"';	
-			}
-			elseif( $_GET["railway:signal:position"] == "overhead")
-			{
-				$polygon = "18,1 18,10 12,10 20,19 28,10 22,10 22,1";
-				$rect = 'x="10" y="0" width="20" height="1"';	
-			}
-		}	
+			$position = $_GET["railway:signal:position"];
+		}
+		
+		if($position == "left")
+		{
+			$polygon = "10,8 20,8 20,2 28,10 20,18 20,12 10,12";
+			$rect = 'x="10" y="0" width="1" height="20"';
+		}
+		elseif($position == "right")
+		{
+			$polygon = "30,8 20,8 20,2 11,10 20,18 20,12 30,12";
+			$rect = 'x="29" y="0" width="1" height="20"';	
+		}
+		else
+		{
+			// default to overhead
+			$polygon = "18,1 18,10 12,10 20,19 28,10 22,10 22,1";
+			$rect = 'x="10" y="0" width="20" height="1"';
+		}
+		
 		$image = '
 			<g transform="translate(0 ' . $height . ')">
     			<rect fill="#3366FF" x="10" y="0" width="20" height="20" />
