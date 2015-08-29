@@ -254,10 +254,10 @@ echo '<?xml version="1.0" encoding="utf-8"?>';
 	<!ENTITY white "fill:#FFFFFF;">	
 	<!ENTITY gray "fill:#444444;">
 <?php
-	echo("<!ENTITY red "fill:" . $color_red . ";\">");	
-	echo("<!ENTITY yellow "fill:" . $color_yellow . ";\">");
-	echo("<!ENTITY green "fill:" . $color_green . ";\">");
-	echo("<!ENTITY stv1 "fill:" . $color_yellow . ";\">");
+	echo '<!ENTITY red "fill:' . COLOR_RED . ';\">';	
+	echo '<!ENTITY yellow "fill:' . COLOR_YELLOW . ';\">';
+	echo '<!ENTITY green "fill:' . COLOR_GREEN . ';\">';
+	echo '<!ENTITY stv1 "fill:' . COLOR_YELLOW . ';\">';
 ?>		
 	<!ENTITY st1 "fill:#FFFFFF;">
 	<!ENTITY st0 "fill:none;stroke:none">
