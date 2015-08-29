@@ -527,7 +527,7 @@ Class Signals
 					{
 						$result.=", ";
 					}
-					if($speed > 0)
+					if( is_numeric($speed) )
 					{
 						$result.=$speed." km/h";
 					}
@@ -620,7 +620,7 @@ Class Signals
 					{
 						$result.=", ";
 					}
-					if($speed > 0)
+					if( is_numeric($speed) )
 					{
 						$result.=$speed." km/h";
 					}

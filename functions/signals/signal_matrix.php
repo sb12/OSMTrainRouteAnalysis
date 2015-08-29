@@ -729,7 +729,7 @@ Class Signal_matrix
 
 		foreach($vlist as $v)
 		{
-			if ( $v > 0 && $v != $value )
+			if ( $v != $value && isset($matrix[$v]) )
 			{
 				for( $i = 0; $i < 5; $i++)
 				{

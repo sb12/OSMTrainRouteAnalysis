@@ -46,7 +46,7 @@ Class Speedlimit_zs3
 				{
 					$speeds = $tags["railway:signal:speed_limit:speed"];
 					$speed_array = explode(";",$speeds);
-					if( count( $speed_array ) == 1 && $speed_array[0] > 0) // there's only one value and it is a number
+					if( count( $speed_array ) == 1 && is_numeric( $speed_array[0] ) ) // there's only one value and it is a number
 					{
 						$speed = $speed_array[0];
 					}
