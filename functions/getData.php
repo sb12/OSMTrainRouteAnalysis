@@ -377,12 +377,12 @@ Class Route
 		else
 		{
 			// build link to overpass api
-			$link = "http://overpass-api.de/api/interpreter?data="
-				. urlencode("[out:xml];(relation(")
-				. round($get_id)
-				. urlencode(");rel(br););out;(relation(")
+			$overpass_data = "[out:xml];(relation(")
 				. $get_id
-				. urlencode(");>>;);out;");
+				. ");rel(br););out;(relation(")
+				. $get_id
+				. ");>>;);out;");
+			$link = "http://overpass-api.de/api/interpreter?data=" . urlencode($overpass_data);
 			
 			// build file name
 			$file_name = "osmdata/data" . $this->id . ".osm";
