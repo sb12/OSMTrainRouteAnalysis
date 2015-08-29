@@ -69,10 +69,9 @@ Class KS_main
 	 * generate image
 	 * @param $tags array tags of the signal
 	 */
-	public static function generateImage($translation_height)
+	public static function generateImage($translation_height, $width)
 	{
 		$height = 62;
-		$width = 44;
 		$colour_hp0 = "&red;";
 		$colour_ks1 = "&green;";
 		$colour_sh1 = "&gray;";
