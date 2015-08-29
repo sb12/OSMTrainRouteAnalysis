@@ -1,6 +1,8 @@
 <?php
 header("Content-type: image/svg+xml");
 
+include "colors.php"
+
 include "../../functions/signals/main_light.php";
 include "../../functions/signals/main_semaphore.php";
 include "../../functions/signals/distant_light.php";
@@ -250,13 +252,14 @@ echo '<?xml version="1.0" encoding="utf-8"?>';
 	<!ENTITY ns_xlink "http://www.w3.org/1999/xlink">	
 	<!ENTITY background "fill:#000000;">	
 	<!ENTITY white "fill:#FFFFFF;">	
-	<!ENTITY gray "fill:#444444;">	
-	<!ENTITY red "fill:red;">	
-	<!ENTITY yellow "fill:yellow;">	
-	<!ENTITY green "fill:#38FFF5;">
-		
+	<!ENTITY gray "fill:#444444;">
+<?php
+	echo("<!ENTITY red "fill:" . $color_red . ";\">");	
+	echo("<!ENTITY yellow "fill:" . $color_yellow . ";\">");
+	echo("<!ENTITY green "fill:" . $color_green . ";\">");
+	echo("<!ENTITY stv1 "fill:" . $color_yellow . ";\">");
+?>		
 	<!ENTITY st1 "fill:#FFFFFF;">
-	<!ENTITY stv1 "fill:yellow;">
 	<!ENTITY st0 "fill:none;stroke:none">
 	<!ENTITY stv0 "fill:none;stroke:none">
 	<!ENTITY st2 "fill:#444444;">
