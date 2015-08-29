@@ -1,7 +1,7 @@
 <?php 
     /**
     
-    OSMTrainRouteAnalysis Copyright © 2014 sb12 osm.mapper999@gmail.com
+    OSMTrainRouteAnalysis Copyright © 2014-2015 sb12 osm.mapper999@gmail.com
     
     This file is part of OSMTrainRouteAnalysis.
     
@@ -21,8 +21,10 @@
     */
 ?>
 <?php
-//turn off error_reports
-//error_reporting(0);
+// load settings
+include "functions/settings.php";
+
+// load needed functions
 include "functions/train_details.php";
 include "functions/getData.php";
 include "functions/lang.php";

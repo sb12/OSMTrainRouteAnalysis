@@ -1,7 +1,7 @@
 <?php 
     /**
     
-    OSMTrainRouteAnalysis Copyright © 2014 sb12 osm.mapper999@gmail.com
+    OSMTrainRouteAnalysis Copyright © 2014-2015 sb12 osm.mapper999@gmail.com
     
     This file is part of OSMTrainRouteAnalysis.
     
@@ -433,11 +433,9 @@ function pagination($page = 1, $lastpage = 1, $order_by = "" , $dir = "" )
  */
 function connectToDB()
 {
-	//load settings
-	require dirname(__FILE__) . '/mysql_settings.php';
 	
 	//open connection
-	$con = @new mysqli($mysql_host, $mysql_user, $mysql_password, $mysql_database);
+	$con = @new mysqli(MYSQL_HOST, MYSQL_USER, MYSQL_PASSWORD, MYSQL_DATABASE);
 	
 	//log error when connection failed
 	if($con->connect_errno)

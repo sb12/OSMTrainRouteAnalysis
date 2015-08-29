@@ -1,7 +1,7 @@
 <?php 
     /**
     
-    OSMTrainRouteAnalysis Copyright © 2014 sb12 osm.mapper999@gmail.com
+    OSMTrainRouteAnalysis Copyright © 2014-2015 sb12 osm.mapper999@gmail.com
     
     This file is part of OSMTrainRouteAnalysis.
     
@@ -21,11 +21,19 @@
     */
 ?>
 <?php
+
+/** 
+ * turn on and off error reporting
+ */
+
+error_reporting(0);
+
 /** 
  * Please enter the data for your mysql database here
  */
-$mysql_host = "localhost";
-$mysql_user = "user";
-$mysql_password = "password";
-$mysql_database = "database";
+DEFINE("MYSQL_HOST", "localhost");
+DEFINE("MYSQL_USER", "user");
+DEFINE("MYSQL_PASSWORD", "password");
+DEFINE("MYSQL_DATABASE", "database");
+
 ?>
