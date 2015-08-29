@@ -50,6 +50,13 @@ Class Search
 	 * @var array[i][key]
 	 */
 	private $result;
+
+
+	/**
+	 * contains error message
+	 * @var String
+	 */
+	private $error;
 	
 	/**
 	 * Load data of search
@@ -60,8 +67,6 @@ Class Search
 	{
 		// add GET to variables
 		$this->variables=$_GET;
-
-		// FIXME: add error handling
 		
 		// build link
 		$link = "http://overpass-api.de/api/interpreter?data=%3Cquery%20type%3D%22relation%22%3E";
@@ -99,10 +104,47 @@ Class Search
 		$link .= "%3Chas-kv%20k%3D%22type%22%20v%3D%22route%22%2F%3E%3Chas-kv%20k%3D%22route%22%20regv%3D%22train%7Ctram%7Clight_rail%7Csubway%22%2F%3E%3C%2Fquery%3E%3Cprint%2F%3E";
 
 		// get data from overpass api
-		$this->content = file_get_contents($link);
+		$content = @file_get_contents($link);
 
+		if( isset($http_response_header[0]) )
+		{
+			$header = $http_response_header[0];
+			if ( $header != "HTTP/1.1 200 OK" )
+			{
+				if( $header == "HTTP/1.1 400 Bad Request")
+				{
+					$this->error = Lang::l_("Invalid Overpass API query.");
+					//log error to send a correct query next time:
+					$msg = "Invalid Overpass API request. URI: " . $link;
+					log_error($msg);
+				}
+				elseif( $header == "504 Gateway Timeout" )
+				{
+					$this->error = Lang::l_("Overpass API currently overcrowded.");
+				}
+				else
+				{
+					$this->error = Lang::l_("Unknown Error.");
+					//log error to show a proper error message next time:
+					$msg = "Unknown Error when requesting search: " . $header . " | URI: " . $link;
+					log_error($msg);
+				}
+				return false;
+			}
+		}
+		else
+		{
+			$this->error = Lang::l_("Connection failed.");
+			return false;
+		}
 		
-		// FIXME: add error handling
+		if( !$content )
+		{
+			return false;
+		}
+		
+		$this->content = $content;
+		return true;
 	}
 	 
 	/**
@@ -209,10 +251,17 @@ Class Search
 	 */
 	function showResult()
 	{
+		//An error has occured
+		if(isset($this->error))
+		{
+			?>
+			<div class="list-group-item alert alert-danger"><?php echo Lang::l_("Error when requesting search results: ") . $this->error; ?></div
+			<?php
+			return;
+		}
 		//result is empty
 		if(!isset($this->result))
 		{
-			//FIXME: translation
 			?>
 			<div class="list-group-item alert alert-danger"><?php echo Lang::l_("No data was found."); ?></div
 			<?php

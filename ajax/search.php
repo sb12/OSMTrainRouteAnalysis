@@ -25,6 +25,7 @@ include "../functions/settings.php";
 
 // load needed functions
 include "../functions/search.php";
+include "../functions/start.php";
 include "../functions/getData.php";
 include "../functions/lang.php";
 include "../po_parser/src/Sepia/PoParser.php";
@@ -37,8 +38,10 @@ Lang::defineLanguage();
 
 $search = new Search();
 
-$search->getData();
-$search->loadXML();
-$search->sortResult("ref");
+if( $search->getData() )
+{
+	$search->loadXML();
+	$search->sortResult("ref");
+}
 $search->showResult();
 ?>
