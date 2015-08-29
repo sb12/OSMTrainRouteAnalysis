@@ -98,46 +98,51 @@ Class KS_distant
 			<g transform="translate(0 ' . $height . ')">
 				<g>
 					<polygon style="&background;" points="6,1 34,1 34,49 6,49"/>
-				</g>
-					
-				<g id="ks1">
-					<circle style="&gray;" cx="12" cy="24" r="4"/>
-					<circle class="' . $class_ks1 . '" style="' . $colour_ks1 . '" cx="12" cy="24" r="4"/>
-				</g>
-					
-				<g id="ks2">
-					<circle style="' . $colour_ks2 . '" cx="28" cy="24" r="4"/>
 				</g>';
-		// repeated signals
-		if( ( isset($_GET["railway:signal:distant:repeated"]) && $_GET["railway:signal:distant:repeated"] == "yes" ) )
-		{
-			if( ( $_GET["state_distant"] == "ks2" ) || ( $class_ks1 == "signal_blink" ) ) // only when Ks 1 is blinking or Ks 2 is shown
-			{
-				$color_additional_light = "&white;";
-			}
-			else
-			{
-				$color_additional_light = "&gray;";
-			}
-			$image .= '
-				<g id="repeated">
-					<circle style="' . $color_additional_light . '" cx="10" cy="39" r="2"/>
-				</g>';
-		}
-		// signals with shortened distance to main
+				
+		// signals with shortened distance to main: upper white additional light
+		// TODO: or Kennlicht
 		if( ( isset($_GET["railway:signal:distant:shortened"]) && $_GET["railway:signal:distant:shortened"] == "yes" ) )
 		{
 			if( ( $_GET["state_distant"] == "ks2" ) || ( $class_ks1 == "signal_blink" ) ) // only when Ks 1 is blinking or Ks 2 is shown
 			{
-				$color_shortened = "&white;";
+				$color_additional_light_upper = "&white;";
 			}
 			else
 			{
-				$color_shortened = "&gray;";
+				$color_additional_light_upper = "&gray;";
 			}
 			$image .= '
 				<g id="repeated">
-					<circle style="' . $color_shortened . '" cx="12" cy="10" r="2"/>
+					<circle style="' . $color_additional_light_upper . '" cx="13" cy="10" r="2"/>
+				</g>';
+		}
+		
+		// two big lights
+		$image .= '
+				<g id="ks1">
+					<circle style="&gray;" cx="13" cy="24" r="4"/>
+					<circle class="' . $class_ks1 . '" style="' . $colour_ks1 . '" cx="13" cy="24" r="4"/>
+				</g>
+					
+				<g id="ks2">
+					<circle style="' . $colour_ks2 . '" cx="27" cy="24" r="4"/>
+				</g>';
+
+		// repeated signals: lower white additional light
+		if( ( isset($_GET["railway:signal:distant:repeated"]) && $_GET["railway:signal:distant:repeated"] == "yes" ) )
+		{
+			if( ( $_GET["state_distant"] == "ks2" ) || ( $class_ks1 == "signal_blink" ) ) // only when Ks 1 is blinking or Ks 2 is shown
+			{
+				$color_additional_light_lower = "&white;";
+			}
+			else
+			{
+				$color_additional_light_lower = "&gray;";
+			}
+			$image .= '
+				<g id="repeated">
+					<circle style="' . $color_additional_light_lower . '" cx="13" cy="39" r="2"/>
 				</g>';
 		}
 		$image .= '
