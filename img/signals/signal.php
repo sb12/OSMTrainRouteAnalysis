@@ -45,6 +45,7 @@ include "../../functions/signals/ETCS_markerboard.php";
 
 $s = 0;
 $height = 0;
+$width = 40;
 if ( isset ( $_GET["railway:signal:speed_limit"] ) )
 {
 	$valid_signal = false;
@@ -93,6 +94,7 @@ if(isset($_GET["railway:signal:main"]))
 	}
 	elseif($_GET["railway:signal:main"] == "DE-ESO:ks")
 	{
+		$width = 44;
 		$result = KS_main::generateImage($height);
 		$valid_signal = true;
 	}
@@ -127,6 +129,7 @@ if(isset($_GET["railway:signal:combined"]))
 	$valid_signal = false;
 	if($_GET["railway:signal:combined"] == "DE-ESO:ks")
 	{
+		$width = 44;
 		$result = KS_combined::generateImage($height);
 		$valid_signal = true;
 	}
@@ -170,6 +173,7 @@ if(isset($_GET["railway:signal:distant"]))
 	}
 	elseif($_GET["railway:signal:distant"] == "DE-ESO:ks")
 	{
+		$width = 44;
 		$result = KS_distant::generateImage($height);
 		$valid_signal = true;
 	}
@@ -271,8 +275,8 @@ echo '<?xml version="1.0" encoding="utf-8"?>';
 	<!ENTITY stv2 "fill:#444444;">
 
 ]>
-<svg  version="1.1" xmlns="&ns_svg;" xmlns:xlink="&ns_xlink;" width="40" height="<?php echo $height;?>" viewBox="0 0 40 <?php echo $height;?>"
-	 overflow="visible" enable-background="new 0 0 40 <?php echo $height;?>" xml:space="preserve">
+<svg  version="1.1" xmlns="&ns_svg;" xmlns:xlink="&ns_xlink;" width="<?php echo $width;?>" height="<?php echo $height;?>" viewBox="0 0 40 <?php echo $height;?>"
+	 overflow="visible" enable-background="new 0 0 <?php echo $width . ' ' . $height;?>" xml:space="preserve">
 	 
 <style>
 @keyframes blink {
