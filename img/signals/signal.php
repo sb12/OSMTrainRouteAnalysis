@@ -95,7 +95,7 @@ if(isset($_GET["railway:signal:main"]))
 	elseif($_GET["railway:signal:main"] == "DE-ESO:ks")
 	{
 		$width = 44;
-		$result = KS_main::generateImage($height);
+		$result = KS_main::generateImage($height, $width);
 		$valid_signal = true;
 	}
 	elseif($_GET["railway:signal:main"] == "DE-ESO:hl")
