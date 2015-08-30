@@ -254,13 +254,15 @@ echo '<?xml version="1.0" encoding="utf-8"?>';
 
 <!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd" [
 	<!ENTITY ns_svg "http://www.w3.org/2000/svg">
-	<!ENTITY ns_xlink "http://www.w3.org/1999/xlink">	
-	<!ENTITY background "fill:#000000;">	
-	<!ENTITY white "fill:#FFFFFF;">	
+	<!ENTITY ns_xlink "http://www.w3.org/1999/xlink">
 <?php
+	echo '<!ENTITY background "fill:' . COLOR_BACKGROUND . ';">';
+	echo '<!ENTITY white "fill:' . COLOR_WHITE . ';">';
 	echo '<!ENTITY gray "fill:' . COLOR_GRAY . ';">';
 	echo '<!ENTITY red "fill:' . COLOR_RED . ';">';	
 	echo '<!ENTITY yellow "fill:' . COLOR_YELLOW . ';">';
+	echo '<!ENTITY yellowzs3v "fill:' . COLOR_YELLOW_ZS3V . ';">';
+	echo '<!ENTITY yellowzs3vbg "stroke:' . COLOR_YELLOW_ZS3V . '; fill:' . COLOR_BACKGROUND . '">';
 	echo '<!ENTITY green "fill:' . COLOR_GREEN . ';">';
 	echo '<!ENTITY stv1 "fill:' . COLOR_YELLOW . ';">';
 ?>		
