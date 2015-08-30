@@ -397,8 +397,8 @@ Class Route
 				// check age of data
 				$this->filemtime = filemtime($file_name);
 				
-				// data is younger than 40 days
-				if( $this->filemtime > ( time() - ( 40 * 24 * 60 * 60 ) ) )
+				// data is younger than 7 days
+				if( $this->filemtime > ( time() - ( 7 * 24 * 60 * 60 ) ) )
 				{
 					$refresh = false;
 				}
