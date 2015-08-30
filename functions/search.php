@@ -1,7 +1,7 @@
 <?php 
     /**
     
-    OSMTrainRouteAnalysis Copyright © 2014 sb12 osm.mapper999@gmail.com
+    OSMTrainRouteAnalysis Copyright © 2014-2015 sb12 osm.mapper999@gmail.com
     
     This file is part of OSMTrainRouteAnalysis.
     
@@ -66,96 +66,35 @@ Class Search
 	public function getData() 
 	{
 		// add GET to variables
-		$this->variables=$_GET;
+		$this->variables = $_GET;
 		
+
+		//array of keys that should be requested
+		$keys = array("ref", "network", "operator", "to", "from");
+
 		// build link
-		$link = "http://overpass-api.de/api/interpreter?data="
-				. urlencode('<query type="relation">');
-
-		// reference number
-		if ( $this->variables["ref"] )
+		$query = '<query type="relation">';
+		foreach($keys as $key) // go through keys
 		{
-			$link .= urlencode('<has-kv k="ref" regv="')
-			         . urlencode( htmlspecialchars($this->variables["ref"]) )
-			         . urlencode('"/>');
-		}
-
-		// network
-		if ( $this->variables["network"] )
-		{
-			$link .= urlencode('<has-kv k="network" regv="')
-			         . urlencode( htmlspecialchars($this->variables["network"]) )
-			         . urlencode('"/>');
-		}
-
-		// operator
-		if ( $this->variables["operator"] )
-		{
-			$link .= urlencode('<has-kv k="operator" regv="')
-			         . urlencode( htmlspecialchars($this->variables["operator"]) )
-			         . urlencode('"/>');
-		}
-
-		// to
-		if ( $this->variables["to"] )
-		{
-			$link .= urlencode('<has-kv k="to" regv="')
-			         . urlencode( htmlspecialchars($this->variables["to"]) )
-			         . urlencode('"/>');
-		}
-
-		// from
-		if ( $this->variables["from"] )
-		{
-			$link .= urlencode('<has-kv k="from" regv="')
-			         . urlencode( htmlspecialchars($this->variables["from"]) )
-			         . urlencode('"/>');
-		}
-
-		$link .= urlencode('<has-kv k="type" v="route"/><has-kv k="route" regv="train|tram|light_rail|subway"/></query><print/>');
-
-		// get data from overpass api
-		$content = @file_get_contents($link);
-
-		if( isset($http_response_header[0]) )
-		{
-			$header = $http_response_header[0];
-			if ( $header != "HTTP/1.1 200 OK" )
+			if( isset($this->variables[$key]) && $this->variables[$key] )
 			{
-				if( $header == "HTTP/1.1 400 Bad Request")
-				{
-					$this->error = Lang::l_("Invalid Overpass API query.");
-					//log error to send a correct query next time:
-					$msg = "Invalid Overpass API request. URI: " . $link;
-					log_error($msg);
-				}
-				elseif( $header == "504 Gateway Timeout" )
-				{
-					$this->error = Lang::l_("Overpass API currently overcrowded.");
-				}
-				else
-				{
-					$this->error = Lang::l_("Unknown Error.");
-					//log error to show a proper error message next time:
-					$msg = "Unknown Error when requesting search: " . $header . " | URI: " . $link;
-					log_error($msg);
-				}
-				return false;
+				$query .= '<has-kv case="ignore" k="' . $key . '" regv="'
+			    	     . htmlspecialchars( $this->variables[$key] )
+			        	 . '"/>';
 			}
+		}
+		$query .= '<has-kv k="type" v="route"/><has-kv k="route" regv="train|tram|light_rail|subway"/></query><print/>';
+		
+		if( Overpass::sendRequest($query) )
+		{
+			$this->content = Overpass::$result;
+			return true;
 		}
 		else
 		{
-			$this->error = Lang::l_("Connection failed.");
+			$this->error = Overpass::$error;
 			return false;
 		}
-		
-		if( !$content )
-		{
-			return false;
-		}
-		
-		$this->content = $content;
-		return true;
 	}
 	 
 	/**

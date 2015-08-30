@@ -1,7 +1,7 @@
 <?php 
     /**
     
-    OSMTrainRouteAnalysis Copyright © 2014 sb12 osm.mapper999@gmail.com
+    OSMTrainRouteAnalysis Copyright © 2014-2015 sb12 osm.mapper999@gmail.com
     
     This file is part of OSMTrainRouteAnalysis.
     
@@ -376,13 +376,6 @@ Class Route
 		}
 		else
 		{
-			// build link to overpass api
-			$overpass_data = "[out:xml];(relation("
-				. $get_id
-				. ");rel(br););out;(relation("
-				. $get_id
-				. ");>>;);out;";
-			$link = "http://overpass-api.de/api/interpreter?data=" . urlencode($overpass_data);
 			
 			// build file name
 			$file_name = "osmdata/data" . $this->id . ".osm";
@@ -418,11 +411,16 @@ Class Route
 			// get data from overpass-api when needed
 			if ( $refresh )
 			{
-				$content = @file_get_contents($link);
-				if( $content )
+				// build link to overpass api
+				$overpass_query = "[out:xml];(relation("
+					. $get_id
+					. ");rel(br););out;(relation("
+					. $get_id
+					. ");>>;);out;";
+				if( Overpass::sendRequest($overpass_query) )
 				{
 					$this->refresh_success = true;
-					file_put_contents($file_name, $content);
+					file_put_contents($file_name, Overpass::$result);
 					$this->filemtime = time();
 				}
 				else
@@ -1906,7 +1904,7 @@ if ( isset($this->refresh_success) && $this->refresh_success == false )
 	<div class="alert alert-danger alert-dismissable fade in" role="alert" id="alert">
 		<span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
 		<span class="sr-only">Error:</span>
-		<?php echo Lang::l_("Route Data could not be updated from Overpass API.")?>
+		<?php echo Lang::l_("Route Data could not be updated from Overpass API:") . " " . Overpass::$error; ?>
 		<button type="button" class="close" data-dismiss="alert" aria-label="Close">
   			<span aria-hidden="true">&times;</span>
 		</button>
