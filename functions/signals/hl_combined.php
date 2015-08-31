@@ -47,7 +47,7 @@ Class HL_combined
 			// last distant signal of route
 			elseif ( $next_speed_distant == 0  && (
 					 strpos($tags["railway:signal:combined:states"], "hl10")
-					|| ( strpos($tags["railway:signal:combined:states"], "hl11") &&  $next_speed == 100 )
+					|| ( strpos($tags["railway:signal:combined:states"], "hl11") &&  ( $next_speed == 100 || $main_distance < 700 ) )
 					|| ( strpos($tags["railway:signal:combined:states"], "hl12a") &&  $next_speed == 40 )
 					|| ( strpos($tags["railway:signal:combined:states"], "hl12b") &&  $next_speed == 60 ) ) )
 			{
@@ -93,7 +93,7 @@ Class HL_combined
 			}
 			elseif ( $next_speed_distant == 100 && (
 					 strpos($tags["railway:signal:combined:states"], "hl4")
-					|| ( strpos($tags["railway:signal:combined:states"], "hl5") &&  $next_speed == 100 )
+					|| ( strpos($tags["railway:signal:combined:states"], "hl5") &&  ( $next_speed == 100 || $main_distance < 700 ) )
 					|| ( strpos($tags["railway:signal:combined:states"], "hl6a") &&  $next_speed == 40 )
 					|| ( strpos($tags["railway:signal:combined:states"], "hl6b") &&  $next_speed == 60 ) ) )
 			{
@@ -115,7 +115,7 @@ Class HL_combined
 				}
 			}
 			elseif (  strpos($tags["railway:signal:combined:states"], "hl1")
-					|| ( strpos($tags["railway:signal:combined:states"], "hl2") &&  $next_speed == 100 )
+					|| ( strpos($tags["railway:signal:combined:states"], "hl2") &&  ( $next_speed == 100 || $main_distance < 700 ) )
 					|| ( strpos($tags["railway:signal:combined:states"], "hl3a") &&  $next_speed == 40 )
 					|| ( strpos($tags["railway:signal:combined:states"], "hl3b") &&  $next_speed == 60 ) ) 
 			{
