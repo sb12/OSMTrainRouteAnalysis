@@ -70,7 +70,7 @@ Class HL_combined
 			}
 			elseif ( ( $next_speed_distant == 40 || $next_speed_distant == 60 ) && (
 					 strpos($tags["railway:signal:combined:states"], "hl7")
-					|| ( strpos($tags["railway:signal:combined:states"], "hl8") &&  $next_speed == 100 )
+					|| ( strpos($tags["railway:signal:combined:states"], "hl8") &&  ( $next_speed == 100 || $main_distance < 700 ) )
 					|| ( strpos($tags["railway:signal:combined:states"], "hl9a") &&  $next_speed == 40 )
 					|| ( strpos($tags["railway:signal:combined:states"], "hl9b") &&  $next_speed == 60 ) ) )
 			{
