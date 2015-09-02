@@ -393,8 +393,8 @@ function pagination($page = 1, $lastpage = 1, $order_by = "" , $dir = "" )
 	if ( $page > 1 )
 	{
 		?>
-	<li><a href="?order_by=<?php echo $order_by;?>&page=1&dir=<?php echo $dir;?>#table" title="<?php echo Lang::l_("First");?>" aria-label="First"><span aria-hidden="true">&lt;&lt;</a></li>
-	<li><a href="?order_by=<?php echo $order_by;?>&page=<?php echo $previouspage;?>&dir=<?php echo $dir;?>#table" title="<?php echo Lang::l_("Previous");?>" aria-label="Previous"><span aria-hidden="true">&lt;</a></li>
+	<li><a href="?order_by=<?php echo $order_by;?>&page=1&dir=<?php echo $dir;?>" title="<?php echo Lang::l_("First");?>" aria-label="First"><span aria-hidden="true">&lt;&lt;</a></li>
+	<li><a href="?order_by=<?php echo $order_by;?>&page=<?php echo $previouspage;?>&dir=<?php echo $dir;?>" title="<?php echo Lang::l_("Previous");?>" aria-label="Previous"><span aria-hidden="true">&lt;</a></li>
 		<?php 
 	}
 	else
@@ -410,8 +410,8 @@ function pagination($page = 1, $lastpage = 1, $order_by = "" , $dir = "" )
 	if ( $page < $lastpage )
 	{
 		?>
-	<li><a href="?order_by=<?php echo $order_by;?>&page=<?php echo $nextpage;?>&dir=<?php echo $dir;?>#table" title="<?php echo Lang::l_("Next");?>" aria-label="Next"><span aria-hidden="true">&gt;</a></li>
-	<li><a href="?order_by=<?php echo $order_by;?>&page=<?php echo $lastpage;?>&dir=<?php echo $dir;?>#table" title="<?php echo Lang::l_("Last");?>" aria-label="Last"><span aria-hidden="true">&gt;&gt;</a></li>
+	<li><a href="?order_by=<?php echo $order_by;?>&page=<?php echo $nextpage;?>&dir=<?php echo $dir;?>" title="<?php echo Lang::l_("Next");?>" aria-label="Next"><span aria-hidden="true">&gt;</a></li>
+	<li><a href="?order_by=<?php echo $order_by;?>&page=<?php echo $lastpage;?>&dir=<?php echo $dir;?>" title="<?php echo Lang::l_("Last");?>" aria-label="Last"><span aria-hidden="true">&gt;&gt;</a></li>
 	
 		<?php
 	}
