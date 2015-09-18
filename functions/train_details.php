@@ -115,6 +115,21 @@ $tr_length["ICE-T7"] = 0.1844;
 $tr_image["ICE-T7"] = "ICET.png";
 
 
+// DB ICE TD (Germany)
+$tr_name["ICE-TD"] = "DB ICE TD";
+$tr_type["ICE-TD"] = "long_distance";
+$tr_maxspeed["ICE-TD"] = 200; // km/h
+$tr_mass_empty["ICE-TD"] = 219; // t
+$tr_power["ICE-TD"] = 1700; // kW
+$tr_torque["ICE-TD"] = 160; // kN
+$tr_traction["ICE-TD"] = "DEMU"; //experimental, note used yet
+$tr_seats["ICE-TD"] = 195;
+$tr_acc["ICE-TD"] = 0.6; // m/s²
+$tr_brake["ICE-TD"] = 0.6; // m/s²
+$tr_length["ICE-TD"] = 0.1067; //km
+$tr_image["ICE-TD"] = "ICET.png"; //FIXME: adjust images
+
+
 // EuroStar BR Class 373 (United Kingdom/France)
 $tr_name["Class373"] = "EuroStar BR Class 373";
 $tr_type["Class373"] = "highspeed";
@@ -418,6 +433,67 @@ $tr_seats["BR644"] = 161;
 $tr_acc["BR644"] = 1; // m/s²
 $tr_brake["BR644"] = 1.2; // m/s²
 $tr_length["BR644"] = 0.052; //in Einzeltraktion
+$tr_image["BR644"] = "regional.svg";
+
+
+//SJ X31K (Sweden)
+$tr_name["SJX31K"] = "SJ X31K Øresundståg";
+$tr_type["SJX31K"] = "regional";
+$tr_maxspeed["SJX31K"] = 180; // km/h
+$tr_mass_empty["SJX31K"] = 156; // t
+$tr_power["SJX31K"] = 2300; // kW
+$tr_torque["SJX31K"] = 135; // estimated
+$tr_traction["SJX31K"] = "EMU"; // experimental, not used yet
+$tr_seats["SJX31K"] = 198;
+$tr_acc["SJX31K"] = 0.87; // m/s²
+$tr_brake["SJX31K"] = 1.0; // m/s²
+$tr_length["SJX31K"] = 0.0789; //km
+$tr_image["SJX31K"] = "regional.svg";
+
+
+//SJ X60 Alstom Coradia Nordic (Sweden)
+$tr_name["SJX60"] = "SJ X60 Alstom Coradia Nordic";
+$tr_type["SJX60"] = "regional";
+$tr_maxspeed["SJX60"] = 160; // km/h
+$tr_mass_empty["SJX60"] = 206; // t
+$tr_power["SJX60"] = 3000; // kW
+$tr_torque["SJX60"] = 230; // kN // estimated
+$tr_traction["SJX60"] = "EMU"; // experimental, not used yet
+$tr_seats["SJX60"] = 374;
+$tr_acc["SJX60"] = 1.12; // m/s²
+$tr_brake["SJX60"] = 1.0; // m/s²
+$tr_length["SJX60"] = 0.1071; //km
+$tr_image["SJX60"] = "regional.svg";
+
+
+//SJ X61 Alstom Coradia Nordic (Sweden)
+$tr_name["SJX61"] = "SJ X61 Alstom Coradia Nordic";
+$tr_type["SJX61"] = "regional";
+$tr_maxspeed["SJX61"] = 160; // km/h
+$tr_mass_empty["SJX61"] = 138; // t // estimated
+$tr_power["SJX61"] = 3000; // kW
+$tr_torque["SJX61"] = 160; // kN // estimated
+$tr_traction["SJX61"] = "EMU"; // experimental, not used yet
+$tr_seats["SJX61"] = 240; // estimated
+$tr_acc["SJX61"] = 1.12; // m/s²
+$tr_brake["SJX61"] = 1.0; // m/s²
+$tr_length["SJX61"] = 0.0743; //km
+$tr_image["SJX61"] = "regional.svg";
+
+
+//SJ X62 Alstom Coradia Nordic (Sweden)
+$tr_name["SJX62"] = "SJ X62 Alstom Coradia Nordic";
+$tr_type["SJX62"] = "regional";
+$tr_maxspeed["SJX62"] = 180; // km/h
+$tr_mass_empty["SJX62"] = 138; // t // estimated
+$tr_power["SJX62"] = 3000; // kW
+$tr_torque["SJX62"] = 160; // kN // estimated
+$tr_traction["SJX62"] = "EMU"; // experimental, not used yet
+$tr_seats["SJX62"] = 240; // estimated
+$tr_acc["SJX62"] = 1.12; // m/s²
+$tr_brake["SJX62"] = 1.0; // m/s²
+$tr_length["SJX62"] = 0.0743; //km
+$tr_image["SJX62"] = "regional.svg";
 
 
 //Stadler FLIRT 3 (Germany)
