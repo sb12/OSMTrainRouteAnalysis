@@ -87,6 +87,34 @@ $tr_length["ICE3"] = 0.201;
 $tr_image["ICE3"] = "ICE3.png";
 
 
+// DB ICx 7-teilig (Germany)
+$tr_name["ICx7"] = "DB ICx 7-teilig";
+$tr_type["ICx7"] = "highspeed";
+$tr_maxspeed["ICx7"] = 230; // km/h
+$tr_mass_empty["ICx7"] = 455; // t
+$tr_power["ICx7"] = 4950; // kW
+$tr_torque["ICx7"] = 250; // kN
+$tr_seats["ICx7"] = 456;
+$tr_acc["ICx7"] = 0.55; // m/s²
+$tr_brake["ICx7"] = 0.6; // m/s²
+$tr_length["ICx7"] = 0.200;
+$tr_image["ICx7"] = "highspeed.svg";
+
+
+// DB ICx 12-teilig (Germany)
+$tr_name["ICx12"] = "DB ICx 12-teilig";
+$tr_type["ICx12"] = "highspeed";
+$tr_maxspeed["ICx12"] = 250; // km/h
+$tr_mass_empty["ICx12"] = 660; // t
+$tr_power["ICx12"] = 9900; // kW
+$tr_torque["ICx12"] = 360; // kN
+$tr_seats["ICx12"] = 830;
+$tr_acc["ICx12"] = 0.55; // m/s²
+$tr_brake["ICx12"] = 0.6; // m/s²
+$tr_length["ICx12"] = 0.346;
+$tr_image["ICx12"] = "highspeed.svg";
+
+
 // DB ICE 3 Velaro (Germany)
 $tr_name["ICE3V"] = "DB ICE 3 Velaro";
 $tr_type["ICE3V"] = "highspeed";
@@ -200,6 +228,19 @@ $tr_acc["BR101IC"] = 1;
 $tr_brake["BR101IC"] = 0.9;
 $tr_length["BR101IC"] = 0.017+12*0.027;
 $tr_image["BR101IC"] = "BR101IC.png";
+
+//BR 101 + 12 IC-Wagen (Germany)
+$tr_name["DoStoIC"] = "DB Baureihe 146.2 mit 5 IC-Doppelstockwagen";
+$tr_type["DoStoIC"] = "long_distance";
+$tr_maxspeed["DoStoIC"] = 	160; // km/h
+$tr_mass_empty["DoStoIC"] = 50*4+52+85; // t
+$tr_power["DoStoIC"] = 4200; // kW
+$tr_torque["DoStoIC"] = 300; // kN
+$tr_seats["DoStoIC"] = 469;
+$tr_acc["DoStoIC"] = 1;
+$tr_brake["DoStoIC"] = 0.9;
+$tr_length["DoStoIC"] = 0.017+5*0.027;
+$tr_image["DoStoIC"] = "highspeed.svg";
 
 
 /** regional trains **/
