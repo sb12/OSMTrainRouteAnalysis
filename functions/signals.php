@@ -395,7 +395,7 @@ Class Signals
 		if(isset($tags["railway:signal:position"]))
 		{
 			$img_position = "signal_unknown_position.svg";
-			if($tags["railway:signal:position"] == "right")
+			if( ($tags["railway:signal:position"] == "right" && $tags["railway:signal:direction"] == "forward") || ($tags["railway:signal:position"] == "left" && $tags["railway:signal:direction"] == "backward") )
 			{
 
 				if( isset($tags["railway:signal:expected_position"]) && $tags["railway:signal:expected_position"] == "left")
@@ -407,7 +407,7 @@ Class Signals
 					$img_position = "signal_right.svg";
 				}
 			}
-			elseif($tags["railway:signal:position"] == "left")
+			elseif( ($tags["railway:signal:position"] == "left" && $tags["railway:signal:direction"] == "forward") || ($tags["railway:signal:position"] == "right" && $tags["railway:signal:direction"] == "backward") )
 			{
 				if( isset($tags["railway:signal:expected_position"]) && $tags["railway:signal:expected_position"] == "right")
 				{
@@ -418,7 +418,7 @@ Class Signals
 					$img_position = "signal_left.svg";
 				}
 			}
-			if($tags["railway:signal:position"] == "bridge")
+			elseif($tags["railway:signal:position"] == "bridge")
 			{
 				$img_position = "signal_bridge.svg";
 			}
