@@ -51,6 +51,7 @@ $tr_maxspeed["ICE1"] = 280; // km/h
 $tr_mass_empty["ICE1"] = 796; // t
 $tr_power["ICE1"] = 9600; // kW
 $tr_torque["ICE1"] = 300; // kN
+$tr_traction["ICE1"] = "EPP"; // experimental, not used yet
 $tr_seats["ICE1"] = 703;
 $tr_acc["ICE1"] = 0.5; // m/s²
 $tr_brake["ICE1"] = 0.6; // m/s²
@@ -66,6 +67,7 @@ $tr_maxspeed["ICE2"] = 280; // km/h
 $tr_mass_empty["ICE2"] = 412; // t
 $tr_power["ICE2"] = 4800; // kW
 $tr_torque["ICE2"] = 300; // kN
+$tr_traction["ICE2"] = "EPP"; // experimental, not used yet
 $tr_seats["ICE2"] = 381;
 $tr_acc["ICE2"] = 0.5; // m/s²
 $tr_brake["ICE2"] = 0.6; // m/s²
@@ -80,39 +82,12 @@ $tr_maxspeed["ICE3"] = 330; // km/h
 $tr_mass_empty["ICE3"] = 410; // t
 $tr_power["ICE3"] = 8000; // kW
 $tr_torque["ICE3"] = 300; // kN
+$tr_traction["ICE3"] = "EMU"; // experimental, not used yet
 $tr_seats["ICE3"] = 454;
 $tr_acc["ICE3"] = 0.5; // m/s²
 $tr_brake["ICE3"] = 0.6; // m/s²
 $tr_length["ICE3"] = 0.201;
 $tr_image["ICE3"] = "ICE3.png";
-
-
-// DB ICx 7-teilig (Germany)
-$tr_name["ICx7"] = "DB ICx 7-teilig";
-$tr_type["ICx7"] = "highspeed";
-$tr_maxspeed["ICx7"] = 230; // km/h
-$tr_mass_empty["ICx7"] = 455; // t
-$tr_power["ICx7"] = 4950; // kW
-$tr_torque["ICx7"] = 250; // kN
-$tr_seats["ICx7"] = 456;
-$tr_acc["ICx7"] = 0.55; // m/s²
-$tr_brake["ICx7"] = 0.6; // m/s²
-$tr_length["ICx7"] = 0.200;
-$tr_image["ICx7"] = "highspeed.svg";
-
-
-// DB ICx 12-teilig (Germany)
-$tr_name["ICx12"] = "DB ICx 12-teilig";
-$tr_type["ICx12"] = "highspeed";
-$tr_maxspeed["ICx12"] = 250; // km/h
-$tr_mass_empty["ICx12"] = 660; // t
-$tr_power["ICx12"] = 9900; // kW
-$tr_torque["ICx12"] = 360; // kN
-$tr_seats["ICx12"] = 830;
-$tr_acc["ICx12"] = 0.55; // m/s²
-$tr_brake["ICx12"] = 0.6; // m/s²
-$tr_length["ICx12"] = 0.346;
-$tr_image["ICx12"] = "highspeed.svg";
 
 
 // DB ICE 3 Velaro (Germany)
@@ -122,11 +97,42 @@ $tr_maxspeed["ICE3V"] = 320; // km/h
 $tr_mass_empty["ICE3V"] = 454; // t
 $tr_power["ICE3V"] = 8000; // kW
 $tr_torque["ICE3V"] = 300; // kN
+$tr_traction["ICE3V"] = "EMU"; // experimental, not used yet
 $tr_seats["ICE3V"] = 460;
 $tr_acc["ICE3V"] = 0.5; // m/s²
 $tr_brake["ICE3V"] = 0.6; // m/s²
 $tr_length["ICE3V"] = 0.201;
 $tr_image["ICE3V"] = "ICE3Velaro.png";
+
+
+// DB ICE 4 7-teilig (Germany)
+$tr_name["ICE4_7"] = "DB ICE 4 7-teilig";
+$tr_type["ICE4_7"] = "highspeed";
+$tr_maxspeed["ICE4_7"] = 230; // km/h
+$tr_mass_empty["ICE4_7"] = 455; // t
+$tr_power["ICE4_7"] = 4950; // kW
+$tr_torque["ICE4_7"] = 250; // kN
+$tr_traction["ICE4_7"] = "EMU"; // experimental, not used yet
+$tr_seats["ICE4_7"] = 456;
+$tr_acc["ICE4_7"] = 0.55; // m/s²
+$tr_brake["ICE4_7"] = 0.6; // m/s²
+$tr_length["ICE4_7"] = 0.200;
+$tr_image["ICE4_7"] = "highspeed.svg";
+
+
+// DB ICE 4 12-teilig (Germany)
+$tr_name["ICE4_12"] = "DB ICE 4 12-teilig";
+$tr_type["ICE4_12"] = "highspeed";
+$tr_maxspeed["ICE4_12"] = 250; // km/h
+$tr_mass_empty["ICE4_12"] = 670; // t
+$tr_power["ICE4_12"] = 9900; // kW
+$tr_torque["ICE4_12"] = 360; // kN
+$tr_traction["ICE4_12"] = "EMU"; // experimental, not used yet
+$tr_seats["ICE4_12"] = 830;
+$tr_acc["ICE4_12"] = 0.53; // m/s²
+$tr_brake["ICE4_12"] = 0.6; // m/s²
+$tr_length["ICE4_12"] = 0.346;
+$tr_image["ICE4_12"] = "highspeed.svg";
 
 
 // DB ICE T 7-teilig (Germany)
@@ -136,26 +142,12 @@ $tr_maxspeed["ICE-T7"] = 230; // km/h
 $tr_mass_empty["ICE-T7"] = 368; // t
 $tr_power["ICE-T7"] = 4000; // kW
 $tr_torque["ICE-T7"] = 200; // kN
+$tr_traction["ICE-T7"] = "EMU"; // experimental, not used yet
 $tr_seats["ICE-T7"] = 390;
 $tr_acc["ICE-T7"] = 0.6; // m/s²
 $tr_brake["ICE-T7"] = 0.6; // m/s²
 $tr_length["ICE-T7"] = 0.1844;
 $tr_image["ICE-T7"] = "ICET.png";
-
-
-// DB ICE TD (Germany)
-$tr_name["ICE-TD"] = "DB ICE TD";
-$tr_type["ICE-TD"] = "long_distance";
-$tr_maxspeed["ICE-TD"] = 200; // km/h
-$tr_mass_empty["ICE-TD"] = 219; // t
-$tr_power["ICE-TD"] = 1700; // kW
-$tr_torque["ICE-TD"] = 160; // kN
-$tr_traction["ICE-TD"] = "DEMU"; //experimental, note used yet
-$tr_seats["ICE-TD"] = 195;
-$tr_acc["ICE-TD"] = 0.6; // m/s²
-$tr_brake["ICE-TD"] = 0.6; // m/s²
-$tr_length["ICE-TD"] = 0.1067; //km
-$tr_image["ICE-TD"] = "ICET.png"; //FIXME: adjust images
 
 
 // EuroStar BR Class 373 (United Kingdom/France)
@@ -214,6 +206,35 @@ $tr_length["railjet"] = 0.205; //mit 6 Wagen + Steuerwagen
 $tr_image["railjet"] = "highspeed.svg"; //FIXME
 
 
+// KTX-1  (Korea)
+$tr_name["KTX1"] = "Korail KTX-1";
+$tr_type["KTX1"] = "highspeed";
+$tr_maxspeed["KTX1"] = 305; // km/h
+$tr_mass_empty["KTX1"] = 701; // t
+$tr_power["KTX1"] = 13560; // kW
+$tr_torque["KTX1"] = 310; // kN (estimated)
+$tr_traction["KTX1"] = "EPP"; // experimental, not used yet
+$tr_seats["KTX1"] = 965;
+$tr_acc["KTX1"] = 0.44; // m/s²
+$tr_brake["KTX1"] = 0.97; // m/s²
+$tr_length["KTX1"] = 0.388; // km
+$tr_image["KTX1"] = "highspeed.svg"; //FIXME
+
+// KTX-Sancheon  (Korea)
+$tr_name["KTX2"] = "Korail KTX-Sancheon";
+$tr_type["KTX2"] = "highspeed";
+$tr_maxspeed["KTX2"] = 305; // km/h
+$tr_mass_empty["KTX2"] = 403; // t
+$tr_power["KTX2"] = 8800; // kW
+$tr_torque["KTX2"] = 180; // kN (estimated)
+$tr_traction["KTX2"] = "EPP"; // experimental, not used yet
+$tr_seats["KTX2"] = 363;
+$tr_acc["KTX2"] = 0.45; // m/s²
+$tr_brake["KTX2"] = 0.97; // m/s²
+$tr_length["KTX2"] = 0.201; // km
+$tr_image["KTX2"] = "highspeed.svg"; //FIXME
+
+
 /** long distance trains **/
 
 //BR 101 + 12 IC-Wagen (Germany)
@@ -223,24 +244,41 @@ $tr_maxspeed["BR101IC"] = 200; // km/h
 $tr_mass_empty["BR101IC"] = 42*12+84; // t
 $tr_power["BR101IC"] = 6400; // kW
 $tr_torque["BR101IC"] = 300; // kN
+$tr_traction["BR101IC"] = "EPP"; // experimental, not used yet
 $tr_seats["BR101IC"] = 206;
 $tr_acc["BR101IC"] = 1;
 $tr_brake["BR101IC"] = 0.9;
 $tr_length["BR101IC"] = 0.017+12*0.027;
 $tr_image["BR101IC"] = "BR101IC.png";
 
-//BR 101 + 12 IC-Wagen (Germany)
+//BR 146.2 + 5 Doppelstock IC-Wagen (Germany)
 $tr_name["DoStoIC"] = "DB Baureihe 146.2 mit 5 IC-Doppelstockwagen";
 $tr_type["DoStoIC"] = "long_distance";
 $tr_maxspeed["DoStoIC"] = 	160; // km/h
 $tr_mass_empty["DoStoIC"] = 50*4+52+85; // t
 $tr_power["DoStoIC"] = 4200; // kW
 $tr_torque["DoStoIC"] = 300; // kN
+$tr_traction["DoStoIC"] = "EPP"; // experimental, not used yet
 $tr_seats["DoStoIC"] = 469;
 $tr_acc["DoStoIC"] = 1;
 $tr_brake["DoStoIC"] = 0.9;
 $tr_length["DoStoIC"] = 0.017+5*0.027;
 $tr_image["DoStoIC"] = "highspeed.svg";
+
+
+// DB ICE TD (Germany)
+$tr_name["ICE-TD"] = "DB ICE TD";
+$tr_type["ICE-TD"] = "long_distance";
+$tr_maxspeed["ICE-TD"] = 200; // km/h
+$tr_mass_empty["ICE-TD"] = 219; // t
+$tr_power["ICE-TD"] = 1700; // kW
+$tr_torque["ICE-TD"] = 160; // kN
+$tr_traction["ICE-TD"] = "DEMU"; //experimental, note used yet
+$tr_seats["ICE-TD"] = 195;
+$tr_acc["ICE-TD"] = 0.6; // m/s²
+$tr_brake["ICE-TD"] = 0.6; // m/s²
+$tr_length["ICE-TD"] = 0.1067; //km
+$tr_image["ICE-TD"] = "ICET.png"; //FIXME: adjust images
 
 
 /** regional trains **/
