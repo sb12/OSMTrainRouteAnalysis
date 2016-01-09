@@ -107,7 +107,8 @@ Class KS_combined
 				$colour_hp0 = "&gray;";
 				$colour_ks1 = "&green;";
 				$colour_ks2 = "&gray;";
-				if( isset($_GET["speed_distant"]) )
+				if( isset($_GET["speed_distant"]) ||
+					isset( $_GET["railway:signal:combined:speed_limit_distant:form"] ) && $_GET["railway:signal:combined:speed_limit_distant:form"] == "sign") )
 				{
 					$class_ks1 = "signal_blink";
 				}
