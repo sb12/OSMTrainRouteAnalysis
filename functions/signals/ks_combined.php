@@ -32,19 +32,20 @@ Class KS_combined
 	/**
 	 * returns the state of the signals
 	 * @param $tags array tags of the signal
-	 * @param $next_speed int speed which is relevant for the signal
-	 * @param $main_distance int distance to next main signal
+	 * @param $this_speed int speed which is relevant for the signal
+	 * @param $next_speed int speed which is relevant for the next signal (0 if stop or no next signal)
+	 * @param $main_distance int distance to next main signal (0 if no relevant next main signal)
 	 */
-	public static function findState($tags, $next_speed, $next_speed_distant, $main_distance)
+	public static function findState($tags, $this_speed, $next_speed, $main_distance)
 	{
 		$state = "";
 		if(isset($tags["railway:signal:combined:states"]))
 		{
-			if ( $next_speed == 0 && strpos($tags["railway:signal:combined:states"], "hp0" )) // signal at end of route
+			if ( $this_speed == 0 && strpos($tags["railway:signal:combined:states"], "hp0" )) // signal at end of route
 			{
 				$state = "hp0";
 			}
-			elseif ( $next_speed_distant == 0 && strpos($tags["railway:signal:combined:states"], "ks2" )) // last distant signal of route
+			elseif ( $next_speed == 0 && $main_distance > 0 && strpos($tags["railway:signal:combined:states"], "ks2" )) // last distant signal of route
 			{
 				$state = "ks2";
 			}
