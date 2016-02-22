@@ -379,16 +379,46 @@ Class Signals
 		$result .='
 				<object type="image/svg+xml" data="img/signals/signal.php'.$get.'" class="svg signal">
 				</object>';
-		// add ref
-		if(isset($tags["ref"]))
+		
+		// add ref (only for main signals)
+		if(isset($ref)
 		{
-			// ref not needed for German Blockkennzeichen
-			if( !isset($tags["railway:signal:train_protection"]) || $tags["railway:signal:train_protection"] != "DE-ESO:blockkennzeichen" )
+			if( isset($tags["railway:signal:main"])
+				|| isset($tags["railway:signal:combined"]))
 			{
+				// TODO: optimize this code and put it in a seperate helper function
+				if ( strlen($ref) <= 4 && !strstr($ref, " ") ) // number with 5 digits or less and no spaces
+				{
+					// works with 'normal' refs, fails with ESTW refs
+					// if len is 1, 2, 3, never do a new line
+					// TODO: if len is 4 check if first two characters are numbers
+					// if so, do the new line after these two numbers
+					$ref_sign = $ref;
+				}
+				else
+				{
+					// spaces in ref: That is in OSM database, but bad style
+					// as the space is not a 'real' part of the ref
+					$refs = explode(" ", $ref);
+					if( count($refs) == 2 && $refs[0] > 0 && $refs[1] > 0 && strlen ( $refs[0] ) <= 4 && strlen ( $refs[1] ) <= 4 ) // 2 numbers with space in between with 4 digits or less each
+					{
+						$ref_sign = $refs[0] . '<br/>' . $refs[1];
+					}
+				}
+				else
+				{
+					// TODO: write a much better algorithm to find the area code
+					// for now, that should be enough
+					// new line after the first 2 characters
+					// refs with len > 4 should 'normally' only occur with ESTWs
+					$ref_sign = substr($ref, 0, 2) . '<br/>' . substr($ref, 2);
+				}
+		
 				$result.='
-						<span class="signal_ref">'.$tags["ref"].'</span>';
+						<span class="signal_ref">'.$ref_sign.'</span>';
 			}
 		}
+		
 		$result.='</td>';
 		
 		//show position
@@ -438,7 +468,9 @@ Class Signals
 		$description_set = false;
 		if(isset($tags["railway:signal:main"]) || isset($tags["railway:signal:combined"]))
 		{
-
+			// first of all show good readable plain reference
+			$result .= Lang::l_("Signal reference: ") . $ref . "<br/>";
+			
 			if( isset($tags["railway:signal:combined"]))
 			{
 				$tags["railway:signal:main"] = $tags["railway:signal:combined"];
