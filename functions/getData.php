@@ -414,9 +414,7 @@ Class Route
 				// build link to overpass api
 				$overpass_query = "[out:xml];(relation("
 					. $get_id
-					. ");rel(br););out;(relation("
-					. $get_id
-					. ");>>;);out;";
+					. ");rel(br)->.mr;>>;);out;";
 				if( Overpass::sendRequest($overpass_query) )
 				{
 					$this->refresh_success = true;
