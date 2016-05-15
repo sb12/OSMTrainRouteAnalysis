@@ -37,30 +37,94 @@ Class KS_combined
 	 */
 	public static function findState($tags, $next_speed, $next_speed_distant, $main_distance)
 	{
-		$state = "";
+		$state = ""; // start with unknown state
+		
+		// array with all states the signal can show
+		$possible_states = array();
+		
+		// check for coded tags
 		if(isset($tags["railway:signal:combined:states"]))
 		{
-			if ( $next_speed == 0 && strpos($tags["railway:signal:combined:states"], "hp0" )) // signal at end of route
+			// explode possible states
+			$possible_states_raw = explode(";", $tags["railway:signal:combined:states"]);
+			foreach($possible_states_raw as $curr_state)
 			{
-				$state = "hp0";
+				$namespace = explode(":", $curr_state);
+				// convert format "DE-ESO:state" to "state"
+				if($namespace[0] == "DE-ESO")
+				{
+					$possible_states[] = $namespace[1];
+				}
+				else
+				{
+					// TODO: throw warning: No DE-ESO prefix
+					$possible_states[] = $namespace[0];
+				}
 			}
-			elseif ( $next_speed_distant == 0 && strpos($tags["railway:signal:combined:states"], "ks2" )) // last distant signal of route
+		}
+		else
+		{
+			// TODO: throw warning: No states in database, assuming Hp0 only
+			// failsafe: every Ks combined can at least show Hp0
+			$possible_states[] = "hp0";
+		}
+		
+		// try to find state according to the given input speeds
+		
+		// speed at this signal = 0?
+		if ( $next_speed == 0) // signal where the train shall stop
+		{
+			$state = "hp0";
+		}
+		
+		// speed at next signal = 0?
+		elseif ( $next_speed_distant == 0 ) // signal which is announcing a stop signal
+		{
+			// can the signal show Ks2, as it should?
+			if(in_array("ks2", $possible_states))
 			{
 				$state = "ks2";
 			}
-			elseif ( strpos($tags["railway:signal:combined:states"], "ks1" ) ) // default
+			else
 			{
-				$state = "ks1";
-			}
-			elseif ( strpos($tags["railway:signal:combined:states"], "ks2" ) ) // signal can not show ks1
-			{
-				$state = "ks2";
-			}
-			elseif ( strpos($tags["railway:signal:combined:states"], "hp0" ) ) // signal can only show hp0
-			{
+				// TODO: warning: signal shall show Ks2, but not coded. Showing Hp0 instead!
 				$state = "hp0";
 			}
 		}
+		
+		elseif( $next_speed_distant > 0 )
+		{
+			// TODO: check if Zs 3v is available
+			// if yes, show Ks1
+			// if not, show Ks2
+			
+			// can the signal show Ks1, as it should?
+			if(in_array("ks1", $possible_states))
+			{
+				$state = "ks1";
+			}
+			else
+			{
+				// can the signal show Ks2 instead?
+				if(in_array("ks2", $possible_states))
+				{
+					// TODO: warning: signal shall show Ks1, but only Ks2 coded!
+					$state = "ks2";
+				}
+				else
+				{
+					// TODO: warning: signal shall show Ks1, but not coded, nor Ks2 coded. Showing Hp0 instead!
+					$state = "hp0";
+				}
+			}
+		}
+		
+		if($state == "")
+		{
+			// TODO: warning: No appropriate state found, check tagging! Showing Hp0!
+			$state = "hp0"; // fail safe
+		}
+		
 		return $state;
 	}
 	
