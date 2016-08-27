@@ -412,9 +412,15 @@ Class Route
 			if ( $refresh )
 			{
 				// build link to overpass api
-				$overpass_query = "[out:xml];(relation("
-					. $get_id
-					. ");rel(br)->.mr;>>;);out;";
+				$overpass_query = '[out:xml];' .
+						/* query the base relation into "r" */
+						'relation(' . $get_id . ')->.r;' .
+						/* print "r" all it's members */
+						'.r >>;out;' .
+						/* print all relations "r" is member in, usually the route_master */
+						'rel(br.r);out;' .
+						/* for all nodes in "r" with role stop query the PT=stop_area relations they are member in */
+						'node(r.r:"stop");rel(bn:"stop")["type"="public_transport"]["public_transport"="stop_area"];out;';
 				if( Overpass::sendRequest($overpass_query) )
 				{
 					$this->refresh_success = true;
