@@ -12,8 +12,10 @@ include "../../functions/signals.php";
 
 include "../../functions/signals/main_light.php";
 include "../../functions/signals/main_semaphore.php";
+include "../../functions/signals/main_sign.php";
 include "../../functions/signals/distant_light.php";
 include "../../functions/signals/distant_semaphore.php";
+include "../../functions/signals/distant_sign.php";
 include "../../functions/signals/combined_light.php";
 
 /*include "../../functions/signals/hv_main.php";
@@ -110,11 +112,21 @@ if(isset($_GET["railway:signal:main"]))
 		$result = HL_main::generateImage($height);
 		$valid_signal = true;
 	}
+	elseif($_GET["railway:signal:main"] == "DE-ESO:ne1")
+	{
+		$result = Ne1::generateImage($height);
+		$valid_signal = true;
+	}
 	else //fallback for unknown signals
 	{
 		if($_GET["railway:signal:main:form"] == "semaphore")
 		{
 			$result = Main_semaphore::generateImage($height);
+			$valid_signal = true;
+		}
+		elseif($_GET["railway:signal:main:form"] == "sign")
+		{
+			$result = Main_sign::generateImage($height);
 			$valid_signal = true;
 		}
 		else
@@ -187,11 +199,21 @@ if(isset($_GET["railway:signal:distant"]))
 		$result = HL_distant::generateImage($height);
 		$valid_signal = true;
 	}
+	elseif($_GET["railway:signal:distant"] == "DE-ESO:db:ne2")
+	{
+		$result = Ne2::generateImage($height);
+		$valid_signal = true;
+	}
 	else //fallback for unknown signals
 	{
 		if( isset($_GET["railway:signal:distant:form"]) && $_GET["railway:signal:distant:form"] == "semaphore")
 		{
 			$result = Distant_semaphore::generateImage($height);
+			$valid_signal = true;
+		}
+		elseif( isset($_GET["railway:signal:distant:form"]) && $_GET["railway:signal:distant:form"] == "sign")
+		{
+			$result = Distant_sign::generateImage($height);
 			$valid_signal = true;
 		}
 		else

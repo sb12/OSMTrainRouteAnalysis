@@ -21,18 +21,18 @@
     */
 ?>
 <?php
-//include "signals/distant_light.php";
-//include "signals/main_light.php";
 include "signals/signalpart.php";
 include "signals/speed.php";
 include "signals/speed_distant.php";
 
-//include "signals/hv_main.php";
 include "signals/hv.php";
 
 include "signals/ks.php";
 
 include "signals/hl.php";
+
+include "signals/ne1.php";
+include "signals/ne2.php";
 
 include "signals/speedlimit_zs3.php";
 include "signals/speedlimit_zs3v.php";
@@ -156,6 +156,10 @@ Class Signals
 			{
 				$this->SignalMain = new HL($this->tags);
 			}
+			elseif($this->tags["railway:signal:main"] == "DE-ESO:ne1") // German Hl
+			{
+				$this->SignalMain = new Ne1($this->tags);
+			}
 			else // unknown main signal
 			{
 				$this->SignalMain = new SignalPart($this->tags);
@@ -174,6 +178,10 @@ Class Signals
 			elseif($this->tags["railway:signal:distant"] == "DE-ESO:hl") // German Hl
 			{
 				$this->SignalDistant = new HL($this->tags);
+			}
+			elseif($this->tags["railway:signal:distant"] == "DE-ESO:db:ne2") // German Hl
+			{
+				$this->SignalDistant = new Ne2($this->tags);
 			}
 			else // unknown distant signal
 			{
