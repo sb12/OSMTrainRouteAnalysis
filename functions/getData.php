@@ -414,9 +414,7 @@ Class Route
 				// build link to overpass api
 				$overpass_query = "[out:xml];(relation("
 					. $get_id
-					. ");rel(br););out;(relation("
-					. $get_id
-					. ");>>;);out;";
+					. ");rel(br)->.mr;>>;);out;";
 				if( Overpass::sendRequest($overpass_query) )
 				{
 					$this->refresh_success = true;
@@ -621,12 +619,12 @@ Class Route
 			}
 			
 			
-			// only ways of relation with the loaded id is needed - this is needed only once (sometimes relations are more than once in the data)
+			// only ways of relation with the loaded id are needed - this is needed only once (sometimes relations are more than once in the data)
 			if ( $rel_id != $this->id || $rel_done )
 			{
 				continue;
 			}
-			$rel_done = true; // relation was parsed already -> dos not need to be parsed again.
+			$rel_done = true; // relation was parsed already -> does not need to be parsed again.
 			
 			//load relation members
 			foreach ( $relation->member as $member ) 
