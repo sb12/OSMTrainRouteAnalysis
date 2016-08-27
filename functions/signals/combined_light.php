@@ -55,27 +55,36 @@ Class Combined_light
 	 * generate image
 	 * @param $tags array tags of the signal
 	 */
-	public static function generateImage($height)
+	public static function generateImage($position)
 	{
-			$image = '
-			<g transform="translate(0 ' . $height . ')">
-				<g>
-					<polygon style="&background;" points="10,1 30,1 30,60 10,60"/>
-				</g>
-					
-				<g id="green">
-					<circle style="&green;" cx="20" cy="15" r="4"/>
-				</g>
-					
-				<g id="yellow">
-					<circle style="&yellow;" cx="20" cy="30" r="4"/>
-				</g>
-					
-				<g id="red">
-					<circle style="&red;" cx="20" cy="45" r="4"/>
-				</g>
-			</g>';
-		$height = 60;
-		return array($image, $height);
+		$colour_red = "&red;";
+		$colour_green = "&green;";
+		$colour_yellow = "&yellow;";
+	
+		$geometry = "10,1 30,1 30,59 10,59";
+		$r_main = 4;
+		$lights[] = Array(
+			'id'        =>	'red',
+			'colour'    => $colour_red,
+			'cx'        => 20,
+			'cy'        => 15,
+			'r'         => $r_main,
+		);
+		$lights[] = Array(
+			'id'        =>	'yellow',
+			'colour'    => $colour_yellow,
+			'cx'        => 20,
+			'cy'        => 30,
+			'r'         => $r_main,
+		);
+		$lights[] = Array(
+			'id'        =>	'green',
+			'colour'    => $colour_green,
+			'cx'        => 20,
+			'cy'        => 45,
+			'r'         => $r_main,
+		);
+		
+		return Signal_Light::generateImage($position,60,$geometry,$lights);	
 	}
 }

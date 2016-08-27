@@ -26,69 +26,14 @@
  * @author sb12
  *
  */
-Class HL_main
+Class HL_Main extends SignalPart
 {
 
-	/**
-	 * returns the state of the signals
-	 * @param $tags array tags of the signal
-	 * @param $next_speed int speed which is relevant for the signal
-	 * @param $main_distance int distance to next main signal
-	 */
-	public static function findState($tags, $next_speed, $main_distance)
+	public function __construct($tags)
 	{
-		$state = "";
-		if(isset($tags["railway:signal:main:states"]))
-		{
-			if ( $next_speed == 0 && strpos($tags["railway:signal:main:states"], "hp0" )) // signal at end of route
-			{
-				$state = "hp0";
-			}
-			if( ( $next_speed == 100 || $main_distance < 700 ) && strpos($tags["railway:signal:main:states"], "hl2" ))
-			{
-				$state = "hl2";
-			}
-			elseif( $next_speed == 40 && strpos($tags["railway:signal:main:states"], "hl3a" ))
-			{
-				$state = "hl3a";
-			}
-			elseif( $next_speed == 60 && strpos($tags["railway:signal:main:states"], "hl3b" ))
-			{
-				$state = "hl3b";
-			}
-			elseif( strpos($tags["railway:signal:main:states"], "hl1" ) )
-			{
-				$state = "hl1";
-			}
-			elseif( ( $next_speed == 100 || $main_distance < 700 ) && strpos($tags["railway:signal:main:states"], "hl5" ))
-			{
-				$state = "hl5";
-			}
-			elseif( $next_speed == 40 && strpos($tags["railway:signal:main:states"], "hl6a" ))
-			{
-				$state = "hl6a";
-			}
-			elseif( $next_speed == 60 && strpos($tags["railway:signal:main:states"], "hl6b" ))
-			{
-				$state = "hl6b";
-			}
-			elseif ( strpos($tags["railway:signal:main:states"], "hp0" ) ) // signal can only show hp0
-			{
-				$state = "hp0";
-			}
-		}
-		return $state;
+		parent::__construct($tags);
 	}
 	
-	
-	/**
-	 * returns description of the signals
-	 * @param $tags array tags of the signal
-	 */
-	public static function showDescription()
-	{
-		return Lang::l_("German Hl");
-	}
 	
 	/**
 	 * generate image

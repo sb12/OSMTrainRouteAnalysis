@@ -29,53 +29,9 @@
 Class HL_distant
 {
 
-	/**
-	 * returns the state of the signals
-	 * @param $tags array tags of the signal
-	 * @param $next_speed int speed which is relevant for the signal
-	 * @param $main_distance int distance to next main signal
-	 */
-	public static function findState($tags, $next_speed_distant, $main_distance)
+	public function __construct($tags)
 	{
-		$state = "";
-		if(isset($tags["railway:signal:distant:states"]))
-		{
-			// last distant signal of route
-			if ( $next_speed_distant == 0  && 
-					 strpos($tags["railway:signal:distant:states"], "hl10") )
-			{
-				$state = "hl10";
-			}
-			elseif ( $next_speed_distant == 100  && 
-					 strpos($tags["railway:signal:distant:states"], "hl4") )
-			{
-				$state = "hl4";
-			}
-			elseif ( ( $next_speed_distant == 40 || $next_speed_distant == 60 ) && 
-					 strpos($tags["railway:signal:distant:states"], "hl7") )
-			{
-				$state = "hl7";
-			}
-			elseif ( strpos($tags["railway:signal:distant:states"], "hl1" ) ) // signal can only show hp0
-			{
-				$state = "hl1";
-			}
-			elseif ( strpos($tags["railway:signal:distant:states"], "hl10" ) ) // signal can only show hp0
-			{
-				$state = "hl10";
-			}
-		}
-		return $state;
-	}
-	
-	
-	/**
-	 * returns description of the signals
-	 * @param $tags array tags of the signal
-	 */
-	public static function showDescription()
-	{
-		return Lang::l_("German Hl");
+		parent::__construct($tags);
 	}
 	
 	/**

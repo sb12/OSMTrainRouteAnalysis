@@ -1,7 +1,7 @@
 <?php 
     /**
     
-    OSMTrainRouteAnalysis Copyright © 2014-2015 sb12 osm.mapper999@gmail.com
+    OSMTrainRouteAnalysis Copyright © 2014-2016 sb12 osm.mapper999@gmail.com
     
     This file is part of OSMTrainRouteAnalysis.
     
@@ -26,47 +26,13 @@
  * @author sb12
  *
  */
-Class KS_main
-{
-
-	/**
-	 * returns the state of the signals
-	 * @param $tags array tags of the signal
-	 * @param $next_speed int speed which is relevant for the signal
-	 * @param $main_distance int distance to next main signal
-	 */
-	public static function findState($tags, $next_speed, $main_distance)
-	{
-		$state = "";
-		if(isset($tags["railway:signal:main:states"]))
-		{
-			if ( $next_speed == 0 && strpos($tags["railway:signal:main:states"], "hp0" )) // signal at end of route
-			{
-				$state = "hp0";
-			}
-			elseif ( strpos($tags["railway:signal:main:states"], "ks1" ) )
-			{
-				$state = "ks1";
-			}
-		}
-		return $state;
-	}
-	
-	
-	/**
-	 * returns description of the signals
-	 * @param $tags array tags of the signal
-	 */
-	public static function showDescription()
-	{
-		return Lang::l_("German Ks");
-	}
-	
+Class KS_main extends SignalPart
+{	
 	/**
 	 * generate image
 	 * @param $tags array tags of the signal
 	 */
-	public static function generateImage($height)
+	public static function generateImage($position)
 	{
 		$colour_hp0 = "&red;";
 		$colour_ks1 = "&green;";
@@ -107,46 +73,76 @@ Class KS_main
 				$colour_zs7 = "&yellow;";
 			}
 		}
-		
-		$image = '
-			<g transform="translate(0 ' . $height . ')">
-				<g>
-					<polygon style="&background;" points="6,1 34,1 34,59 6,59"/>
-				</g>
-					
-				<g id="hp0">
-					<circle style="' . $colour_hp0 . '" cx="20" cy="16" r="4"/>
-				</g>
-					
-				<g id="ks1">
-					<circle style="' . $colour_ks1 . '" cx="20" cy="29" r="4"/>
-				</g>
-				<g id="sh1">';
+
+		$geometry = "6,1 34,1 34,59 6,59";
+		$r_main = 4;
+		$r_minor = 1.5;
+		$lights[] = Array(
+				'id'        =>	'hp0',
+				'colour'    => $colour_hp0,
+				'cx'        => 20,
+				'cy'        => 16,
+				'r'         => $r_main,
+		);
+		$lights[] = Array(
+				'id'        =>	'ks1',
+				'colour'    => $colour_ks1,
+				'cx'        => 20,
+				'cy'        => 29,
+				'r'         => $r_main,
+		);
 		if ( ( isset($_GET["railway:signal:main:substitute_signal"]) && $_GET["railway:signal:main:substitute_signal"] == "DE-ESO:dr:zs1" ) || ( isset($_GET["railway:signal:minor"]) && $_GET["railway:signal:minor"] == "DE-ESO:sh1" ) )
 		{
-			$image .= '
-					<circle style="&gray;" cx="20" cy="39" r="2"/>
-					<circle class="' . $class_zs1 . '" style="' . $colour_zs1 . '" cx="20" cy="39" r="2"/>';
+			$lights[] = Array(
+					'id'        => 'zs1_bg',
+					'colour'    => '&gray;',
+					'cx'        => 20,
+					'cy'        => 39,
+					'r'         => $r_minor
+			);
+			$lights[] = Array(
+					'id'        => 'zs1',
+					'colour'    => $colour_zs1,
+					'colour'    => $class_zs1,
+					'cx'        => 20,
+					'cy'        => 39,
+					'r'         => $r_minor
+			);
 		}
 		if ( isset($_GET["railway:signal:minor"]) && $_GET["railway:signal:minor"] == "DE-ESO:sh1" )
 		{
-			$image .= '
-					<circle style="' . $colour_sh1 . '" cx="10" cy="49" r="2"/>';
+			$lights[] = Array(
+					'id'        => 'sh1',
+					'colour'    => $colour_sh1,
+					'cx'        => 10,
+					'cy'        => 49,
+					'r'         => $r_minor
+			);
 		}
-		$image .= '
-				</g>';
 		if ( isset($_GET["railway:signal:main:substitute_signal"]) && $_GET["railway:signal:main:substitute_signal"] == "DE-ESO:db:zs7" )
 		{
-			$image .= '
-					<g id="zs7">
-						<circle style="' . $colour_zs7 . '" cx="15" cy="39" r="2"/>
-						<circle style="' . $colour_zs7 . '" cx="25" cy="39" r="2"/>
-						<circle style="' . $colour_zs7 . '" cx="20" cy="49" r="2"/>
-					</g>';
+			$lights[] = Array(
+					'id'        => 'zs7_1',
+					'colour'    => $colour_zs7,
+					'cx'        => 15,
+					'cy'        => 39,
+					'r'         => $r_minor
+			);
+			$lights[] = Array(
+					'id'        => 'zs7_1',
+					'colour'    => $colour_zs7,
+					'cx'        => 25,
+					'cy'        => 39,
+					'r'         => $r_minor
+			);
+			$lights[] = Array(
+					'id'        => 'zs7_1',
+					'colour'    => $colour_zs7,
+					'cx'        => 20,
+					'cy'        => 49,
+					'r'         => $r_minor
+			);
 		}
-		$image .= '
-		</g>';
-		$height = 60;
-		return array($image, $height);
-	}
+		return Signal_Light::generateImage($position,60,$geometry,$lights);
+	}	
 }

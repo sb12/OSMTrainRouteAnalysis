@@ -8,19 +8,19 @@ include "../../functions/settings.php";
 include "colors.php";
 
 //load signal classes
+include "../../functions/signals.php";
+
 include "../../functions/signals/main_light.php";
 include "../../functions/signals/main_semaphore.php";
 include "../../functions/signals/distant_light.php";
 include "../../functions/signals/distant_semaphore.php";
 include "../../functions/signals/combined_light.php";
 
-include "../../functions/signals/hv_main.php";
-include "../../functions/signals/hv_main_light.php";
-include "../../functions/signals/hv_main_semaphore.php";
+/*include "../../functions/signals/hv_main.php";
 include "../../functions/signals/hv_distant.php";
 include "../../functions/signals/hv_distant_light.php";
 include "../../functions/signals/hv_distant_semaphore.php";
-
+*/
 include "../../functions/signals/ks_main.php";
 include "../../functions/signals/ks_combined.php";
 include "../../functions/signals/ks_distant.php";
@@ -29,18 +29,27 @@ include "../../functions/signals/hl_main.php";
 include "../../functions/signals/hl_combined.php";
 include "../../functions/signals/hl_distant.php";
 
+
+include "../../functions/signals/hv_main_light.php";
+include "../../functions/signals/hv_main_semaphore.php";
+
+include "../../functions/signals/hv_distant_light.php";
+include "../../functions/signals/hv_distant_semaphore.php";
+
+include "../../functions/signals/signal_light.php";
+
 include "../../functions/signals/signal_matrix.php";
 include "../../functions/signals/signal_path.php";
 
-include "../../functions/signals/speedlimit_zs3.php";
+//include "../../functions/signals/speedlimit_zs3.php";*/
 include "../../functions/signals/speedlimit_zs3_light.php";
 include "../../functions/signals/speedlimit_zs3_sign.php";
-include "../../functions/signals/speedlimit_zs3v.php";
+//include "../../functions/signals/speedlimit_zs3v.php";
 include "../../functions/signals/speedlimit_zs3v_light.php";
 include "../../functions/signals/speedlimit_zs3v_sign.php";
-
+/*
 include "../../functions/signals/blockkennzeichen.php";
-include "../../functions/signals/ETCS_markerboard.php";
+include "../../functions/signals/ETCS_markerboard.php";*/
 
 
 $s = 0;
@@ -158,7 +167,7 @@ if(isset($_GET["railway:signal:distant"]))
 		{
 			if($_GET["railway:signal:distant:form"] == "light")
 			{
-				$result = HV_distant_light::generateImage($height);
+				$result = HV_distant::generateImage($height);
 				$valid_signal = true;
 			}
 			elseif($_GET["railway:signal:distant:form"] == "semaphore")

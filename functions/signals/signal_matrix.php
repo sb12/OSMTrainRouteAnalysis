@@ -52,6 +52,8 @@ Class Signal_matrix
 				"0","0","0","0","0");
 		$matrix[""][]=Array(
 				"0","0","0","0","0");
+		$matrix["off"] = $matrix[""];
+		
 		// A
 		$matrix["A"][]=Array(
 				"0","1","1","1","0");

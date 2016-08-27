@@ -55,8 +55,31 @@ Class Distant_light
 	 * generate image
 	 * @param $tags array tags of the signal
 	 */
-	public static function generateImage($height)
+	public static function generateImage($position)
 	{
+	{
+		$colour_green = "&green;";
+		$colour_yellow = "&yellow;";
+	
+		$geometry = "10,1 30,1 30,59 10,59";
+		$r_main = 4;
+		$lights[] = Array(
+			'id'        =>	'yellow',
+			'colour'    => $colour_yellow,
+			'cx'        => 20,
+			'cy'        => 20,
+			'r'         => $r_main,
+		);
+		$lights[] = Array(
+			'id'        =>	'green',
+			'colour'    => $colour_green,
+			'cx'        => 20,
+			'cy'        => 40,
+			'r'         => $r_main,
+		);
+		
+		return Signal_Light::generateImage($position,60,$geometry,$lights);	
+	}
 		$image = '
 				<g transform="translate(0 ' . $height . ')">
 					<g>

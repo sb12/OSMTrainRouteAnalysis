@@ -26,59 +26,14 @@
  * @author sb12
  *
  */
-Class KS_combined
+Class KS_combined extends SignalPart
 {
-
-	/**
-	 * returns the state of the signals
-	 * @param $tags array tags of the signal
-	 * @param $next_speed int speed which is relevant for the signal
-	 * @param $main_distance int distance to next main signal
-	 */
-	public static function findState($tags, $next_speed, $next_speed_distant, $main_distance)
-	{
-		$state = "";
-		if(isset($tags["railway:signal:combined:states"]))
-		{
-			if ( $next_speed == 0 && strpos($tags["railway:signal:combined:states"], "hp0" )) // signal at end of route
-			{
-				$state = "hp0";
-			}
-			elseif ( $next_speed_distant == 0 && strpos($tags["railway:signal:combined:states"], "ks2" )) // last distant signal of route
-			{
-				$state = "ks2";
-			}
-			elseif ( strpos($tags["railway:signal:combined:states"], "ks1" ) ) // default
-			{
-				$state = "ks1";
-			}
-			elseif ( strpos($tags["railway:signal:combined:states"], "ks2" ) ) // signal can not show ks1
-			{
-				$state = "ks2";
-			}
-			elseif ( strpos($tags["railway:signal:combined:states"], "hp0" ) ) // signal can only show hp0
-			{
-				$state = "hp0";
-			}
-		}
-		return $state;
-	}
-	
-	
-	/**
-	 * returns description of the signals
-	 * @param $tags array tags of the signal
-	 */
-	public static function showDescription()
-	{
-		return Lang::l_("German Ks");
-	}
 	
 	/**
 	 * generate image
 	 * @param $tags array tags of the signal
 	 */
-	public static function generateImage($height)
+	public static function generateImage($position)
 	{
 		
 		// zs3v is not shown when distant speed is same or higher than speed
@@ -142,67 +97,125 @@ Class KS_combined
 				$colour_zs7 = "&yellow;";
 			}
 		}
+
+
+		$geometry = "6,1 34,1 34,59 6,59";
+		$r_main = 4;
+		$r_minor = 1.5;
+
+
+		$lights[] = Array(
+				'id'        => 'hp0',
+				'colour'    => $colour_hp0,
+				'cx'        => 20,
+				'cy'        => 16,
+				'r'         => $r_main,
+		);
+			
+		$lights[] = Array(
+				'id'        => 'ks1_bg',
+				'colour'    => '&gray;',
+				'cx'        => 12,
+				'cy'        => 29,
+				'r'         => $r_main,
+		);
+			
+		$lights[] = Array(
+				'id'        => 'ks1',
+				'colour'    => $colour_ks1,
+				'class'     => $class_ks1,
+				'cx'        => 12,
+				'cy'        => 29,
+				'r'         => $r_main,
+		);
+			
+		$lights[] = Array(
+				'id'        => 'ks2',
+				'colour'    => $colour_ks2,
+				'cx'        => 28,
+				'cy'        => 29,
+				'r'         => $r_main,
+		);
 		
-		$image = '
-			<g transform="translate(0 ' . $height . ')">
-				<g>
-					<polygon style="&background;" points="6,1 34,1 34,59 6,59"/>
-				</g>
-					
-				<g id="hp0">
-					<circle style="' . $colour_hp0 . '" cx="20" cy="16" r="4"/>
-				</g>
-					
-				<g id="ks1">
-					<circle style="&gray;" cx="12" cy="29" r="4"/>
-					<circle class="' . $class_ks1 . '" style="' . $colour_ks1 . '" cx="12" cy="29" r="4"/>
-				</g>
-					
-				<g id="ks2">
-					<circle style="' . $colour_ks2 . '" cx="28" cy="29" r="4"/>
-				</g>
-				<g id="sh1">';
 		if ( ( isset($_GET["railway:signal:combined:substitute_signal"]) && $_GET["railway:signal:combined:substitute_signal"] == "DE-ESO:dr:zs1" ) || ( isset($_GET["railway:signal:minor"]) && $_GET["railway:signal:minor"] == "DE-ESO:sh1" ) )
 		{
-			$image .= '
-					<circle style="&gray;" cx="20" cy="39" r="2"/>
-					<circle class="' . $class_zs1 . '" style="' . $colour_zs1 . '" cx="20" cy="39" r="2"/>';
+				
+			$lights[] = Array(
+					'id'        => 'zs1_bg',
+					'colour'    => '&gray;',
+					'cx'        => 20,
+					'cy'        => 39,
+					'r'         => $r_minor,
+			);
+				
+			$lights[] = Array(
+					'id'        => 'zs1',
+					'colour'    => $colour_zs1,
+					'class'     => $class_zs1,
+					'cx'        => 20,
+					'cy'        => 39,
+					'r'         => $r_minor,
+			);
 		}
 		if ( isset($_GET["railway:signal:minor"]) && $_GET["railway:signal:minor"] == "DE-ESO:sh1" )
 		{
-			$image .= '
-					<circle style="' . $colour_sh1 . '" cx="10" cy="49" r="2"/>';
+				
+			$lights[] = Array(
+					'id'        => 'sh1',
+					'colour'    => $colour_sh1,
+					'cx'        => 10,
+					'cy'        => 49,
+					'r'         => $r_minor,
+			);
 		}
-		$image .= '
-				</g>';
 		if ( isset($_GET["railway:signal:combined:substitute_signal"]) && $_GET["railway:signal:combined:substitute_signal"] == "DE-ESO:db:zs7" )
 		{
-			$image .= '
-					<g id="zs7">
-						<circle style="' . $colour_zs7 . '" cx="15" cy="39" r="2"/>
-						<circle style="' . $colour_zs7 . '" cx="25" cy="39" r="2"/>
-						<circle style="' . $colour_zs7 . '" cx="20" cy="49" r="2"/>
-					</g>';
+
+			$lights[] = Array(
+					'id'        => 'zs7_1',
+					'colour'    => $colour_zs7,
+					'cx'        => 15,
+					'cy'        => 39,
+					'r'         => $r_minor,
+			);
+
+			$lights[] = Array(
+					'id'        => 'zs7_2',
+					'colour'    => $colour_zs7,
+					'cx'        => 25,
+					'cy'        => 39,
+					'r'         => $r_minor,
+			);
+			
+			$lights[] = Array(
+					'id'        => 'zs7_3',
+					'colour'    => $colour_zs7,
+					'cx'        => 20,
+					'cy'        => 49,
+					'r'         => $r_minor,
+			);
 		}
 		// signals with shortened distance to main
 		if( ( isset($_GET["railway:signal:combined:shortened"]) && $_GET["railway:signal:combined:shortened"] == "yes" ) )
 		{
 			if( ( $_GET["state_combined"] == "ks2" ) || ( $class_ks1 == "signal_blink" ) ) // only when Ks 1 is blinking or Ks 2 is shown
 			{
-				$color_shortened = "&white;";
+				$colour_shortened = "&white;";
 			}
 			else
 			{
-				$color_shortened = "&gray;";
+				$colour_shortened = "&gray;";
 			}
-			$image .= '
-				<g id="shortened">
-					<circle style="' . $color_shortened . '" cx="12" cy="8" r="2"/>
-				</g>';
+			
+			$lights[] = Array(
+					'id'        => 'shortened',
+					'colour'    => $colour_shortened,
+					'cx'        => 12,
+					'cy'        => 8,
+					'r'         => $r_minor,
+			);
 		}
-		$image .= '
-		</g>';
-		$height = 60;
-		return array($image, $height);
+		
+		return Signal_Light::generateImage($position,60,$geometry,$lights);
 	}
 }

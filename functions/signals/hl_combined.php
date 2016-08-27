@@ -26,140 +26,22 @@
  * @author sb12
  *
  */
-Class HL_combined
+Class HL_combined extends Signals
 {
 
-	/**
-	 * returns the state of the signals
-	 * @param $tags array tags of the signal
-	 * @param $next_speed int speed which is relevant for the signal
-	 * @param $main_distance int distance to next main signal
-	 */
-	public static function findState($tags, $next_speed, $next_speed_distant, $main_distance)
-	{
-		$state = "";
-		if(isset($tags["railway:signal:combined:states"]))
-		{
-			if ( $next_speed == 0 && strpos($tags["railway:signal:combined:states"], "hp0" )) // signal at end of route
-			{
-				$state = "hp0";
-			}
-			// last distant signal of route
-			elseif ( $next_speed_distant == 0  && (
-					 strpos($tags["railway:signal:combined:states"], "hl10")
-					|| ( strpos($tags["railway:signal:combined:states"], "hl11") &&  ( $next_speed == 100 || $main_distance < 700 ) )
-					|| ( strpos($tags["railway:signal:combined:states"], "hl12a") &&  $next_speed == 40 )
-					|| ( strpos($tags["railway:signal:combined:states"], "hl12b") &&  $next_speed == 60 ) ) )
-			{
-				if( ( $next_speed == 100 || $main_distance < 700 ) && strpos($tags["railway:signal:combined:states"], "hl11" ))
-				{
-					$state = "hl11";
-				}
-				elseif( $next_speed == 40 && strpos($tags["railway:signal:combined:states"], "hl12a" ))
-				{
-					$state = "hl12a";
-				}
-				elseif( $next_speed == 60 && strpos($tags["railway:signal:combined:states"], "hl12b" ))
-				{
-					$state = "hl12b";
-				}
-				elseif( strpos($tags["railway:signal:combined:states"], "hl10" ) )
-				{
-					$state = "hl10";
-				}
-			}
-			elseif ( ( $next_speed_distant == 40 || $next_speed_distant == 60 ) && (
-					 strpos($tags["railway:signal:combined:states"], "hl7")
-					|| ( strpos($tags["railway:signal:combined:states"], "hl8") &&  ( $next_speed == 100 || $main_distance < 700 ) )
-					|| ( strpos($tags["railway:signal:combined:states"], "hl9a") &&  $next_speed == 40 )
-					|| ( strpos($tags["railway:signal:combined:states"], "hl9b") &&  $next_speed == 60 ) ) )
-			{
-				if( ( $next_speed == 100 || $main_distance < 700 ) && strpos($tags["railway:signal:combined:states"], "hl8" ))
-				{
-					$state = "hl8";
-				}
-				elseif( $next_speed == 40 && strpos($tags["railway:signal:combined:states"], "hl9a" ))
-				{
-					$state = "hl9a";
-				}
-				elseif( $next_speed == 60 && strpos($tags["railway:signal:combined:states"], "hl9b" ))
-				{
-					$state = "hl9b";
-				}
-				elseif( strpos($tags["railway:signal:combined:states"], "hl7" ) )
-				{
-					$state = "hl7";
-				}
-			}
-			elseif ( $next_speed_distant == 100 && (
-					 strpos($tags["railway:signal:combined:states"], "hl4")
-					|| ( strpos($tags["railway:signal:combined:states"], "hl5") &&  ( $next_speed == 100 || $main_distance < 700 ) )
-					|| ( strpos($tags["railway:signal:combined:states"], "hl6a") &&  $next_speed == 40 )
-					|| ( strpos($tags["railway:signal:combined:states"], "hl6b") &&  $next_speed == 60 ) ) )
-			{
-				if( ( $next_speed == 100 || $main_distance < 700 ) && strpos($tags["railway:signal:combined:states"], "hl5" ))
-				{
-					$state = "hl5";
-				}
-				elseif( $next_speed == 40 && strpos($tags["railway:signal:combined:states"], "hl6a" ))
-				{
-					$state = "hl6a";
-				}
-				elseif( $next_speed == 60 && strpos($tags["railway:signal:combined:states"], "hl6b" ))
-				{
-					$state = "hl6b";
-				}
-				elseif( strpos($tags["railway:signal:combined:states"], "hl4" ) )
-				{
-					$state = "hl4";
-				}
-			}
-			elseif (  strpos($tags["railway:signal:combined:states"], "hl1")
-					|| ( strpos($tags["railway:signal:combined:states"], "hl2") &&  ( $next_speed == 100 || $main_distance < 700 ) )
-					|| ( strpos($tags["railway:signal:combined:states"], "hl3a") &&  $next_speed == 40 )
-					|| ( strpos($tags["railway:signal:combined:states"], "hl3b") &&  $next_speed == 60 ) ) 
-			{
-				if( ( $next_speed == 100 || $main_distance < 700 ) && strpos($tags["railway:signal:combined:states"], "hl2" ))
-				{
-					$state = "hl2";
-				}
-				elseif( $next_speed == 40 && strpos($tags["railway:signal:combined:states"], "hl3a" ))
-				{
-					$state = "hl3a";
-				}
-				elseif( $next_speed == 60 && strpos($tags["railway:signal:combined:states"], "hl3b" ))
-				{
-					$state = "hl3b";
-				}
-				elseif( strpos($tags["railway:signal:combined:states"], "hl1" ) )
-				{
-					$state = "hl1";
-				}
-			}
-			elseif ( strpos($tags["railway:signal:combined:states"], "hp0" ) ) // signal can only show hp0
-			{
-				$state = "hp0";
-			}
-		}
-		return $state;
-	}
-	
-	
-	/**
-	 * returns description of the signals
-	 * @param $tags array tags of the signal
-	 */
-	public static function showDescription()
-	{
-		return Lang::l_("German Hl");
-	}
 	
 	/**
 	 * generate image
 	 * @param $tags array tags of the signal
 	 */
-	public static function generateImage($height)
+
+	/**
+	 * generate image
+	 * @param $tags array tags of the signal
+	 */
+	public static function generateImage($position)
 	{
+
 		$colour_gelb1 = "&yellow;";
 		$colour_gelb2 = "&yellow;";
 		$colour_gruen = "&green;";
@@ -172,10 +54,12 @@ Class HL_combined
 		$class_zs1 = "";
 		$class_gelb1 = "";
 		$class_gruen = "";
-
+	
 		$show_rot = $show_gruen = $show_gelb1 = $show_gelb2 = $show_stripes1 = $show_stripes2 = true;
 		if( isset($_GET["railway:signal:combined:states"]) )
 		{
+			$states = self::signalStates($_GET["railway:signal:combined:states"], "DE-ESO");
+		
 			$show_rot = $show_gruen = $show_gelb1 = $show_gelb2 = $show_stripes1 = $show_stripes2 = false;
 			
 			if( strpos($_GET["railway:signal:combined:states"], "hp0"))
@@ -183,62 +67,62 @@ Class HL_combined
 				$show_rot = true;
 			}
 			
-			if( strpos($_GET["railway:signal:combined:states"], "hl1")
-					|| strpos($_GET["railway:signal:combined:states"], "hl2")
-					|| strpos($_GET["railway:signal:combined:states"], "hl3a")
-					|| strpos($_GET["railway:signal:combined:states"], "hl3b")
-					|| strpos($_GET["railway:signal:combined:states"], "hl4")
-					|| strpos($_GET["railway:signal:combined:states"], "hl5")
-					|| strpos($_GET["railway:signal:combined:states"], "hl6a")
-					|| strpos($_GET["railway:signal:combined:states"], "hl6b")
+			if( in_array("hl1", $states)
+					|| in_array("hl2", $states)
+					|| in_array("hl3a", $states)
+					|| in_array("hl3b", $states)
+					|| in_array("hl4", $states)
+					|| in_array("hl5", $states)
+					|| in_array("hl6a", $states)
+					|| in_array("hl6b", $states)
 					)
 			{
 				$show_gruen = true;
 			}
 			
-			if( strpos($_GET["railway:signal:combined:states"], "hl7")
-					|| strpos($_GET["railway:signal:combined:states"], "hl8")
-					|| strpos($_GET["railway:signal:combined:states"], "hl9a")
-					|| strpos($_GET["railway:signal:combined:states"], "hl9b")
-					|| strpos($_GET["railway:signal:combined:states"], "hl10")
-					|| strpos($_GET["railway:signal:combined:states"], "hl11")
-					|| strpos($_GET["railway:signal:combined:states"], "hl12a")
-					|| strpos($_GET["railway:signal:combined:states"], "hl12b")
+			if( in_array("hl7", $states)
+					|| in_array("hl8", $states)
+					|| in_array("hl9a", $states)
+					|| in_array("hl9b", $states)
+					|| in_array("hl10", $states)
+					|| in_array("hl11", $states)
+					|| in_array("hl12a", $states)
+					|| in_array("hl12b", $states)
 					)
 			{
 				$show_gelb1 = true;
 			}
 			
-			if( strpos($_GET["railway:signal:combined:states"], "hl2")
-					|| strpos($_GET["railway:signal:combined:states"], "hl3a")
-					|| strpos($_GET["railway:signal:combined:states"], "hl3b")
-					|| strpos($_GET["railway:signal:combined:states"], "hl5")
-					|| strpos($_GET["railway:signal:combined:states"], "hl6a")
-					|| strpos($_GET["railway:signal:combined:states"], "hl6b")
-					|| strpos($_GET["railway:signal:combined:states"], "hl8")
-					|| strpos($_GET["railway:signal:combined:states"], "hl9a")
-					|| strpos($_GET["railway:signal:combined:states"], "hl9b")
-					|| strpos($_GET["railway:signal:combined:states"], "hl11")
-					|| strpos($_GET["railway:signal:combined:states"], "hl12a")
-					|| strpos($_GET["railway:signal:combined:states"], "hl12b")
+			if( in_array("hl2", $states)
+					|| in_array("hl3a", $states)
+					|| in_array("hl3b", $states)
+					|| in_array("hl5", $states)
+					|| in_array("hl6a", $states)
+					|| in_array("hl6b", $states)
+					|| in_array("hl8", $states)
+					|| in_array("hl9a", $states)
+					|| in_array("hl9b", $states)
+					|| in_array("hl11", $states)
+					|| in_array("hl12a", $states)
+					|| in_array("hl12b", $states)
 					)
 			{
 				$show_gelb2 = true;
 			}
 			
-			if( strpos($_GET["railway:signal:combined:states"], "hl3b")
-					|| strpos($_GET["railway:signal:combined:states"], "hl6b")
-					|| strpos($_GET["railway:signal:combined:states"], "hl9b")
-					|| strpos($_GET["railway:signal:combined:states"], "hl12b")
+			if( in_array("hl3b", $states)
+					|| in_array("hl6b", $states)
+					|| in_array("hl9b", $states)
+					|| in_array("hl12b", $states)
 					)
 			{
 				$show_stripes1 = true;
 			}
 			
-			if( strpos($_GET["railway:signal:combined:states"], "hl2")
-					|| strpos($_GET["railway:signal:combined:states"], "hl5")
-					|| strpos($_GET["railway:signal:combined:states"], "hl8")
-					|| strpos($_GET["railway:signal:combined:states"], "hl11")
+			if( in_array("hl2", $states)
+					|| in_array("hl5", $states)
+					|| in_array("hl8", $states)
+					|| in_array("hl11", $states)
 					)
 			{
 				$show_stripes2 = true;
@@ -431,105 +315,181 @@ Class HL_combined
 				$class_zs1 = "signal_blink";
 			}
 		}
-		
-		$image = '
-			<g transform="translate(0 ' . $height . ')">
-				<g>
-					<polygon style="&background;" points="6,6 11,1 29,1 34,6 34,55 6,55"/>
-				</g>
-					';
+	
+	
+		$geometry = "6,6 11,1 29,1 34,6 34,55 6,55";
+		$r_main = 4;
+		$r_minor = 1.5;
+	
 		if($show_gelb1)
 		{
-			$image .= '
-				<g id="gelb1">
-					<circle style="&gray;" cx="12" cy="12" r="4"/>
-					<circle class="' . $class_gelb1 . '" style="' . $colour_gelb1 . '" cx="12" cy="12" r="4"/>
-				</g>
-					';
+			$lights[] = Array(
+					'id'        => 'gelb1',
+					'colour'    => '&gray;',
+					'cx'        => 12,
+					'cy'        => 12,
+					'r'         => $r_main
+			);
+			$lights[] = Array(
+					'id'        => 'gelb1',
+					'colour'    => $colour_gelb1,
+					'class'		=> $class_gelb1,
+					'cx'        => 12,
+					'cy'        => 12,
+					'r'         => $r_main
+			);
 		}
 		if($show_gruen)
 		{
-			$image .= '
-				<g id="gruen">
-					<circle style="&gray;" cx="28" cy="12" r="4"/>
-					<circle class="' . $class_gruen . '" style="' . $colour_gruen . '" cx="28" cy="12" r="4"/>
-				</g>
-					
-					';
+			$lights[] = Array(
+					'id'        => 'gruen',
+					'colour'    => '&gray;',
+					'cx'        => 28,
+					'cy'        => 12,
+					'r'         => $r_main
+			);
+			$lights[] = Array(
+					'id'        => 'gruen',
+					'colour'    => $colour_gruen,
+					'class'		=> $class_gruen,
+					'cx'        => 28,
+					'cy'        => 12,
+					'r'         => $r_main
+			);
 		}
 		if($show_rot)
 		{
-			$image .= '
-				<g id="rot">
-					<circle style="' . $colour_rot1 . '" cx="20" cy="29" r="4"/>
-				</g>
-					
-					';
+			$lights[] = Array(
+					'id'        => 'rot',
+					'colour'    => $colour_rot1,
+					'cx'        => 20,
+					'cy'        => 29,
+					'r'         => $r_main
+			);
+			$lights[] = Array(
+					'id'        => 'rot2',
+					'colour'    => $colour_rot2,
+					'cx'        => 28,
+					'cy'        => 46,
+					'r'         => $r_main
+			);
 		}
 		if($show_gelb2)
 		{
-			$image .= '
-				<g id="gelb2">
-					<circle style="' . $colour_gelb2 . '" cx="12" cy="46" r="4"/>
-				</g>
-					';
+			$lights[] = Array(
+					'id'        => 'gelb2',
+					'colour'    => $colour_gelb2,
+					'cx'        => 12,
+					'cy'        => 46,
+					'r'         => $r_main
+			);
 		}
-		if($show_rot)
-		{
-			$image .= '
-				<g id="rot2">
-					<circle style="' . $colour_rot2 . '" cx="28" cy="46" r="4"/>
-				</g>
-					';
-		}
-		$image .= '
-						
-				<g id="ra12">';
+
 		if ( ( isset($_GET["railway:signal:combined:substitute_signal"]) && $_GET["railway:signal:combined:substitute_signal"] == "DE-ESO:dr:zs1" ) || ( isset($_GET["railway:signal:minor"]) && $_GET["railway:signal:minor"] == "DE-ESO:sh1" ) )
 		{
-			$image .= '
-					<circle style="&gray;" cx="12" cy="37" r="2"/>
-					<circle class="' . $class_zs1 . '" style="' . $colour_zs1 . '" cx="12" cy="37" r="2"/>';
+			$lights[] = Array(
+					'id'        => 'zs1',
+					'colour'    => '&gray;',
+					'cx'        => 12,
+					'cy'        => 37,
+					'r'         => $r_minor
+			);
+			$lights[] = Array(
+					'id'        => 'zs1',
+					'colour'    => $colour_zs1,
+					'class'    	=> $class_zs1,
+					'cx'        => 12,
+					'cy'        => 37,
+					'r'         => $r_minor
+			);
 		}
 		if ( isset($_GET["railway:signal:minor"]) && $_GET["railway:signal:minor"] == "DE-ESO:sh1" )
 		{
-			$image .= '
-					<circle style="' . $colour_ra12 . '" cx="28" cy="21" r="2"/>';
+			$lights[] = Array(
+					'id'        => 'ra12',
+					'colour'    => $colour_ra12,
+					'cx'        => 28,
+					'cy'        => 21,
+					'r'         => $r_minor
+			);
 		}
-		$image .= '
-				</g>';
-		$height = 55;
+		$image1 = Signal_Light::generateImage($position,55,$geometry,$lights);
+		
+		//delete lights
+		$lights = Array();
+		
+		$geometry = "6,2 34,2 34,13 6,13";
+		
 		if ( $show_stripes1 || $show_stripes2 )
 		{
-			$image .= '
-				<g>
-					<polygon style="&background;" points="6,57 34,57 34,68 6,68"/>
-						';
 			if( $show_stripes1 )
 			{
-				$image .= '
-					<circle style="' . $colour_stripes1 . '" cx="11" cy="60" r="2"/>
-					<circle style="' . $colour_stripes1 . '" cx="17" cy="60" r="2"/>
-					<circle style="' . $colour_stripes1 . '" cx="23" cy="60" r="2"/>
-					<circle style="' . $colour_stripes1 . '" cx="29" cy="60" r="2"/>
-						';
+				$lights[] = Array(
+						'id'        => 'stripes1_1',
+						'colour'    => $colour_stripes1,
+						'cx'        => 11,
+						'cy'        => 5,
+						'r'         => $r_minor
+				);
+				$lights[] = Array(
+						'id'        => 'stripes1_2',
+						'colour'    => $colour_stripes1,
+						'cx'        => 17,
+						'cy'        => 5,
+						'r'         => $r_minor
+				);
+				$lights[] = Array(
+						'id'        => 'stripes1_3',
+						'colour'    => $colour_stripes1,
+						'cx'        => 23,
+						'cy'        => 5,
+						'r'         => $r_minor
+				);
+				$lights[] = Array(
+						'id'        => 'stripes1_4',
+						'colour'    => $colour_stripes1,
+						'cx'        => 29,
+						'cy'        => 5,
+						'r'         => $r_minor
+				);
 			}
 			if( $show_stripes2 )
 			{
-				$image .= '
-					<circle style="' . $colour_stripes2 . '" cx="11" cy="65" r="2"/>
-					<circle style="' . $colour_stripes2 . '" cx="17" cy="65" r="2"/>
-					<circle style="' . $colour_stripes2 . '" cx="23" cy="65" r="2"/>
-					<circle style="' . $colour_stripes2 . '" cx="29" cy="65" r="2"/>
-							';
+				$lights[] = Array(
+						'id'        => 'stripes2_1',
+						'colour'    => $colour_stripes2,
+						'cx'        => 11,
+						'cy'        => 10,
+						'r'         => $r_minor
+				);
+				$lights[] = Array(
+						'id'        => 'stripes2_2',
+						'colour'    => $colour_stripes2,
+						'cx'        => 17,
+						'cy'        => 10,
+						'r'         => $r_minor
+				);
+				$lights[] = Array(
+						'id'        => 'stripes2_3',
+						'colour'    => $colour_stripes2,
+						'cx'        => 23,
+						'cy'        => 10,
+						'r'         => $r_minor
+				);
+				$lights[] = Array(
+						'id'        => 'stripes2_4',
+						'colour'    => $colour_stripes2,
+						'cx'        => 29,
+						'cy'        => 10,
+						'r'         => $r_minor
+				);
 			}
-			$image .= '
-				</g>
-							';
-			$height = 68;
+			$image2 = Signal_Light::generateImage($position+55,13,$geometry,$lights);
+			return array($image1[0].$image2[0], $image1[1]+$image2[1]);
 		}
-		$image .= '
-		</g>';
-		return array($image, $height);
+		else
+		{
+			return $image1;
+		}
 	}
 }

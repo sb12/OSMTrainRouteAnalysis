@@ -26,7 +26,7 @@
  * @author sb12
  *
  */
-Class HV_distant_light
+Class HV_distant extends SignalPart
 {
 
 	/**
@@ -42,20 +42,10 @@ Class HV_distant_light
 	
 	
 	/**
-	 * returns description of the signals
-	 * @param $tags array tags of the signal
-	 */
-	public static function showDescription()
-	{
-		return HV_distant::showDescription();
-	}
-	
-	
-	/**
 	 * generate image
 	 * @param $tags array tags of the signal
 	 */
-	public static function generateImage($height)
+	public static function generateImage($position)
 	{
 		
 		$colour_vr0 = "&yellow;";
@@ -114,37 +104,52 @@ Class HV_distant_light
 				$colour_marker = "&white;";				
 			}
 		}
-		$image = '
-			<g transform="translate(0 ' . $height . ')">
-				<g>
-					<polygon style="&background;" points="6,1 34,1 34,49 6,49"/>
-				</g>';
 
-
-		$image .= '
-				<g id="vr0">
-					<circle style="' . $colour_vr0 . '" cx="27" cy="22" r="4"/>
-				</g>
-				<g id="vr12">
-					<circle style="' . $colour_vr12 . '" cx="27" cy="12" r="4"/>
-				</g>
-				<g id="vr1">
-					<circle style="' . $colour_vr1 . '" cx="13" cy="30" r="4"/>
-				</g>
-				<g id="vr2">
-					<circle style="' . $colour_vr2 . '" cx="13" cy="40" r="4"/>
-				</g>';
-
-		if ( $marker )
+		if( $_GET["railway:signal:distant:form"] == "light" )
 		{
-			$image .= '
-				<g id="marker">
-					<circle style="' . $colour_marker . '" cx="12" cy="12" r="2"/>
-				</g>';
+			$geometry = "6,1 34,1 34,49 6,49";
+			$r_main = 4;
+			$r_minor = 1.5;
+			$lights[] = Array(
+					'id'        =>	'vr0',
+					'colour'    => $colour_vr0,
+					'cx'        => 27,
+					'cy'        => 22,
+					'r'         => $r_main,
+			);
+			$lights[] = Array(
+					'id'        =>	'vr12',
+					'colour'    => $colour_vr12,
+					'cx'        => 27,
+					'cy'        => 12,
+					'r'         => $r_main,
+			);
+			$lights[] = Array(
+					'id'        =>	'vr1',
+					'colour'    => $colour_vr1,
+					'cx'        => 13,
+					'cy'        => 30,
+					'r'         => $r_main,
+			);
+			$lights[] = Array(
+					'id'        =>	'vr2',
+					'colour'    => $colour_vr2,
+					'cx'        => 13,
+					'cy'        => 40,
+					'r'         => $r_main,
+			);
+	
+			if ( $marker )
+			{
+				$lights[] = Array(
+						'id'        =>	'marker',
+						'colour'    => $colour_marker,
+						'cx'        => 12,
+						'cy'        => 12,
+						'r'         => $r_minor,
+				);
+			}
+			return Signal_Light::generateImage($position,50,$geometry,$lights);
 		}
-		$image .= '
-			</g>';
-		$height = 50;
-		return array($image, $height);
 	}
 }

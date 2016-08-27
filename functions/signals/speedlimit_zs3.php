@@ -26,9 +26,14 @@
  * @author sb12
  *
  */
-Class Speedlimit_zs3
+Class Speedlimit_zs3 extends Speed
 {
 
+	public function __construct($tags)
+	{
+		parent::__construct($tags);
+	}
+	
 	/**
 	 * returns the state of the signal
 	 * @param $tags array tags of the signal
@@ -66,15 +71,15 @@ Class Speedlimit_zs3
 		}
 		return $speed;
 	}
-	
+
 
 	/**
 	 * returns description of the signals
-	 * @param $tags array tags of the signal
+	 * @return description for signal
 	 */
-	public static function showDescription()
+	public function showDescription($description,$type)
 	{
-		return Lang::l_("German Zs 3 Speed Signal");
+		return parent::showDescription(Lang::l_("German Zs3"),$type);
 	}
 	
 

@@ -2063,7 +2063,7 @@ if (  $this->relation_distance == 0 )
 			</a></h4>
 		</div>
 		<div class="panel-body collapse" id="signalsTab">
-		<?php Signals::analyseSignals($this->signals_array, $this->node, $this->maxspeed_array);?>
+		<?php Signals::analyseSignals($this->signals_array, $this->node, $this->maxspeed_array, $this);?>
 			<table class="table table-striped">
 			<tr>
 				<th><?php echo Lang::l_("Position")?></th>
@@ -2077,11 +2077,10 @@ if (  $this->relation_distance == 0 )
 		<?php
 		foreach ($this->signals_array as $signals)
 		{
-			$signal = Signals::getSignal($signals[1], $this->node[$signals[1]], $this->maxspeed_array, $signals[0]);
-			if($signal)
+			if($this->signal[$signals[1]])
 			{
-				echo $signal;
-			}	
+				echo $this->signal[$signals[1]]->showSignal();
+			}
 		}
 		?>
 			</table>

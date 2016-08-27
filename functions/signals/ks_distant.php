@@ -26,51 +26,13 @@
  * @author sb12
  *
  */
-Class KS_distant
+Class KS_distant extends SignalPart
 {
-
-	/**
-	 * returns the state of the signals
-	 * @param $tags array tags of the signal
-	 * @param $next_speed int speed which is relevant for the signal
-	 * @param $main_distance int distance to next main signal
-	 */
-	public static function findState($tags, $next_speed_distant, $main_distance)
-	{
-		$state = "";
-		if(isset($tags["railway:signal:distant:states"]))
-		{
-			if ( $next_speed_distant == 0 && strpos($tags["railway:signal:distant:states"], "ks2" )) // last distant signal of route
-			{
-				$state = "ks2";
-			}
-			elseif ( strpos($tags["railway:signal:distant:states"], "ks1" ) ) // default
-			{
-				$state = "ks1";
-			}
-			elseif ( strpos($tags["railway:signal:distant:states"], "ks2" ) ) // signal can not show ks1
-			{
-				$state = "ks2";
-			}
-		}
-		return $state;
-	}
-	
-	
-	/**
-	 * returns description of the signals
-	 * @param $tags array tags of the signal
-	 */
-	public static function showDescription()
-	{
-		return Lang::l_("German Ks");
-	}
-	
 	/**
 	 * generate image
 	 * @param $tags array tags of the signal
 	 */
-	public static function generateImage($height)
+	public static function generateImage($position)
 	{
 		
 		$colour_ks1 = "&green;";
@@ -82,7 +44,7 @@ Class KS_distant
 			{
 				$colour_ks1 = "&green;";
 				$colour_ks2 = "&gray;";
-				if(isset($_GET["speed_distant"]))
+				if(isset($_GET["speed_distant"]) && $_GET["speed_distant"] > 0 )
 				{
 					$class_ks1 = "signal_blink";
 				}
@@ -93,12 +55,10 @@ Class KS_distant
 				$colour_ks2 = "&yellow;";
 			}
 		}
-		
-		$image = '
-			<g transform="translate(0 ' . $height . ')">
-				<g>
-					<polygon style="&background;" points="6,1 34,1 34,49 6,49"/>
-				</g>';
+
+		$geometry = "6,1 34,1 34,49 6,49";
+		$r_main = 4;
+		$r_minor = 1.5;
 				
 		// signals with shortened distance to main: upper white additional light
 		// TODO: or Kennlicht
@@ -106,48 +66,69 @@ Class KS_distant
 		{
 			if( ( $_GET["state_distant"] == "ks2" ) || ( $class_ks1 == "signal_blink" ) ) // only when Ks 1 is blinking or Ks 2 is shown
 			{
-				$color_additional_light_upper = "&white;";
+				$colour_additional_light_upper = "&white;";
 			}
 			else
 			{
-				$color_additional_light_upper = "&gray;";
+				$colour_additional_light_upper = "&gray;";
 			}
-			$image .= '
-				<g id="repeated">
-					<circle style="' . $color_additional_light_upper . '" cx="13" cy="10" r="2"/>
-				</g>';
+			
+			$lights[] = Array(
+					'id'        => 'repeated',
+					'colour'    => $colour_additional_light_upper,
+					'cx'        => 13,
+					'cy'        => 10,
+					'r'         => $r_minor,
+			);
 		}
-		
+
+
+		$lights[] = Array(
+				'id'        => 'ks1_bg',
+				'colour'    => '&gray;',
+				'cx'        => 13,
+				'cy'        => 24,
+				'r'         => $r_main,
+		);
+
 		// two big lights
-		$image .= '
-				<g id="ks1">
-					<circle style="&gray;" cx="13" cy="24" r="4"/>
-					<circle class="' . $class_ks1 . '" style="' . $colour_ks1 . '" cx="13" cy="24" r="4"/>
-				</g>
-					
-				<g id="ks2">
-					<circle style="' . $colour_ks2 . '" cx="27" cy="24" r="4"/>
-				</g>';
+		$lights[] = Array(
+				'id'        => 'ks1',
+				'colour'    => $colour_ks1,
+				'class'     => $class_ks1,
+				'cx'        => 13,
+				'cy'        => 24,
+				'r'         => $r_main,
+		);
+			
+		$lights[] = Array(
+				'id'        => 'ks2',
+				'colour'    => $colour_ks2,
+				'cx'        => 27,
+				'cy'        => 24,
+				'r'         => $r_main,
+		);
 
 		// repeated signals: lower white additional light
 		if( ( isset($_GET["railway:signal:distant:repeated"]) && $_GET["railway:signal:distant:repeated"] == "yes" ) )
 		{
 			if( ( $_GET["state_distant"] == "ks2" ) || ( $class_ks1 == "signal_blink" ) ) // only when Ks 1 is blinking or Ks 2 is shown
 			{
-				$color_additional_light_lower = "&white;";
+				$colour_additional_light_lower = "&white;";
 			}
 			else
 			{
-				$color_additional_light_lower = "&gray;";
+				$colour_additional_light_lower = "&gray;";
 			}
-			$image .= '
-				<g id="repeated">
-					<circle style="' . $color_additional_light_lower . '" cx="13" cy="39" r="2"/>
-				</g>';
+			
+			$lights[] = Array(
+					'id'        => 'repeated',
+					'colour'    => $colour_additional_light_lower,
+					'cx'        => 13,
+					'cy'        => 39,
+					'r'         => $r_minor,
+			);
 		}
-		$image .= '
-		</g>';
-		$height = 50;
-		return array($image, $height);
+		return Signal_Light::generateImage($position,50,$geometry,$lights);
 	}
 }

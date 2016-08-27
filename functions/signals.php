@@ -1,7 +1,7 @@
 <?php 
     /**
     
-    OSMTrainRouteAnalysis Copyright © 2014 sb12 osm.mapper999@gmail.com
+    OSMTrainRouteAnalysis Copyright © 2014-2016 sb12 osm.mapper999@gmail.com
     
     This file is part of OSMTrainRouteAnalysis.
     
@@ -21,19 +21,18 @@
     */
 ?>
 <?php
-include "signals/distant_light.php";
-include "signals/main_light.php";
+//include "signals/distant_light.php";
+//include "signals/main_light.php";
+include "signals/signalpart.php";
+include "signals/speed.php";
+include "signals/speed_distant.php";
 
-include "signals/hv_main.php";
-include "signals/hv_distant.php";
+//include "signals/hv_main.php";
+include "signals/hv.php";
 
-include "signals/ks_main.php";
-include "signals/ks_combined.php";
-include "signals/ks_distant.php";
+include "signals/ks.php";
 
-include "signals/hl_main.php";
-include "signals/hl_combined.php";
-include "signals/hl_distant.php";
+include "signals/hl.php";
 
 include "signals/speedlimit_zs3.php";
 include "signals/speedlimit_zs3v.php";
@@ -56,50 +55,544 @@ Class Signals
 	protected static $signal_property = array(array(),array());
 
 	/**
+	 * maxspeed array
+	 * @var array
+	 */
+	protected static $maxspeed_array;
+
+	/**
+	 * tags of this signal
+	 * @var array
+	 */
+	protected $tags;
+
+	/**
+	 * position of signal in route
+	 * @var double
+	 */
+	protected $pos;
+	
+	/**
+	 * corresponding main signal
+	 * @var Signals
+	 */
+	protected $mainSignal;
+	
+	/**
+	 * next main signal
+	 * @var Signals
+	 */
+	protected $nextMainSignal;
+	
+	/**
+	 * corresponding distant signal
+	 * @var Signals
+	 */
+	protected $distantSignal;
+
+
+	/**
+	 * corresponding repeater distant signal
+	 * @var Signals
+	 */
+	protected $RepeaterDistantSignal;
+	
+	/**
+	 * corresponding distant signal
+	 * @var Signals
+	 */
+	protected $distant;
+
+	/**
+	 * maxspeed in array behind signal
+	 * @var double
+	 */
+	protected $next_speed;
+
+	/**
+	 * Main Signal
+	 * @var Main
+	 */
+	protected $SignalMain;
+
+	/**
+	 * Distant Signal
+	 * @var Distant
+	 */
+	protected $SignalDistant;
+
+	/**
+	 * Speed Signal
+	 * @var Speed
+	 */
+	protected $SignalSpeed;
+
+	/**
+	 * Distant Speed Signal
+	 * @var Speed_Distant
+	 */
+	protected $SignalSpeedDistant;
+	
+	
+	
+	public function Signals($id, $node, $pos)
+	{
+		$this->tags = $node;
+		$this->pos = $pos;
+		$this->id = $id;
+		
+		//devide into signal parts:
+		if(isset($this->tags["railway:signal:main"])) // is main signal
+		{
+			if($this->tags["railway:signal:main"] == "DE-ESO:hp") // German H/V
+			{
+				$this->SignalMain = new HV($this->tags);
+			}
+			elseif($this->tags["railway:signal:main"] == "DE-ESO:ks") // German Ks
+			{
+				$this->SignalMain = new KS($this->tags);
+			}
+			elseif($this->tags["railway:signal:main"] == "DE-ESO:hl") // German Hl
+			{
+				$this->SignalMain = new HL($this->tags);
+			}
+			else // unknown main signal
+			{
+				$this->SignalMain = new SignalPart($this->tags);
+			}
+		}
+		if(isset($this->tags["railway:signal:distant"])) // is distant signal
+		{
+			if($this->tags["railway:signal:distant"] == "DE-ESO:vr") // German H/V
+			{
+				$this->SignalDistant = new HV($this->tags);
+			}
+			elseif($this->tags["railway:signal:distant"] == "DE-ESO:ks") // German Ks
+			{
+				$this->SignalDistant = new KS($this->tags);
+			}
+			elseif($this->tags["railway:signal:distant"] == "DE-ESO:hl") // German Hl
+			{
+				$this->SignalDistant = new HL($this->tags);
+			}
+			else // unknown distant signal
+			{
+				$this->SignalDistant = new SignalPart($this->tags);
+			}
+		}
+		if(isset($this->tags["railway:signal:combined"])) // is combined signal
+		{
+			if($this->tags["railway:signal:combined"] == "DE-ESO:ks") // German Ks
+			{
+				$this->SignalCombined = new KS($this->tags);
+				$this->SignalMain = $this->SignalCombined;
+				$this->SignalDistant = $this->SignalCombined;
+			}
+			elseif($this->tags["railway:signal:combined"] == "DE-ESO:hl") // German Hl
+			{
+				$this->SignalCombined = new HL($this->tags);
+				$this->SignalMain = $this->SignalCombined;
+				$this->SignalDistant = $this->SignalCombined;
+			}
+			else // unknown distant signal
+			{
+				$this->SignalCombined = new SignalPart($this->tags);
+				$this->SignalMain = $this->SignalCombined;
+				$this->SignalDistant = $this->SignalCombined;
+			}
+		}
+		if(isset($this->tags["railway:signal:speed_limit"])) // is speed limit signal
+		{
+			if($this->tags["railway:signal:speed_limit"] == "DE-ESO:zs3") // German Zs3
+			{
+				$this->SignalSpeed = new Speedlimit_zs3($this->tags);
+			}
+			else // unknown distant signal
+			{
+				$this->SignalSpeed = new Speed($this->tags);
+			}
+		}
+		if(isset($this->tags["railway:signal:speed_limit_distant"])) // is speed limit signal
+		{
+			if($this->tags["railway:signal:speed_limit_distant"] == "DE-ESO:zs3v") // German Zs3v
+			{
+				$this->SignalSpeedDistant = new Speedlimit_zs3v($this->tags);
+			}
+			else // unknown distant signal
+			{
+				$this->SignalSpeedDistant = new Speed_Distant($this->tags);
+			}
+		}
+		
+	}
+
+	/**
+	 * is the signal a main signal?
+	 * @return boolean
+	 */
+	public function is_main()
+	{
+		if( isset($this->tags["railway:signal:main"]) || isset($this->tags["railway:signal:combined"]))
+				// TODO: || ( isset($this->tags["railway:signal:train_protection:type"]) && $this->tags["railway:signal:train_protection:type"] == "block_marker" ) )
+		{
+			return true;
+		}
+		else
+		{
+			return false;
+		}
+	}
+
+	/**
+	 * is the signal a distant signal?
+	 * @return boolean
+	 */
+	public function is_distant()
+	{
+		if(isset($this->tags["railway:signal:distant"]) || isset($this->tags["railway:signal:combined"]) )
+		{
+			return true;
+		}
+		else
+		{
+			return false;
+		}
+	}
+	
+	/**
+	 * set corresponding main signal
+	 * @param Signal $signal
+	 */
+	public function set_mainSignal($signal)
+	{
+		$this->mainSignal = $signal;
+	}
+	
+	/**
+	 * set next main signal
+	 * @param Signal $signal
+	 */
+	public function set_nextMainSignal($signal)
+	{
+		$this->nextMainSignal = $signal;
+	}
+	
+	/**
+	 * set corresponding distant signal
+	 * @param Signal $signal
+	 */
+	public function set_distantSignal($signal)
+	{
+		$this->distantSignal = $signal;
+	}
+	
+	/**
+	 * set corresponding repeater distant signal
+	 * @param Signal $signal
+	 */
+	public function set_RepeaterDistantSignal($signal)
+	{
+		$this->RepeaterDistantSignal = $signal;
+	}
+	
+	/**
+	 * get speed in the area behind the signal
+	 */
+	public function getSpeed()
+	{
+		$dis = 0; // distance of start point of maxspeed area from start of route
+		$last_maxspeed = 400; // maxspeed value of last area
+		$next_speed = 0; // minimum maxspeed value of area after signal
+		$outside_of_area = false; // the last maxspeed is outside the relevant area
+
+		// go through maxspeed array
+		foreach(self::$maxspeed_array as $maxspeed)
+		{
+			//outside of relevant area
+			/*if( ( $dis - $this->pos ) > 1.5 )
+			{
+				break;
+				$outside_of_area=true;
+			}*/
+			if( $maxspeed[1] > 0 )
+			{
+				//maxspeed is for area behind signal
+				if ( $dis > $this->pos )
+				{
+					// area is relevant for this signal ( before next main signal and less than 1.5 km after signal)
+					if ( ( $dis - $this->pos ) < 1.5 && ( !isset($this->nextMainSignal->pos) || ( $dis - $this->nextMainSignal->pos ) <= -0.02 ) )
+					{
+						//maxspeed in area before is relevant, when new maxspeed does not start near the signal
+						if ( !$next_speed && $dis - $this->pos > 0.02 )
+						{
+							$next_speed = min( $maxspeed[1], $last_maxspeed );
+						}
+						//next speed is set (more than one maxspeed change in area)
+						if ( $next_speed > 0 )
+						{
+							$next_speed = min( $maxspeed[1], $next_speed );
+						}
+						else
+						{
+							$next_speed = $maxspeed[1];
+						}
+					}
+					else
+					{
+						break;
+						$outside_of_area=true;
+					}
+				}
+				elseif ( ( $this->pos - $dis ) < 0.02 ) // tolerance area before signal
+				{
+					$next_speed = $maxspeed[1];
+				}
+				$last_maxspeed = $maxspeed[1];
+			}
+			$dis += $maxspeed[0];
+		}
+				
+		if( $next_speed == 0 && ( abs( $dis - $this->pos ) > 0.005 && !$outside_of_area ) ) //fallback if no speed was found and signal is not the last of the route
+		{
+			$next_speed = $last_maxspeed;
+		}
+		$this->next_speed = $next_speed;
+	}
+	
+	/**
+	 * get signal states of this signal
+	 */
+	public function getSignalState()
+	{
+		//signal is a main signal
+		if($this->is_main())
+		{
+			$mainDist=0;
+			if(isset($this->nextMainSignal->pos))
+			{
+				$mainDist=$this->pos - $this->nextMainSignal->pos;
+			}
+			
+			//make distant speed available for main signal (needed for some combined signals)
+			if( isset ($this->SignalDistant) )
+			{
+				$this->SignalMain->speed_distant = $this->SignalDistant->speed_distant;
+			}
+			
+			$this->SignalMain->getStateMain($mainDist);
+			if(isset($this->SignalSpeed))
+			{
+				$this->SignalSpeed->getSpeed();
+			}
+		}
+		//signal is a distant signal
+		if($this->is_distant())
+		{
+			$this->SignalDistant->getStateDistant();
+			if(isset($this->SignalSpeedDistant))
+			{
+				$this->SignalSpeedDistant->getSpeedDistant();
+			}
+		}
+	}
+	
+	public function getPossibleSpeedsMain()
+	{
+		$speed_array = Array();
+		if( isset($this->SignalSpeed) )
+		{
+			$speed_array = array_merge($this->SignalSpeed->possibleSpeeds(), $speed_array); 
+		}
+		if( isset($this->SignalMain) )
+		{
+			$speed_array = array_merge($this->SignalMain->possibleSpeedsMain($this->next_speed), $speed_array); 
+		}
+		return $speed_array;
+	}
+	
+	public function getPossibleSpeedsDistant()
+	{
+		$speed_array = Array();
+		if( isset($this->SignalSpeedDistant) )
+		{
+			$speed_array = array_merge($this->SignalSpeedDistant->possibleSpeedsDistant(), $speed_array); 
+		}
+		if( isset($this->SignalDistant) )
+		{
+			$speed_array = array_merge($this->SignalDistant->possibleSpeedsDistant($this->next_speed), $speed_array); 
+		}
+		return $speed_array;
+	}
+	
+	public function setSignalStateMain()
+	{
+		//get speed values
+		$this->getSpeed();
+		
+		$possible_speeds = Array();
+		$possible_speeds_main = $this->getPossibleSpeedsMain($this->next_speed);
+		if(isset($this->distantSignal))
+		{
+			$possible_speeds_distant = $this->distantSignal->getPossibleSpeedsDistant($this->next_speed);
+			
+			$distSignal = $this->distantSignal;
+			while(isset($distSignal->RepeaterDistantSignal))
+			{
+				$distSignal = $distSignal->RepeaterDistantSignal;
+				$distSignal->getPossibleSpeedsDistant($this->next_speed);
+				//FIXME: for now it only calls the function but does not use the values to compare
+				
+				//TODO: Compare values of all repeaters
+			}
+			if($possible_speeds_distant)
+			{
+				foreach($possible_speeds_main as $speed)
+				{
+					if(in_array($speed, $possible_speeds_distant))
+					{
+						$possible_speeds[] = $speed;
+					}
+				}
+			}
+			else
+			{
+				$possible_speeds = $possible_speeds_main;
+			}
+		}
+		else
+		{
+			$possible_speeds = $possible_speeds_main;
+		}
+		sort($possible_speeds);
+		$none = false;
+		foreach($possible_speeds as $speed)
+		{
+			if($speed == "-1")
+			{
+				$none = true;
+				continue;
+			}
+			if($speed > $this->next_speed)
+			{
+				$none = false;
+				break;
+			}
+			$signal_speed = $speed;
+		}
+		if( !isset($signal_speed)  || $none) // case where signal can only show "proceed" and "stop"
+		{
+			$signal_speed = $this->next_speed;
+		}
+
+		if(isset($this->SignalMain))
+		{
+			$this->SignalMain->setSpeedMain($signal_speed);
+		}
+		if(isset($this->SignalSpeed))
+		{
+			$this->SignalSpeed->setSpeedMain($signal_speed);
+		}
+		if(isset($this->distantSignal))
+		{
+			if(isset($this->distantSignal->SignalDistant))
+			{
+				$this->distantSignal->SignalDistant->setSpeedDistant($signal_speed);
+				$distSignal = $this->distantSignal;
+				while(isset($distSignal->RepeaterDistantSignal))
+				{
+					$distSignal = $distSignal->RepeaterDistantSignal;
+					$distSignal->SignalDistant->setSpeedDistant($signal_speed);
+					if(isset($distSignal->SignalSpeedDistant))
+					{
+						
+						$distSignal->SignalSpeedDistant->setSpeedDistant($signal_speed);
+					}
+				}
+			}
+			if(isset($this->distantSignal->SignalSpeedDistant))
+			{
+				$this->distantSignal->SignalSpeedDistant->setSpeedDistant($signal_speed);
+			}
+		}
+	}
+	
+	
+	/**
 	 * analyses signals
 	 * @param $signals array signals
 	 * @param $nodes array tags of nodes
 	 * @param $maxspeed_array array maxspeeds along the route
 	 */	
-	public static function analyseSignals ($signals,$nodes,$maxspeed_array)
+	public static function analyseSignals ($signals, $nodes, $maxspeed_array, $Route)
 	{
+		self::$maxspeed_array = $maxspeed_array;
+
+
+		//construct signal elements
 		foreach ($signals as $signal)
 		{
-			/* all main signals (including combined and block markers): */
-			if(isset($nodes[$signal[1]]["railway:signal:main"]) || isset($nodes[$signal[1]]["railway:signal:combined"])
-					 || ( isset($nodes[$signal[1]]["railway:signal:train_protection:type"]) && $nodes[$signal[1]]["railway:signal:train_protection:type"] == "block_marker" ) ) 
+			$Route->signal[$signal[1]]=new Signals($signal[1], $nodes[$signal[1]],  $signal[0]);
+		}
+		
+		// construct arrays for main and distant signals
+		foreach ($signals as $signal)
+		{
+			if( $Route->signal[$signal[1]]->is_main() ) 
 			{
 				$main_signals[] = $signal;
 			}
 			/* all distant signals (including combined): */
-			if(isset($nodes[$signal[1]]["railway:signal:distant"]) || isset($nodes[$signal[1]]["railway:signal:combined"]))
+			if( $Route->signal[$signal[1]]->is_distant() )
 			{
 				$distant_signals[] = $signal;
 			}
-			self::$signal_property[$signal[1]]["distance"] = $signal[0]; 
+			//self::$signal_property[$signal[1]]["distance"] = $signal[0]; 
 		}
 		
 		$i = 0;
 		//attach main signals to distant signals
-		foreach ($main_signals as $signal)
+		$distant_signals = array_reverse($distant_signals); // reverse array
+		foreach ($main_signals as $signal) // go through all main signals
 		{
-			foreach ( $distant_signals as $distant)
+			$repeater = false;
+			foreach ( $distant_signals as $distant) // go through all distant signals
 			{
-				if ( $signal[0] - $distant[0] > 0 && $signal[0] - $distant[0] < 1.6)
+				if ( $signal[0] - $distant[0] > 0 && $signal[0] - $distant[0] < 1.6 && !isset($Route->signal[$distant[1]]->mainSignal)) // distant signal is between 0 and 1600m from main signal and there's no main signal set yet..
 				{
-					// do not override previous entries
-					if( !isset(self::$signal_property[$distant[1]]["main"]))
+					//set distant signal for main signal
+					$Route->signal[$signal[1]]->set_distantSignal($Route->signal[$distant[1]]);
+					self::$signal_property[$signal[1]]["distant"] = $distant[1];
+					
+					if($repeater) // last signal was a repeater
 					{
-						self::$signal_property[$signal[1]]["distant"] = $distant[1];
-						self::$signal_property[$distant[1]]["main"] = $signal[1];
-					} 
+						//set the non-repeater distant signal for main signal
+						$Route->signal[$distant[1]]->set_RepeaterDistantSignal($Route->signal[$last_distant[1]]);
+					}
+					
+					// set main signal for distant signal
+					$Route->signal[$distant[1]]->set_mainSignal($Route->signal[$signal[1]]);
+					self::$signal_property[$distant[1]]["main"] = $signal[1];
+
+					if( isset($Route->signal[$distant[1]]->tags["railway:signal:distant:repeated"]) && $Route->signal[$distant[1]]->tags["railway:signal:distant:repeated"] == "yes") // signal is a repeater
+					{
+						$repeater = true;
+						$last_distant = $distant;
+					}
+					else
+					{
+						$repeater = false;
+					}
 				}
 			}
 			$i++;
 			if( isset( $main_signals[$i] ) )
 			{
-				self::$signal_property[$signal[1]]["next_main"] = $main_signals[$i][1];
+				$Route->signal[$signal[1]]->set_nextMainSignal($Route->signal[$main_signals[$i][1]]);
 			}
+		}
+		foreach ($signals as $signal)
+		{
+			$Route->signal[$signal[1]]->setSignalStateMain();
 		}
 		
 		//FIXME: This should not be entered in maxspeed array and should be fixed in the maxspeed array creation
@@ -109,190 +602,26 @@ Class Signals
 			$maxspeed_array[-1][1]=0;
 		}
 		
-		// guess speed for signal
-		foreach ($signals as $signal) // go through all signals
-		{
-			$distance = $signal[0]; // distance of signal from start of route
-			$dis = 0; // distance of start point of maxspeed area from start of route
-			$last_maxspeed = 300; // maxspeed value of last area
-			$next_speed = 0; // minimum maxspeed value of area after signal
-			$outside_of_area = false; // the last maxspeed is outside the relevant area
-			
-			// go through maxspeed array
-			foreach($maxspeed_array as $maxspeed)
-			{
-				//outside of relevant area
-				if( ( $dis - $distance ) > 1 )
-				{
-					break;
-					$outside_of_area=true;
-				}
-				if(  $maxspeed[1] > 0)
-				{
-					//maxspeed is for area behind signal
-					if ( $dis > $distance )
-					{
-						// area is relevant for this signal ( < 1 km after signal)
-						if ( ( $dis - $distance ) < 1 )
-						{
-
-							//maxspeed in area before is relevant, when new maxspeed does not start near the signal
-							if ( !$next_speed && $dis - $distance > 0.02 )
-							{
-								$next_speed = min( $maxspeed[1], $last_maxspeed );
-							}
-							//next speed is set (more than one maxspeed change in area)
-							if ( $next_speed > 0 )
-							{
-								$next_speed = min( $maxspeed[1], $next_speed );
-							}
-							else
-							{
-								$next_speed = $maxspeed[1];
-							}
-						}
-					}
-					elseif ( ( $distance - $dis ) < 0.02 ) // tolerance area before signal
-					{
-						$next_speed = $maxspeed[1];
-					}
-					$last_maxspeed = $maxspeed[1];
-				}
-				$dis += $maxspeed[0];
-			}
-			
-			if( $next_speed == 0 && ( abs( $dis - $distance ) > 0.005 && !$outside_of_area ) ) //fallback if no speed was found and signal is not the last of the route
-			{
-				$next_speed = $last_maxspeed;
-			}
-			self::$signal_property[$signal[1]]["next_speed"] = $next_speed;
-		}
+		
 	}
 	
 	
-	public static function getSignal($id,$tags,$maxspeed_array,$distance)
+	public function showSignal()
 	{
-		//find out speed for speed signal
-		$next_speed_distant = "";
-		if(isset(self::$signal_property[$id]["next_speed"]))
-		{
-			$next_speed = self::$signal_property[$id]["next_speed"];
-		}
-		if(isset(self::$signal_property[$id]["main"]))
-		{
-			if(isset(self::$signal_property[self::$signal_property[$id]["main"]]["next_speed"]))
-			{
-				$next_speed_distant = self::$signal_property[self::$signal_property[$id]["main"]]["next_speed"];
-			}
-		}
-		
-		//find distance to main signal
-		$distant_distance = "";
-		if ( isset($tags["railway:signal:distant"] ) || isset ( $tags["railway:signal:combined"] ) )
-		{
-			if ( isset( self::$signal_property[$id]["main"] ) )
-			{
-				$distant_distance = round(self::$signal_property[self::$signal_property[$id]["main"]]["distance"] - self::$signal_property[$id]["distance"],2)*1000;
-			}
-		}
-
-		//find distance between main signals
-		$main_distance = "";
-		if ( isset($tags["railway:signal:main"] ) || isset ( $tags["railway:signal:combined"] )  || ( isset ( $tags["railway:signal:train_protection:type"] ) && $tags["railway:signal:train_protection:type"] == "block_marker" ) )
-		{
-			if(isset(self::$signal_property[$id]["next_main"]))
-			{
-				$main_distance = round(self::$signal_property[self::$signal_property[$id]["next_main"]]["distance"] - self::$signal_property[$id]["distance"],2)*1000;
-			}
-		}
-		
-		//find state of speed limit signal
-		if(isset($tags["railway:signal:speed_limit"]))
-		{
-			if($tags["railway:signal:speed_limit"] == "DE-ESO:zs3")
-			{
-				$speed = Speedlimit_zs3::findState($tags, $next_speed);
-			}
-		}
-		
-		//find speed for distant speed limit signals
-		if(isset($tags["railway:signal:speed_limit_distant"]))
-		{
-			if($tags["railway:signal:speed_limit_distant"] == "DE-ESO:zs3v")
-			{
-				$speed_distant = Speedlimit_zs3v::findState($tags, $next_speed_distant);
-			}
-		}
-		
-		//find state for main signals
-		if(isset($tags["railway:signal:main"]))
-		{
-			//German Hp signals
-			if($tags["railway:signal:main"] == "DE-ESO:hp")
-			{
-				$state_main = HV_main::findState($tags, $next_speed, $main_distance);
-			}
-			// German Ks signals
-			elseif($tags["railway:signal:main"] == "DE-ESO:ks")
-			{
-				$state_main = KS_main::findState($tags, $next_speed, $main_distance);
-			}
-			elseif($tags["railway:signal:main"] == "DE-ESO:hl")
-			{
-				$state_main = HL_main::findState($tags, $next_speed, $main_distance);
-			}
-		}
-		//German combined ks signals
-		if(isset($tags["railway:signal:combined"]) )
-		{
-			if($tags["railway:signal:combined"]=="DE-ESO:ks")
-			{
-				$state_combined = KS_combined::findState($tags, $next_speed, $next_speed_distant, $main_distance);	
-			}
-			if($tags["railway:signal:combined"]=="DE-ESO:hl")
-			{
-				$state_combined = HL_combined::findState($tags, $next_speed, $next_speed_distant, $main_distance);	
-			}
-		}
-		//Find state for distant signals
-		if(isset($tags["railway:signal:distant"]))
-		{
-			//German vr signals
-			if($tags["railway:signal:distant"] == "DE-ESO:vr")
-			{
-				$state_distant = HV_distant::findState($tags, $next_speed_distant, $main_distance);
-			}
-			//German ks signals
-			elseif($tags["railway:signal:distant"] == "DE-ESO:ks")
-			{
-				$state_distant = KS_distant::findState($tags, $next_speed_distant, $main_distance);
-			}
-			//German hl signals
-			elseif($tags["railway:signal:distant"] == "DE-ESO:hl")
-			{
-				$state_distant = HL_distant::findState($tags, $next_speed_distant, $main_distance);
-			}
-		}
-		
-		if(!isset($tags["railway:signal:main"])
-			&& !isset($tags["railway:signal:combined"]) 
-			&& !isset($tags["railway:signal:distant"]) 
-			&& !isset($tags["railway:signal:speed"]) 
-			&& !isset($tags["railway:signal:speed_distant"])
-			&& !( isset ( $tags["railway:signal:train_protection:type"] ) && $tags["railway:signal:train_protection:type"] == "block_marker" )
-				)
+		if( !$this->is_main() && !$this->is_distant() )
 		{
 			return;
 		}
+		$this->getSignalState();
 		$result = "
 			<tr>
-				<td> km ".round($distance,2)."</td>
+				<td> km ".round($this->pos,2)."</td>
 				<td> ";
 		
 		//write query for svg file
 		$get = "?";
 		$get_ref = $get_position = false;
-		foreach($tags as $k => $v)
+		foreach($this->tags as $k => $v)
 		{
 			if( 
 			$k == "railway:signal:main" || 
@@ -347,13 +676,13 @@ Class Signals
 		{
 			$get .= "railway:signal:position=" . urlencode($position) . "&";
 		}
-		if( isset($speed) && $speed )
+		if( isset($this->SignalSpeed->speed) && $this->SignalSpeed->speed )
 		{
-			$get .= "&speed=".$speed;
+			$get .= "&speed=".$this->SignalSpeed->speed;
 		}
-		if( isset($speed_distant) && $speed_distant )
+		if( isset($this->SignalSpeedDistant->speed_distant) && $this->SignalSpeedDistant->speed_distant )
 		{
-			$get .= "&speed_distant=".$speed_distant;
+			$get .= "&speed_distant=".$this->SignalSpeedDistant->speed_distant;
 		}
 		/* not needed yet
 		if(isset($route))
@@ -364,41 +693,41 @@ Class Signals
 		{
 			$get .= "&route_distant=".$route_distant;
 		}*/
-		if(isset($state_main))
+		if(isset($this->SignalMain->state_main))
 		{
-			$get .= "&state_main=".$state_main;
+			$get .= "&state_main=" . $this->SignalMain->state_main;
 		}
-		if(isset($state_combined))
+		if(isset($this->SignalMain->state_combined))
 		{
-			$get .= "&state_combined=".$state_combined;
+			$get .= "&state_combined=" . $this->SignalMain->state_combined;
 		}
-		if(isset($state_distant))
+		if(isset($this->SignalDistant->state_distant))
 		{
-			$get .= "&state_distant=".$state_distant;
+			$get .= "&state_distant=" . $this->SignalDistant->state_distant;
 		}
 		$result .='
-				<object type="image/svg+xml" data="img/signals/signal.php'.$get.'" class="svg signal">
+				<object type="image/svg+xml" data="img/signals/signal.php' . $get . '" class="svg signal">
 				</object>';
 		// add ref
-		if(isset($tags["ref"]))
+		if(isset($this->tags["ref"]))
 		{
 			// ref not needed for German Blockkennzeichen
-			if( !isset($tags["railway:signal:train_protection"]) || $tags["railway:signal:train_protection"] != "DE-ESO:blockkennzeichen" )
+			if( !isset($this->tags["railway:signal:train_protection"]) || $this->tags["railway:signal:train_protection"] != "DE-ESO:blockkennzeichen" )
 			{
 				$result.='
-						<span class="signal_ref">'.$tags["ref"].'</span>';
+						<span class="signal_ref">' . $this->tags["ref"] . '</span>';
 			}
 		}
 		$result.='</td>';
 		
 		//show position
-		if(isset($tags["railway:signal:position"]))
+		if(isset($this->tags["railway:signal:position"]))
 		{
 			$img_position = "signal_unknown_position.svg";
-			if( ($tags["railway:signal:position"] == "right" && $tags["railway:signal:direction"] == "forward") || ($tags["railway:signal:position"] == "left" && $tags["railway:signal:direction"] == "backward") )
+			if( ($this->tags["railway:signal:position"] == "right" && $this->tags["railway:signal:direction"] == "forward") || ($this->tags["railway:signal:position"] == "left" && $this->tags["railway:signal:direction"] == "backward") )
 			{
 
-				if( isset($tags["railway:signal:expected_position"]) && $tags["railway:signal:expected_position"] == "left")
+				if( isset($this->tags["railway:signal:expected_position"]) && $this->tags["railway:signal:expected_position"] == "left")
 				{
 					$img_position = "signal_right_expected_left.svg";
 				}
@@ -407,9 +736,9 @@ Class Signals
 					$img_position = "signal_right.svg";
 				}
 			}
-			elseif( ($tags["railway:signal:position"] == "left" && $tags["railway:signal:direction"] == "forward") || ($tags["railway:signal:position"] == "right" && $tags["railway:signal:direction"] == "backward") )
+			elseif( ($this->tags["railway:signal:position"] == "left" && $this->tags["railway:signal:direction"] == "forward") || ($this->tags["railway:signal:position"] == "right" && $this->tags["railway:signal:direction"] == "backward") )
 			{
-				if( isset($tags["railway:signal:expected_position"]) && $tags["railway:signal:expected_position"] == "right")
+				if( isset($this->tags["railway:signal:expected_position"]) && $this->tags["railway:signal:expected_position"] == "right")
 				{
 					$img_position = "signal_left_expected_right.svg";
 				}
@@ -418,7 +747,7 @@ Class Signals
 					$img_position = "signal_left.svg";
 				}
 			}
-			elseif($tags["railway:signal:position"] == "bridge")
+			elseif($this->tags["railway:signal:position"] == "bridge")
 			{
 				$img_position = "signal_bridge.svg";
 			}
@@ -436,246 +765,36 @@ Class Signals
 
 		//show description of signal
 		$description_set = false;
-		if(isset($tags["railway:signal:main"]) || isset($tags["railway:signal:combined"]))
+		if(isset($this->SignalMain))
 		{
-
-			if( isset($tags["railway:signal:combined"]))
-			{
-				$tags["railway:signal:main"] = $tags["railway:signal:combined"];
-			}
-			if($tags["railway:signal:main"] == "DE-ESO:ks")
-			{
-				$result .= KS_main::showDescription();
-			}
-			elseif($tags["railway:signal:main"] == "DE-ESO:hp")
-			{
-				$result .= HV_main::showDescription();
-			}
-			elseif($tags["railway:signal:main"] == "DE-ESO:hl")
-			{
-				$result .= HL_main::showDescription();
-			}
-			else
-			{
-				$result.=main_light::showDescription();
-			}
-			if( isset($tags["railway:signal:combined:function"]))
-			{
-				$tags["railway:signal:main:function"] = $tags["railway:signal:combined:function"];
-			}
-			if(isset($tags["railway:signal:main:function"]))
-			{
-				if($tags["railway:signal:main:function"] == "entry")
-				{
-					$result .= Lang::l_(" Entry Signal");
-				}
-				elseif($tags["railway:signal:main:function"] == "intermediate")
-				{
-					$result .= Lang::l_(" Intermediate Signal");
-				}
-				elseif($tags["railway:signal:main:function"] == "exit")
-				{
-					$result .= Lang::l_(" Exit Signal");
-				}
-				elseif($tags["railway:signal:main:function"] == "block")
-				{
-					$result .= Lang::l_(" Block Signal");
-				}
-				else
-				{
-					$result .= Lang::l_(" Main Signal");
-				}
-			}
-			else
-			{
-
-				$result .= Lang::l_(" Main Signal");
-			}
-			$description_set = true;
+			$result .= $this->SignalMain->showDescription("","Main") . "<br />";
 		}
-		if(isset($tags["railway:signal:speed_limit"]))
+		if(isset($this->SignalSpeed))
 		{
-			if($description_set)
-			{
-				$result .= "<br />";
-			}
-			if( isset($tags["railway:signal:main"]) || isset($tags["railway:signal:combined"]) )
-			{
-				$result .= Lang::l_("with ");
-			}
-			if($tags["railway:signal:speed_limit"]=="DE-ESO:zs3")
-			{
-				$result .= Speedlimit_zs3::showDescription();
-			}
-			elseif($tags["railway:signal:speed_limit"]=="DE-ESO:lf7")
-			{
-				$result .= Lang::l_("German Lf7 Speed signal");
-			}
-			else
-			{
-				$result .= Lang::l_("Unknown Speed signal");
-			}
-			// Show available speed limits
-			if( isset($tags["railway:signal:speed_limit:speed"]))
-			{
-				$speeds = explode(";",$tags["railway:signal:speed_limit:speed"]);
-				$result .= " (";
-				$i = 0;
-				foreach ($speeds as $speed)
-				{
-					if($i>0)
-					{
-						$result.=", ";
-					}
-					if( is_numeric($speed) )
-					{
-						$result.=$speed." km/h";
-					}
-					elseif($speed == "off")
-					{
-						$result.=Lang::l_("off");
-					}
-					elseif($speed == "?")
-					{
-						$result.=Lang::l_("...");
-					}
-					else
-					{
-						$result.=Lang::l_("unknown");
-					}
-					$i++;
-				}
-				$result .= ")";
-			}
-			$description_set = true;
+			$result .= $this->SignalSpeed->showDescription("","Speed") . "<br />";
 		}
-		if(isset($tags["railway:signal:distant"]) || isset($tags["railway:signal:combined"]))
+		if(isset($this->SignalDistant))
 		{
-			if($description_set)
-			{
-				$result .= "<br />";
-			}
-			if(isset($tags["railway:signal:combined"]))
-			{
-				$result .= Lang::l_("combined with ");
-				$tags["railway:signal:distant"] = $tags["railway:signal:combined"];
-			}
-
-			if($tags["railway:signal:distant"] == "DE-ESO:ks")
-			{
-				$result .= KS_distant::showDescription();
-			}
-			elseif($tags["railway:signal:distant"] == "DE-ESO:vr")
-			{
-				$result .= HV_distant::showDescription();
-			}
-			elseif($tags["railway:signal:distant"] == "DE-ESO:hl")
-			{
-				$result .= HL_distant::showDescription();
-			}
-			else
-			{
-				$result .= distant_light::showDescription();
-			}
-
-			if(isset($tags["railway:signal:distant:repeated"]) && $tags["railway:signal:distant:repeated"] == "yes")
-			{
-				$result .= Lang::l_(" Repeated");
-			}
-			
-			$result .= Lang::l_(" Distant Signal");
-			$description_set = true;
-			
+			$result .= $this->SignalDistant->showDescription("","Distant") . "<br />";
 		}
-		if(isset($tags["railway:signal:speed_limit_distant"]))
+		if(isset($this->SignalSpeedDistant))
 		{
-			if($description_set)
-			{
-				$result .= "<br />";
-			}
-			if(isset($tags["railway:signal:distant"]))
-			{
-				$result .= Lang::l_("with ");
-			}
-			if($tags["railway:signal:speed_limit_distant"]=="DE-ESO:zs3v")
-			{
-				$result .=  Speedlimit_zs3v::showDescription();
-			}
-			elseif($tags["railway:signal:speed_limit_distant"]=="DE-ESO:lf6")
-			{
-				$result .= Lang::l_("German Lf6 Distant Speed signal");
-			}
-			else
-			{
-				$result .= Lang::l_("Unknown Distant Speed signal");
-			}
-			if( isset($tags["railway:signal:speed_limit_distant:speed"]))
-			{
-				$speeds = explode(";",$tags["railway:signal:speed_limit_distant:speed"]);
-				$result .=" (";
-				$i = 0;
-				foreach ($speeds as $speed)
-				{
-					if($i>0)
-					{
-						$result.=", ";
-					}
-					if( is_numeric($speed) )
-					{
-						$result.=$speed." km/h";
-					}
-					elseif($speed == "off")
-					{
-						$result.=Lang::l_("off");
-					}
-					elseif($speed == "?")
-					{
-						$result.=Lang::l_("...");
-					}
-					else
-					{
-						$result.=Lang::l_("unknown");
-					}
-					$i++;
-				}
-				$result .=")";
-			}
-			$description_set = true;
+			$result .= $this->SignalSpeedDistant->showDescription("","SpeedDistant") . "<br />";
 		}
-		if( isset($tags["railway:signal:train_protection"]) )
-		{
-			if($description_set)
-			{
-				$result .= "<br />";
-			}
-			if( $tags["railway:signal:train_protection"] == "DE-ESO:blockkennzeichen" )
-			{
-				$result .=  Blockkennzeichen::showDescription();
-			}
-			elseif( $tags["railway:signal:train_protection"] == "DE-ESO:ne14" )
-			{
-				$result .=  ETCS_markerboard::showDescription();
-			}
-			else
-			{
-				$result .= Lang::l_("Unknown train protection sign");
-			}
-			$description_set = true;
-		}
-		$result.='</td>';
+		$result .= "Speed in area behind signal: " . $this->next_speed . " <br />";
 		
-		
-		if(isset($tags["railway:signal:main"]) && !isset($tags["railway:signal:distant"]))
+		if(!$this->is_distant())
 		{
 			$distant_distance = '<span class="text-muted">x</span>';
 		}
-		if ( isset($tags["railway:signal:distant"] ) || isset ( $tags["railway:signal:combined"] ) )
+		if($this->is_distant())
 		{
-			if ( isset( self::$signal_property[$id]["main"] ) )
+			if ( isset( $this->mainSignal ) )
 			{
-				if($distant_distance < 300 && ( !isset($tags["railway:signal:distant:repeated"]) || $tags["railway:signal:distant:repeated"] != "yes" ) )
+				$distant_distance = round( ( $this->mainSignal->pos - $this->pos ) * 1000 );
+				if($distant_distance < 300 && ( !isset($this->tags["railway:signal:distant:repeated"]) || $this->tags["railway:signal:distant:repeated"] != "yes" ) )
 				{
-					$distant_distance = '<strong class="text-danger">'.$distant_distance.' m</strong>';
+					$distant_distance = '<strong class="text-danger">' . $distant_distance . ' m</strong>';
 				}
 				else
 				{
@@ -688,42 +807,42 @@ Class Signals
 			}
 		}
 		$result .= '<td>
-				'.$distant_distance.'
+				' . $distant_distance . '
 				</td>';
 
-		if(isset($tags["railway:signal:distant"]) && !isset($tags["railway:signal:main"]))
+		if(!$this->is_main())
 		{
 			$main_distance = '<span class="text-muted">x</span>';
 		}
-		if ( isset($tags["railway:signal:main"] ) || isset ( $tags["railway:signal:combined"] ) 
-			|| ( isset ( $tags["railway:signal:train_protection:type"] ) && $tags["railway:signal:train_protection:type"] == "block_marker" )
-				)
+		if($this->is_main())
 		{
-			if(isset(self::$signal_property[$id]["next_main"]))
+			
+			if(isset($this->nextMainSignal))
 			{
-				if($main_distance < 600 && isset($tags["railway:signal:main:states"]) && strpos($tags["railway:signal:main:states"], "kennlicht" ))
+				$main_distance = round( ( $this->nextMainSignal->pos - $this->pos ) * 1000 );
+				if($main_distance < 600 && isset($this->tags["railway:signal:main:states"]) && strpos($this->tags["railway:signal:main:states"], "kennlicht" ))
 				{
-					$main_distance = '<strong class="text-info">'.$main_distance.' m</strong>';
+					$main_distance = '<strong class="text-info">' . $main_distance . ' m</strong>';
 				}
 				elseif($main_distance < 300)
 				{
-					$main_distance = '<strong class="text-danger">'.$main_distance.' m</strong>';
+					$main_distance = '<strong class="text-danger">' . $main_distance . ' m</strong>';
 				}
 				elseif($main_distance < 600)
 				{
-					$main_distance = '<strong class="text-warning">'.$main_distance.' m</strong>';
+					$main_distance = '<strong class="text-warning">' . $main_distance . ' m</strong>';
 				}
 				elseif($main_distance > 20000)
 				{
-					$main_distance = '<strong class="text-danger">'.$main_distance.' m</strong>';
+					$main_distance = '<strong class="text-danger">' . $main_distance . ' m</strong>';
 				}
 				elseif($main_distance > 10000)
 				{
-					$main_distance = '<strong class="text-warning">'.$main_distance.' m</strong>';
+					$main_distance = '<strong class="text-warning">' . $main_distance . ' m</strong>';
 				}
 				else 
 				{
-					$main_distance = $main_distance.' m';
+					$main_distance = $main_distance . ' m';
 				}
 			}
 			else 
@@ -732,15 +851,47 @@ Class Signals
 			}
 		}
 		$result .= '<td>
-				'.$main_distance.'
+				' . $main_distance . '
 				</td>';
 		$result .= '<td>
-				<a href="http://www.openstreetmap.org/node/'.$id.'">'.Lang::l_("Show on map").'</a>
-				<br>' . $id . '
+				<a href="http://www.openstreetmap.org/node/' . $this->id . '">' . Lang::l_("Show on map") . '</a>
+				<br>' . $this->id . '
 				</td>';
 		$result .= "</td>
 				</tr>
 						";
 		return $result;	
+	}
+	public static function signalStates($states,$prefix,$strict=true)
+	{
+		$states = explode(";", $states);
+		foreach($states as $state)
+		{
+			$state_parts = explode(":", $state);
+			if(isset($state_parts[1]))
+			{
+				$namespace=$state_parts[0];
+				if(!$strict || $namespace==$prefix)
+				{
+					$state = $state_parts[1];
+				}
+				else
+				{
+					continue;
+				}
+			}
+			elseif(!$strict)
+			{
+				$namespace = "";
+				$state = $state_parts[0];
+				//FIXME: throw warning?
+			}
+			else
+			{
+				continue;
+			}
+			$states_array[]= $state;
+		}
+		return $states_array;
 	}
 }
