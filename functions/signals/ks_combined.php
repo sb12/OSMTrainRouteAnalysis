@@ -62,7 +62,7 @@ Class KS_combined extends SignalPart
 				$colour_hp0 = "&gray;";
 				$colour_ks1 = "&green;";
 				$colour_ks2 = "&gray;";
-				if( isset($_GET["speed_distant"]) )
+				if( isset($_GET["speed_distant"]) && $_GET["speed_distant"] > 0 && isset($_GET["railway:signal:speed_limit_distant"]) && $_GET["railway:signal:speed_limit_distant"]=="DE-ESO:zs3v" )
 				{
 					$class_ks1 = "signal_blink";
 				}
