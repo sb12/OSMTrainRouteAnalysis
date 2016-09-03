@@ -2104,11 +2104,22 @@ if (  $this->relation_distance == 0 )
 				<th><?php echo Lang::l_("Show on map")?></th>
 			</tr>
 		<?php
-		foreach ($this->signals_array as $signals)
+		if(!$this->signals_array)
 		{
-			if($this->signal[$signals[1]])
+			?>
+			<tr class="info">
+				<td colspan="7"><?php echo Lang::l_("No signals found for this route.")?></td>
+			</tr>
+			<?php 
+		}
+		else
+		{
+			foreach ($this->signals_array as $signals)
 			{
-				echo $this->signal[$signals[1]]->showSignal();
+				if($this->signal[$signals[1]])
+				{
+					echo $this->signal[$signals[1]]->showSignal();
+				}
 			}
 		}
 		?>

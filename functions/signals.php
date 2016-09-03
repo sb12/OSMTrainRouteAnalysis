@@ -594,7 +594,12 @@ Class Signals
 	{
 		self::$maxspeed_array = $maxspeed_array;
 
-
+		//no signals found on route
+		if(!$signals)
+		{
+			return;
+		}
+		
 		//construct signal elements
 		foreach ($signals as $signal)
 		{
