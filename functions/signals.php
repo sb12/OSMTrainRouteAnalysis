@@ -565,7 +565,7 @@ Class Signals
 			$repeater = false;
 			foreach ( $distant_signals as $distant) // go through all distant signals
 			{
-				if ( $signal[0] - $distant[0] > 0 && $signal[0] - $distant[0] < 1.6 && !isset($Route->signal[$distant[1]]->mainSignal)) // distant signal is between 0 and 1600m from main signal and there's no main signal set yet..
+				if ( $signal[0] - $distant[0] > 0 && $signal[0] - $distant[0] < 1.8 && !isset($Route->signal[$distant[1]]->mainSignal)) // distant signal is between 0 and 1800m from main signal and there's no main signal set yet..
 				{
 					//set distant signal for main signal
 					$Route->signal[$signal[1]]->set_distantSignal($Route->signal[$distant[1]]);
