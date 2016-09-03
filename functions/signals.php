@@ -527,6 +527,14 @@ Class Signals
 			return;
 		}
 		
+
+		// there is no main signal for this distant signal and signal can be off
+		if(isset($this->SignalDistant) && !isset($this->mainSignal) && in_array("off", $this->SignalDistant->states_distant))
+		{
+			// signal should be off
+			$this->SignalDistant->state_distant = "off";
+		}
+		
 		/* rules for signals with "kennlicht" */
 		if( isset($this->nextMainSignal) && $this->nextMainSignal->pos - $this->pos < 0.7 )
 		{
@@ -859,6 +867,10 @@ Class Signals
 				{
 					$distant_distance = $distant_distance . ' m';
 				}
+			}
+			elseif ($this->SignalDistant->state_distant=="off")
+			{
+				$distant_distance = '<strong class="text-info">x</strong>';
 			}
 			else
 			{
