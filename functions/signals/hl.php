@@ -169,16 +169,16 @@ Class HL extends SignalPart
 
 	public function getStateMain($main_distance)
 	{
+		/* state was already set by a more "intelligent" function */
+		if($this->state_main)
+		{
+			return;
+		}
 		$state = "";
 		if(isset($this->tags["railway:signal:combined:states"]) && !isset($this->tags["railway:signal:main:states"]))
 		{
 			$this->getStateCombined($main_distance);
 			return;
-		}
-	
-		if(isset($this->state_distant))
-		{
-			echo $this->state_distant;
 		}
 	
 		if(isset($this->tags["railway:signal:main:states"]))
@@ -227,6 +227,11 @@ Class HL extends SignalPart
 
 	public function getStateDistant()
 	{
+		/* state was already set by a more "intelligent" function */
+		if($this->state_distant)
+		{
+			return;
+		}
 		$state = "";
 		if(isset($this->tags["railway:signal:distant:states"]))
 		{
@@ -262,6 +267,11 @@ Class HL extends SignalPart
 
 	public function getStateCombined($main_distance)
 	{
+		/* state was already set by a more "intelligent" function */
+		if($this->state_combined)
+		{
+			return;
+		}
 		$state = "";
 		
 		if(isset($this->tags["railway:signal:combined:states"]))

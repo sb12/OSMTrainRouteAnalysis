@@ -159,6 +159,11 @@ Class HV extends SignalPart
 
 	public function getStateMain($main_distance)
 	{
+		/* state was already set by a more "intelligent" function */
+		if($this->state_main)
+		{
+			return;
+		}
 		$state = "";
 		if(isset($this->tags["railway:signal:main:states"]))
 		{
@@ -189,6 +194,11 @@ Class HV extends SignalPart
 
 	public function getStateDistant()
 	{
+		/* state was already set by a more "intelligent" function */
+		if($this->state_distant)
+		{
+			return;
+		}
 		$state = "";
 		if(isset($this->tags["railway:signal:distant:states"]))
 		{

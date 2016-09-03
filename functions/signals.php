@@ -522,6 +522,57 @@ Class Signals
 				$this->distantSignal->SignalSpeedDistant->setSpeedDistant($signal_speed);
 			}
 		}
+		if( isset($this->SignalMain->state_main) && $this->SignalMain->state_main == "kennlicht")
+		{
+			return;
+		}
+		
+		/* rules for signals with "kennlicht" */
+		if( isset($this->nextMainSignal) && $this->nextMainSignal->pos - $this->pos < 0.7 )
+		{
+			/* by default the second possible signal is set to "kennlicht" */
+			if( isset( $this->nextMainSignal->SignalMain->states_main ) && in_array("kennlicht", $this->nextMainSignal->SignalMain->states_main) )
+			{
+				$this->nextMainSignal->SignalMain->state_main = "kennlicht";
+				if(isset($this->nextMainSignal->SignalDistant))
+				{
+					
+					// set correct distant signal for the next main signal
+					$this->nextMainSignal->mainSignal->distantSignal = $this;
+					
+					// use distant signal as repeater if distance between signals is at least 300 m
+					if ( $this->nextMainSignal->pos - $this->pos > 0.3 )
+					{
+						$this->nextMainSignal->mainSignal->distantSignal->RepeaterDistantSignal = $this->nextMainSignal;
+					}
+					else
+					{
+						// turn off distant signal:
+						$this->nextMainSignal->SignalDistant->state_distant = "off";	
+					}
+				}
+			}
+			elseif( isset($this->SignalMain->states_main) && in_array("kennlicht", $this->SignalMain->states_main) )
+			{
+				$this->SignalMain->state_main = "kennlicht";
+				if(isset($this->SignalDistant))
+				{
+					// set correct distant signal for the next main signal
+					$this->mainSignal->distantSignal = $this;
+					
+					// use distant signal as repeater if distance between signals is at least 300 m
+					if ( $this->nextMainSignal->pos - $this->pos > 0.3 )
+					{
+						$this->mainSignal->distantSignal->RepeaterDistantSignal = $this;
+					}
+					else
+					{
+						// turn off distant signal:
+						$this->SignalDistant->state_distant = "off";	
+					}
+				}
+			}
+		}
 	}
 	
 	

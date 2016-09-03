@@ -54,6 +54,11 @@ Class KS_distant extends SignalPart
 				$colour_ks1 = "&gray;";
 				$colour_ks2 = "&yellow;";
 			}
+			if($_GET["state_distant"] == "off")
+			{
+				$colour_ks1 = "&gray;";
+				$colour_ks2 = "&gray;";
+			}
 		}
 
 		$geometry = "6,1 34,1 34,49 6,49";

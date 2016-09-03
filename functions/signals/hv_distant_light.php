@@ -103,6 +103,14 @@ Class HV_distant extends SignalPart
 				$colour_vr2 = "&gray;";	
 				$colour_marker = "&white;";				
 			}
+			if($_GET["state_distant"] == "off")
+			{
+				$colour_vr0 = "&gray;";
+				$colour_vr1 = "&gray;";
+				$colour_vr12 = "&gray;";
+				$colour_vr2 = "&gray;";	
+				$colour_marker = "&gray;";				
+			}
 		}
 
 		if( $_GET["railway:signal:distant:form"] == "light" )

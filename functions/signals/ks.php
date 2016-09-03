@@ -107,6 +107,11 @@ Class KS extends SignalPart
 	
 	public function getStateMain($main_distance)
 	{
+		/* state was already set by a more "intelligent" function */
+		if($this->state_main || $this->state_combined)
+		{
+			return;
+		}
 		$state = "";
 		if(isset($this->tags["railway:signal:combined:states"]) && !isset($this->tags["railway:signal:main:states"]))
 		{
@@ -138,6 +143,11 @@ Class KS extends SignalPart
 	
 	public function getStateDistant()
 	{
+		/* state was already set by a more "intelligent" function */
+		if($this->state_distant || $this->state_combined)
+		{
+			return;
+		}
 		$state = "";
 		if(isset($this->tags["railway:signal:combined:states"]) && !isset($this->tags["railway:signal:distant:states"]))
 		{

@@ -38,7 +38,7 @@ Class Main
 	 * possible states of signal
 	 * @var String
 	 */
-	protected $states;
+	public $states;
 	
 	public function __construct($tags)
 	{
