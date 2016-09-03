@@ -624,6 +624,31 @@ Class Route
 				}
 			}
 			
+			// also load stop areas
+			if ( isset($temp_relation_array["public_transport"]) && ( $temp_relation_array["public_transport"] == "stop_area" ) )
+			{
+				//load relation members
+				foreach ( $relation->member as $member ) 
+				{
+					// transfer tags from relation to node if possible
+					foreach ( $member->attributes() as $a => $b ) 
+					{						
+						// get ref of member
+						if ( $a == "ref" )
+						{
+							$member_ref = (string)$b;
+						}
+						if(isset($this->node[$member_ref]))
+						{
+							foreach($temp_relation_array as $k=>$v)
+							{
+								$this->node[$member_ref][$k]=$v;
+							}
+						}
+					}
+				}
+			}
+			
 			
 			// only ways of relation with the loaded id are needed - this is needed only once (sometimes relations are more than once in the data)
 			if ( $rel_id != $this->id || $rel_done )
