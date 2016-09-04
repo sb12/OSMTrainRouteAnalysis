@@ -44,7 +44,8 @@ Class KS_distant extends SignalPart
 			{
 				$colour_ks1 = "&green;";
 				$colour_ks2 = "&gray;";
-				if(isset($_GET["speed_distant"]) && $_GET["speed_distant"] > 0 && isset($_GET["railway:signal:speed_limit_distant"]) && $_GET["railway:signal:speed_limit_distant"]=="DE-ESO:zs3v")
+				if( ( isset($_GET["speed_distant"]) && $_GET["speed_distant"] > 0 && isset($_GET["railway:signal:speed_limit_distant"]) && $_GET["railway:signal:speed_limit_distant"]=="DE-ESO:zs3v" )
+						|| ( isset($_GET["railway:signal:speed_limit_distant"]) && $_GET["railway:signal:speed_limit_distant"]=="DE-ESO:zs3v" && isset($_GET["railway:signal:speed_limit_distant:form"]) && $_GET["railway:signal:speed_limit_distant:form"]=="sign" ) )
 				{
 					$class_ks1 = "signal_blink";
 				}
