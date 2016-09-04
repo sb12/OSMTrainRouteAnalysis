@@ -260,11 +260,13 @@ function showRoutes($amount = 50)
 		}
 	}
 	?>
-	<div class="panel panel-primary choose_route_save">
+	<div class="panel panel-primary choose_route_save" style="position:relative">
+		<!-- needed for anchors when moving through table -->
+		<span style="position:absolute; top:-55px" id="table"></span>
 		<div class="panel-heading" data-toggle="collapse" aria-expanded="false" aria-controls="table" role="tab">
 			<h3 class="panel-title"><a data-toggle="collapse" href="#table" aria-expanded="false" aria-controls="table"><?php echo Lang::l_("By choosing a route from the list:");?></a></h4>
 		</div>
-		<div id="table" class="collapse in">
+		<div class="collapse in">
 			<div class="panel-body">
 				<?php pagination($page, $lastpage, $order_by, $dir);?>
 			</div>
