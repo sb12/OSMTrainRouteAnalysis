@@ -855,77 +855,14 @@ Class Signals
 		}
 		$result .= "Speed in area behind signal: " . $this->next_speed . " <br />";
 		
-		if(!$this->is_distant())
-		{
-			$distant_distance = '<span class="text-muted">x</span>';
-		}
-		if($this->is_distant())
-		{
-			if ( isset( $this->mainSignal ) )
-			{
-				$distant_distance = round( ( $this->mainSignal->pos - $this->pos ) * 1000 );
-				if($distant_distance < 300 && ( !isset($this->tags["railway:signal:distant:repeated"]) || $this->tags["railway:signal:distant:repeated"] != "yes" ) )
-				{
-					$distant_distance = '<strong class="text-danger">' . $distant_distance . ' m</strong>';
-				}
-				else
-				{
-					$distant_distance = $distant_distance . ' m';
-				}
-			}
-			elseif ($this->SignalDistant->state_distant=="off")
-			{
-				$distant_distance = '<strong class="text-info">x</strong>';
-			}
-			else
-			{
-				$distant_distance = '<strong class="text-danger">?</strong>';
-			}
-		}
+		$distant_distance = $this->get_output_distant_distance();
+		
 		$result .= '<td>
 				' . $distant_distance . '
 				</td>';
 
-		if(!$this->is_main())
-		{
-			$main_distance = '<span class="text-muted">x</span>';
-		}
-		if($this->is_main())
-		{
-			
-			if(isset($this->nextMainSignal))
-			{
-				$main_distance = round( ( $this->nextMainSignal->pos - $this->pos ) * 1000 );
-				if($main_distance < 600 && isset($this->tags["railway:signal:main:states"]) && strpos($this->tags["railway:signal:main:states"], "kennlicht" ))
-				{
-					$main_distance = '<strong class="text-info">' . $main_distance . ' m</strong>';
-				}
-				elseif($main_distance < 300)
-				{
-					$main_distance = '<strong class="text-danger">' . $main_distance . ' m</strong>';
-				}
-				elseif($main_distance < 600)
-				{
-					$main_distance = '<strong class="text-warning">' . $main_distance . ' m</strong>';
-				}
-				elseif($main_distance > 20000)
-				{
-					$main_distance = '<strong class="text-danger">' . $main_distance . ' m</strong>';
-				}
-				elseif($main_distance > 10000)
-				{
-					$main_distance = '<strong class="text-warning">' . $main_distance . ' m</strong>';
-				}
-				else 
-				{
-					$main_distance = $main_distance . ' m';
-				}
-			}
-			else 
-			{
-				$main_distance = '<strong class="text-danger">?</strong>';
-			}
-		}
+		$main_distance = $this->get_output_main_distance();
+		
 		$result .= '<td>
 				' . $main_distance . '
 				</td>';
@@ -938,6 +875,133 @@ Class Signals
 						";
 		return $result;	
 	}
+	
+	/**
+	 * outputs styling for the distance between distant and main signal
+	 * @return distance with styling
+	 */
+	public function get_output_distant_distance()
+	{
+		$class = $class_strong = "";
+		if(!$this->is_distant())
+		{
+			$class = "text-muted";
+			$value = "x";
+		}
+		if($this->is_distant())
+		{
+			if ($this->SignalDistant->state_distant == "off")
+			{
+				$class_strong = "text-info";
+				$value = "x";
+			}
+			elseif ( isset( $this->mainSignal ) )
+			{
+				$distance = round( ( $this->mainSignal->pos - $this->pos ) * 1000 );
+				$value = $distance . " m";
+				if( isset($this->tags["railway:signal:distant:repeated"]) && $this->tags["railway:signal:distant:repeated"] == "yes" )
+				{
+					$class_strong = "text-info";
+				}
+				elseif ( // this is most likely an error
+						( $this->next_speed <= 80 && $distance < (0.93 * 400) ) ||
+						( $this->next_speed <= 120 && $distance < (0.93 * 700) ) ||
+						( $this->next_speed > 120 && $distance < (0.93 * 1000) ) )
+				{
+					$class_strong = "text-danger";
+				}
+				elseif ( //warning area
+						( $this->next_speed < 60 && $distance < (0.93 * 400) ) ||
+						( $this->next_speed < 100 && $distance < (0.93 * 700) ) ||
+						( $this->next_speed > 100 && $distance < (0.93 * 1000) ) )
+				{
+					$class_strong = "text-warning";
+				}
+			}
+			else
+			{
+				$class_strong = "text-danger";
+				$value = "?";
+			}
+		}
+		$distant_distance = $value;
+		if($class_strong)
+		{
+			$distant_distance = '<strong class="'.$class_strong.'">'.$distant_distance.'</strong>';
+		}
+		elseif($class)
+		{
+			$distant_distance = '<span class="'.$class.'">'.$distant_distance.'</span>';
+		}
+		return $distant_distance;
+	}
+
+
+	/**
+	 * outputs styling for the distance between main signals
+	 * @return distance with styling
+	 */
+	public function get_output_main_distance()
+	{
+		$class = $class_strong = "";
+		if(!$this->is_main())
+		{
+			$class = "text-muted";
+			$value = "x";
+		}
+		else
+		{
+			if(isset($this->nextMainSignal))
+			{
+				$distance = round( ( $this->nextMainSignal->pos - $this->pos ) * 1000 );
+				$value = $distance . " m";
+				if( $distance < 1000 && ( $this->SignalMain->state_main == "kennlicht" || $this->nextMainSignal->SignalMain->state_main == "kennlicht" ))
+				{
+					$class_strong = "text-info";
+				}
+				elseif ( // this is most likely an error
+						( $this->next_speed <= 80 && $distance < (0.93 * 400) ) ||
+						( $this->next_speed <= 120 && $distance < (0.93 * 700) ) ||
+						( $this->next_speed > 120 && $distance < (0.93 * 1000) ) )
+				{
+					$class_strong = "text-danger";
+				}
+				elseif ( //warning area
+						( $this->next_speed < 60 && $distance < (0.93 * 400) ) ||
+						( $this->next_speed < 100 && $distance < (0.93 * 700) ) ||
+						( $this->next_speed > 100 && $distance < (0.93 * 1000) ) )
+				{
+					$class_strong = "text-warning";
+				}
+				elseif($distance > 20000)
+				{
+					$class_strong = "text-danger";
+				}
+				elseif($distance > 10000)
+				{
+					$class_strong = "text-warning";
+				}
+			}
+			else 
+			{
+				$class_strong = "text-danger";
+				$value = "?";
+			}
+		}
+		
+		$main_distance = $value;
+		if($class_strong)
+		{
+			$main_distance = '<strong class="'.$class_strong.'">'.$main_distance.'</strong>';
+		}
+		elseif($class)
+		{
+			$main_distance = '<span class="'.$class.'">'.$main_distance.'</span>';
+		}
+		return $main_distance;
+	}
+	
+	
 	public static function signalStates($states,$prefix,$strict=true)
 	{
 		$states = explode(";", $states);
