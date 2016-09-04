@@ -817,6 +817,7 @@ Class Route
 				$this->way_tags[$b]["railway"] != "narrow_gauge" &&
 				$this->way_tags[$b]["railway"] != "miniature" &&
 				$this->way_tags[$b]["railway"] != "subway" &&
+				$this->way_tags[$b]["railway"] != "ferry" &&
 				$this->way_tags[$b]["railway"] != "construction" ) )
 			{
 				continue;
@@ -824,7 +825,7 @@ Class Route
 
 			// distance from beginning of relation to beginning of way
 			$this->way_start_distance[$b] = $this->relation_distance;
-
+			
 			// get distance from beginning for each node in the way
 			// FIXME: This fails when the route is going through the same way twice!!
 			foreach ( $this->node_distance as $id => $distance ) // go through all nodes
@@ -838,6 +839,28 @@ Class Route
 					}
 					//get distance from beginning of route
 					$this->stop_node_distance[$id] = $this->way_start_distance[$this->node_way[$id]] + $this->node_distance[$id];
+
+				}
+			}
+
+			if ( $this->way_tags[$b]["railway"] == "ferry" )
+			{
+				$id = $this->first_node[$b];
+				$this->relation_stops[] = $id;
+				$this->relation_stops_type[] = "n";
+				$this->node[$id]["ferry_terminal"] = "yes";
+				if(!isset($this->node[$id]["name"]) && !$this->node[$id]["name"])
+				{
+					$this->node[$id]["name"] = Lang::l_("Ferry Terminal");
+				}
+
+				$id = $this->last_node[$b];
+				$this->relation_stops[] = $id;
+				$this->relation_stops_type[] = "n";
+				$this->node[$id]["ferry_terminal"] = "yes";
+				if(!isset($this->node[$id]["name"]) && !$this->node[$id]["name"])
+				{
+					$this->node[$id]["name"] = Lang::l_("Ferry Terminal");
 				}
 			}
 			
@@ -2142,11 +2165,28 @@ if (  $this->relation_distance == 0 )
 		<?php
 		if ( isset($this->relation_stops[0]) )
 		{
+			$ferry_start = false;
 			//go through all stations
 			foreach ( $this->relation_stops as $nr => $ref )
 			{
+
 				/* get class that should be used */
 				$class = "default";
+				// special style for ferry terminals
+				if( isset($this->node[$ref]["ferry_terminal"]) && $this->node[$ref]["ferry_terminal"] == "yes")
+				{
+					if(!$ferry_start)
+					{
+						$class = "ferry_start";
+						$ferry_start = true;
+					}
+					else
+					{
+						$class = "ferry_end";
+						$ferry_start = false;
+					}
+				}
+				
 				if ( $nr == 0)
 				{
 					$class = "first";
@@ -3012,6 +3052,14 @@ if (  $this->relation_distance == 0 )
 		    iconAnchor:   [10.5, 10.5], // point of the icon which will correspond to marker's location
 		    popupAnchor:  [0, 0] // point from which the popup should open relative to the iconAnchor
 		});
+		
+		/* define icon for railway stations */
+		var ferryIcon = L.icon({
+		    iconUrl: 'img/ferry_map.svg',
+		    iconSize:     [21, 21], // size of the icon
+		    iconAnchor:   [10.5, 10.5], // point of the icon which will correspond to marker's location
+		    popupAnchor:  [0, 0] // point from which the popup should open relative to the iconAnchor
+		});
 
 		/* add stops */
 		var railway_stops = new Array();
@@ -3025,8 +3073,16 @@ if (  $this->relation_distance == 0 )
 				//$stop_name[$nr]=Lang::l_('Unknown stop');
 				if ( $this->relation_stops_type[$nr] == "n" )//only show nodes
 				{
+					if ( isset($this->node[$ref]["ferry_terminal"]) && $this->node[$ref]["ferry_terminal"] == "yes" )
+					{
+						$icon = "ferryIcon";
+					}
+					else
+					{	
+						$icon = "railwayIcon";
+					}
 					?>
-		railway_stops[<?php echo $j;?>] = L.marker([<?php echo $this->node[$ref]["lat"];?>, <?php echo $this->node[$ref]["lon"];?>], {icon: railwayIcon}).bindPopup("<?php echo $this->stop_name[$nr];?>");
+		railway_stops[<?php echo $j;?>] = L.marker([<?php echo $this->node[$ref]["lat"];?>, <?php echo $this->node[$ref]["lon"];?>], {icon: <?php echo $icon; ?>}).bindPopup("<?php echo $this->stop_name[$nr];?>");
 		railway_stops[<?php echo $j;?>].on('mouseover', railway_stops[<?php echo $j;?>].togglePopup);
 					<?php
 					$j++; 
@@ -3208,8 +3264,30 @@ if (  $this->relation_distance == 0 )
 		//service ways
 		elseif ( isset($this->way_tags[$id]["service"]) )
 		{
-			$maxspeed = 60;
-			$maxspeed_max = 120;
+			if($this->way_tags[$id]["service"] == "yard")
+			{
+				$maxspeed = 25;
+				$maxspeed_max = 40;
+				$maxspeed_min = 10;
+			}
+			elseif($this->way_tags[$id]["service"] == "spur")
+			{
+				$maxspeed = 40;
+				$maxspeed_max = 80;
+				$maxspeed_min = 10;
+			}
+			else
+			{	
+				$maxspeed = 60;
+				$maxspeed_max = 120;
+				$maxspeed_min = 20;
+			}
+		}
+		//ferries
+		elseif ( $this->way_tags[$id]["railway"] == "ferry")
+		{
+			$maxspeed = 30;
+			$maxspeed_max = 40;
 			$maxspeed_min = 20;
 		}
 		else
@@ -3402,7 +3480,7 @@ if (  $this->relation_distance == 0 )
 	static function getRouteType($route,$service="")
 	{
 		$route_type_lang = Array(
-		"high_speed"     => Lang::l_('Highspeed Train'),
+		"high_speed"    => Lang::l_('Highspeed Train'),
 		"long_distance" => Lang::l_('Long Distance Train'),
 		"car"           => Lang::l_('Motorail Train'),
 		"car_shuttle"   => Lang::l_('Car Shuttle Train'),
@@ -3475,6 +3553,46 @@ if (  $this->relation_distance == 0 )
 			$route_type = "subway";
 		}
 		return $route_type_lang[$route_type];
+	}
+
+
+	/**
+	 * Function to sort stops
+	 */
+	function sortStops()
+	{
+		$x = 0;
+		while($x==0)
+		{
+			$save_relation_stops = $this->relation_stops;
+			$this->sortRelationStops();
+			if($this->relation_stops == $save_relation_stops) //nothing changed
+			{
+				$x++;
+			}
+		}
+	}
+
+	/**
+	 * Function to sort stops step for step
+	 */
+	function sortRelationStops()
+	{
+		$last_distance = 0;
+		foreach($this->relation_stops as $nr=>$ref)
+		{
+			$distance = $this->way_start_distance[$this->node_way[$ref]]+$this->node_distance[$ref];
+			if($distance < $last_distance)
+			{
+				$save_relation_stops = $this->relation_stops[$nr-1];
+				$save_relation_stops_type = $this->relation_stops_type[$nr-1];
+				$this->relation_stops[$nr-1] = $this->relation_stops[$nr];
+				$this->relation_stops_type[$nr-1] = $this->relation_stops_type[$nr];
+				$this->relation_stops[$nr] = $save_relation_stops;
+				$this->relation_stops_type[$nr] = $save_relation_stops_type;
+			}
+			$last_distance = $distance;
+		}
 	}
 }
 ?>

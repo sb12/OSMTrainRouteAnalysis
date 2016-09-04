@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd" >
+<svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" height="21" width="21" viewBox="0 0 21 21" overflow="visible" enable-background="new 0 0 21 21" xml:space="preserve">
+ <g id="layer1">
+	<circle fill="#337ab7"  cx="10.5" cy="10.5" r="4"/>
+	<polygon fill="#337ab7"  points="6,10 6,11 15,11 15,10"/>
+	<polygon fill="#337ab7"  points="9,0 12,0 12,13 9,13"/>
+	<polygon fill="#337ab7"  points="9,14 12,14 12,15 9,15"/>
+	<polygon fill="#337ab7"  points="9,16 12,16 12,17 9,17"/>
+	<polygon fill="#337ab7"  points="9,18 12,18 12,19 9,19"/>
+	<polygon fill="#337ab7"  points="9,20 12,20 12,21 9,21"/>
+ </g>
+</svg>

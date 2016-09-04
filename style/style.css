@@ -247,6 +247,14 @@ ul.stations li.last
 {
     background-image: url(../img/station_last.svg);
 }
+ul.stations li.ferry_start
+{
+    background-image: url(../img/ferry_station_start.svg);
+}
+ul.stations li.ferry_end
+{
+    background-image: url(../img/ferry_station_end.svg);
+}
 
 /**
 * styling for route overview tables
