@@ -90,8 +90,8 @@ if ( isset( $_GET["id"] ) || isset( $_POST["id"] ) )
 	$route -> train =  new Train();
 	$route -> loadXml();
 	$route -> loadRelationWays();
-	$route -> sortStops();
 	$route -> calculateSpeed();
+	$route -> sortStops();
 	$route -> output();
 	showAbout();
 }

@@ -106,7 +106,6 @@ Class HV extends SignalPart
 		if($next_speed>60 && !in_array(-1,$speed_array))
 		{
 			$speed_array=Array(0);
-			print_r($speed_array);
 		}
 		return $speed_array;
 	}
