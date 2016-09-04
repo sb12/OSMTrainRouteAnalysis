@@ -40,9 +40,9 @@ include "po_parser/src/Sepia/PoParser.php";
 define("PATH", "");
 
 //define version numbers of external software
-$v_bootstrap = "3.3.4";
-$v_leaflet = "0.7.3";
-$v_jquery = "1.11.2";
+$v_bootstrap = "3.3.7";
+$v_leaflet = "0.7.7";
+$v_jquery = "1.12.4";
 
 // load language
 Lang::defineLanguage();
@@ -55,7 +55,7 @@ Lang::defineLanguage();
 <meta name="description" content="<?php echo Lang::l_('Analysis of Train Routes Based on OpenStreetMap Data');?>">
 
 <!-- include leaflet -->
-<script src="http://cdn.leafletjs.com/leaflet-<?php echo $v_leaflet;?>/leaflet.js"></script>
+<script src="http://cdn.leafletjs.com/leaflet/v<?php echo $v_leaflet;?>/leaflet.js"></script>
 
 <!-- include bootstrap -->
 <!-- Latest compiled and minified CSS -->
@@ -74,7 +74,7 @@ Lang::defineLanguage();
 <script type="text/javascript" src="javascript/functions.js"></script>
 
 
-<link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-<?php echo $v_leaflet;?>/leaflet.css" />
+<link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet/v<?php echo $v_leaflet;?>/leaflet.css" />
 
 <link rel="stylesheet" type="text/css" href="style/style.css">
 <link rel="alternate" type="application/rss+xml" href="changelog.php" title="Changelog">
