@@ -119,12 +119,12 @@ if(isset($_GET["railway:signal:main"]))
 	}
 	else //fallback for unknown signals
 	{
-		if($_GET["railway:signal:main:form"] == "semaphore")
+		if( isset($_GET["railway:signal:main:form"]) && $_GET["railway:signal:main:form"] == "semaphore")
 		{
 			$result = Main_semaphore::generateImage($height);
 			$valid_signal = true;
 		}
-		elseif($_GET["railway:signal:main:form"] == "sign")
+		elseif( isset($_GET["railway:signal:main:form"]) && $_GET["railway:signal:main:form"] == "sign")
 		{
 			$result = Main_sign::generateImage($height);
 			$valid_signal = true;

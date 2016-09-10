@@ -605,8 +605,9 @@ Class Signals
 		{
 			$Route->signal[$signal[1]]=new Signals($signal[1], $nodes[$signal[1]],  $signal[0]);
 		}
-		
 		// construct arrays for main and distant signals
+		$distant_signals = Array();
+		$main_signals = Array();
 		foreach ($signals as $signal)
 		{
 			if( $Route->signal[$signal[1]]->is_main() ) 
