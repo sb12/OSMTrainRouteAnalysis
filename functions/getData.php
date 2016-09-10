@@ -3327,6 +3327,12 @@ if (  $this->relation_distance == 0 )
 			// only use nodes that are less than specified distance away
 			if ( $node_diff < $treshold && $node_diff > 0 )
 			{
+				// don't use nodes that are part of platforms
+				if( isset ( $this->way_tags[$this->node_way[$nodeid]]["public_transport"] ) && $this->way_tags[$this->node_way[$nodeid]]["public_transport"]=="platform" 
+				||	isset ( $this->way_tags[$this->node_way[$nodeid]]["railway"] ) && $this->way_tags[$this->node_way[$nodeid]]["railway"]=="platform")
+				{
+					continue;
+				}
 				// add node to array
 				$nodes_dis[$nodeid] = $node_diff;
 			}
