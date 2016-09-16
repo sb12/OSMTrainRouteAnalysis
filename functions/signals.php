@@ -529,7 +529,7 @@ Class Signals
 		
 
 		// there is no main signal for this distant signal and signal can be off
-		if(isset($this->SignalDistant) && !isset($this->mainSignal) && in_array("off", $this->SignalDistant->states_distant))
+		if(isset($this->SignalDistant) && !isset($this->mainSignal) && isset($this->SignalDistant->states_distant) && in_array("off", $this->SignalDistant->states_distant))
 		{
 			// signal should be off
 			$this->SignalDistant->state_distant = "off";
@@ -566,12 +566,12 @@ Class Signals
 				if(isset($this->SignalDistant))
 				{
 					// set correct distant signal for the next main signal
-					$this->mainSignal->distantSignal = $this;
+					$this->mainSignal->distantSignal = $this->distantSignal;
 					
 					// use distant signal as repeater if distance between signals is at least 300 m
 					if ( $this->nextMainSignal->pos - $this->pos > 0.3 )
 					{
-						$this->mainSignal->distantSignal->RepeaterDistantSignal = $this;
+						$this->nextMainSignal->distantSignal->RepeaterDistantSignal = $this;
 					}
 					else
 					{
