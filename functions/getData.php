@@ -2990,20 +2990,23 @@ if (  $this->relation_distance == 0 )
 		{
 			map.scrollWheelZoom.enable(); 
 		});
+
+		var osm_attr = 'Map data <a href="https://www.openstreetmap.org/copyright">© OpenStreetMap contributors, ODbL</a>';
 		
+		var tf_apikey='682daa1be9f2457bbb089630330c6d9b';
 		/* define map layers */
-		var transport = L.tileLayer('http://{s}.tile.thunderforest.com/transport/{z}/{x}/{y}.png', {
-		    attribution: 'Map © <a href="http://www.thunderforest.com/">Thunderforest</a>. Map data <a href="http://www.openstreetmap.org/copyright">© OpenStreetMap contributers, ODbL</a>',
+		var transport = L.tileLayer('https://{s}.tile.thunderforest.com/transport/{z}/{x}/{y}.png?apikey=' + tf_apikey, {
+		    attribution: 'Map © <a href="https://www.thunderforest.com/">Thunderforest</a>. ' + osm_attr,
 		    maxZoom: 18
 		}).addTo(map);
 		
-		var openstreetmap = L.tileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-		    attribution: 'Map data <a href="http://www.openstreetmap.org/copyright">© OpenStreetMap contributors, ODbL</a>',
+		var openstreetmap = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+		    attribution: osm_attr,
 		    maxZoom: 19
 		});
 		
 		var stamen_toner = L.tileLayer('http://a.tile.stamen.com/toner/{z}/{x}/{y}.png', {
-		    attribution: 'Map tiles by <a href="http://stamen.com/">Stamen Design</a>, under <a href="http://creativecommons.org/licenses/by/3.0">CC BY 3.0</a>. Map Data <a href="http://www.openstreetmap.org/copyright">© OpenStreetMap contributors, ODbL</a>',
+		    attribution: 'Map tiles by <a href="http://stamen.com/">Stamen Design</a>, under <a href="http://creativecommons.org/licenses/by/3.0">CC BY 3.0</a>. ' + osm_attr,
 		    maxZoom: 19
 		});
 
