@@ -542,7 +542,7 @@ Class Signals
 			if( isset( $this->nextMainSignal->SignalMain->states_main ) && in_array("kennlicht", $this->nextMainSignal->SignalMain->states_main) )
 			{
 				$this->nextMainSignal->SignalMain->state_main = "kennlicht";
-				if(isset($this->nextMainSignal->SignalDistant))
+				if(isset($this->nextMainSignal->mainSignal->distantSignal))
 				{
 					
 					// set correct distant signal for the next main signal
