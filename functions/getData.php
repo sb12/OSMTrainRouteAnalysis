@@ -637,13 +637,15 @@ Class Route
 						if ( $a == "ref" )
 						{
 							$member_ref = (string)$b;
-						}
-						if(isset($this->node[$member_ref]))
-						{
-							foreach($temp_relation_array as $k=>$v)
+							if(isset($this->node[$member_ref]))
 							{
-								$this->node[$member_ref][$k]=$v;
+								foreach($temp_relation_array as $k=>$v)
+								{
+									$this->node[$member_ref][$k]=$v;
+									echo $member_ref."::.".$k.".".$v."<br>";
+								}
 							}
+							break;
 						}
 					}
 				}
@@ -3131,20 +3133,24 @@ if (  $this->relation_distance == 0 )
 			//go through all stops
 			foreach ( $this->relation_stops as $nr => $ref )
 			{
+				echo $nr."/".$ref.":";
 				$this->stop_name[$nr] = Lang::l_('Unknown stop');
 				if ( $this->relation_stops_type[$nr] == "n" )//nodes
 				{
 					if ( isset($this->node[$ref]["ref_name"]) )
 					{
 						$this->stop_name[$nr] = $this->node[$ref]["ref_name"];
+						echo "ref_name";
 					}
 					elseif ( isset($this->node[$ref]["name"]) )
 					{
 						$this->stop_name[$nr] = $this->node[$ref]["name"];
+						echo "name";
 					}
 					elseif ( isset($this->node[$ref]["description"]) )
 					{
 						$this->stop_name[$nr] = $this->node[$ref]["description"];
+						echo "descr";
 					}
 				}
 				elseif ( $this->relation_stops_type[$nr] == "w" )//ways
@@ -3152,8 +3158,10 @@ if (  $this->relation_distance == 0 )
 					if ( isset($this->way_tags[$ref]["name"]) )
 					{
 						$this->stop_name[$nr] = $this->way_tags[$ref]["name"];
+						echo "way";
 					}
 				}
+				echo $this->stop_name[$nr]."<br>";
 			}	
 		}
 	}
