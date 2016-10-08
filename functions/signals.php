@@ -165,6 +165,13 @@ Class Signals
 				$this->SignalMain = new SignalPart($this->tags);
 			}
 		}
+		elseif(isset($this->tags["railway:signal:main"]))
+		{
+			if($this->tags["railway:signal:train_protection"]=="DE-ESO:blockkennzeichen") // LZB Blockkennzeichen
+			{
+				$this->SignalMain = new Blockkennzeichen($this->tags);
+			}
+		}
 		if(isset($this->tags["railway:signal:distant"])) // is distant signal
 		{
 			if($this->tags["railway:signal:distant"] == "DE-ESO:vr") // German H/V
@@ -240,8 +247,7 @@ Class Signals
 	 */
 	public function is_main()
 	{
-		if( isset($this->tags["railway:signal:main"]) || isset($this->tags["railway:signal:combined"]))
-				// TODO: || ( isset($this->tags["railway:signal:train_protection:type"]) && $this->tags["railway:signal:train_protection:type"] == "block_marker" ) )
+		if( isset($this->tags["railway:signal:main"]) || isset($this->tags["railway:signal:combined"]) || ( isset($this->tags["railway:signal:train_protection:type"]) && $this->tags["railway:signal:train_protection:type"] == "DE-ESO:blockkennzeichen" ) )
 		{
 			return true;
 		}

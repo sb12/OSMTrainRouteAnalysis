@@ -26,18 +26,35 @@
  * @author sb12
  *
  */
-Class Blockkennzeichen
+Class Blockkennzeichen extends SignalPart
 {
 
+	public function __construct($tags)
+	{
+		parent::__construct($tags);
+	}
+	
+	/**
+	 * return possible speeds the signal can show
+	 * @return Array(int)
+	 */
+	public function possibleSpeedsMain($next_speed)
+	{
+		$speed_array[] = 0;
+		$speed_array[] = -1; // no limit
+		return $speed_array;
+	}
+	
 	/**
 	 * returns the state of the signals
 	 * @param $tags array tags of the signal
 	 * @param $next_speed int speed which is relevant for the signal
 	 * @param $main_distance int distance to next main signal
 	 */
-	public static function findState($tags, $next_speed, $main_distance)
+	public static function findState($tags, $next_speed_distant, $main_distance)
 	{
-		return; //not needed
+		$state = "";
+		return $state;
 	}
 	
 	
@@ -45,9 +62,14 @@ Class Blockkennzeichen
 	 * returns description of the signals
 	 * @param $tags array tags of the signal
 	 */
-	public static function showDescription()
+	public function showDescription($description, $type)
 	{
-		return Lang::l_("German Blockkennzeichen");
+		return parent::showDescription(Lang::l_("German Blockkennzeichen"), $type);
+	}
+	
+	public function getStateMain($main_distance)
+	{
+		$this->state_main = "";
 	}
 	
 	/**
