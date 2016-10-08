@@ -487,39 +487,41 @@ Class Signals
 			}
 			$signal_speed = $speed;
 		}
+		$signal_speed_none = false;
 		if( !isset($signal_speed)  || $none) // case where signal can only show "proceed" and "stop"
 		{
 			$signal_speed = $this->next_speed;
+			$signal_speed_none = true; // speed is track speed and not set by signal
 		}
 
 		if(isset($this->SignalMain))
 		{
-			$this->SignalMain->setSpeedMain($signal_speed);
+			$this->SignalMain->setSpeedMain($signal_speed, $signal_speed_none);
 		}
 		if(isset($this->SignalSpeed))
 		{
-			$this->SignalSpeed->setSpeedMain($signal_speed);
+			$this->SignalSpeed->setSpeedMain($signal_speed, $signal_speed_none);
 		}
 		if(isset($this->distantSignal))
 		{
 			if(isset($this->distantSignal->SignalDistant))
 			{
-				$this->distantSignal->SignalDistant->setSpeedDistant($signal_speed);
+				$this->distantSignal->SignalDistant->setSpeedDistant($signal_speed, $signal_speed_none);
 				$distSignal = $this->distantSignal;
 				while(isset($distSignal->RepeaterDistantSignal))
 				{
 					$distSignal = $distSignal->RepeaterDistantSignal;
-					$distSignal->SignalDistant->setSpeedDistant($signal_speed);
+					$distSignal->SignalDistant->setSpeedDistant($signal_speed, $signal_speed_none);
 					if(isset($distSignal->SignalSpeedDistant))
 					{
 						
-						$distSignal->SignalSpeedDistant->setSpeedDistant($signal_speed);
+						$distSignal->SignalSpeedDistant->setSpeedDistant($signal_speed, $signal_speed_none);
 					}
 				}
 			}
 			if(isset($this->distantSignal->SignalSpeedDistant))
 			{
-				$this->distantSignal->SignalSpeedDistant->setSpeedDistant($signal_speed);
+				$this->distantSignal->SignalSpeedDistant->setSpeedDistant($signal_speed, $signal_speed_none);
 			}
 		}
 		if( isset($this->SignalMain->state_main) && $this->SignalMain->state_main == "kennlicht")

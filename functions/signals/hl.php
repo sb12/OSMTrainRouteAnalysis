@@ -184,11 +184,18 @@ Class HL extends SignalPart
 		if(isset($this->tags["railway:signal:main:states"]))
 		{
 			$states = Signals::signalStates($this->tags["railway:signal:main:states"], "DE-ESO");
+
+			//fallback / default:
 			if ( $this->speed_main == 0 && in_array("hp0", $states)) // signal at end of route
 			{
 				$state = "hp0";
 			}
-			if( ( $this->speed_main == 100 || $main_distance < 700 ) && in_array("hl2", $states ))
+			
+			if( in_array("hl1", $states) && $this->speed_main_none = true )
+			{
+				$state = "hl1";
+			}
+			elseif( ( $this->speed_main == 100 || $main_distance < 700 ) && in_array("hl2", $states ))
 			{
 				$state = "hl2";
 			}
@@ -242,6 +249,10 @@ Class HL extends SignalPart
 					in_array( "hl10", $states ) )
 			{
 				$state = "hl10";
+			}
+			elseif ( in_array( "hl1", $states ) && $this->speed_distant_none==true )
+			{
+				$state = "hl1";
 			}
 			elseif ( $this->speed_distant == 100  &&
 					in_array( "hl4", $states ) )

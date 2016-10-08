@@ -77,10 +77,22 @@ Class SignalPart
 	public $speed_main;
 	
 	/**
+	 * speed at main signal is track speed
+	 * @var String
+	 */
+	public $speed_main_none;
+	
+	/**
 	 * set speed for distant signal
 	 * @var String
 	 */
 	public $speed_distant;
+	
+	/**
+	 * speed at distant signal is track speed
+	 * @var String
+	 */
+	public $speed_distant_none;
 	
 	public function __construct($tags)
 	{
@@ -128,18 +140,20 @@ Class SignalPart
 	 * set State of signal
 	 * @var speed speed of signal
 	 */
-	public function setSpeedMain($speed)
+	public function setSpeedMain($speed, $speed_none)
 	{
 		$this->speed_main = $speed;
+		$this->speed_main_none = $speed_none;
 	}
 
 	/**
 	 * set State of signal
 	 * @var speed speed of signal
 	 */
-	public function setSpeedDistant($speed)
+	public function setSpeedDistant($speed, $speed_none)
 	{
 		$this->speed_distant = $speed;
+		$this->speed_distant_none = $speed_none;
 	}
 	
 	
