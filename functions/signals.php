@@ -34,6 +34,8 @@ include "signals/hl.php";
 include "signals/ne1.php";
 include "signals/ne2.php";
 
+include "signals/BOStrabH.php";
+
 include "signals/speedlimit_zs3.php";
 include "signals/speedlimit_zs3v.php";
 
@@ -160,6 +162,10 @@ Class Signals
 			{
 				$this->SignalMain = new Ne1($this->tags);
 			}
+			elseif($this->tags["railway:signal:main"] == "DE-BOStrab:h") // German Hl
+			{
+				$this->SignalMain = new BoStrabH($this->tags);
+			}
 			else // unknown main signal
 			{
 				$this->SignalMain = new SignalPart($this->tags);
@@ -189,6 +195,10 @@ Class Signals
 			elseif($this->tags["railway:signal:distant"] == "DE-ESO:db:ne2") // German Hl
 			{
 				$this->SignalDistant = new Ne2($this->tags);
+			}
+			elseif($this->tags["railway:signal:distant"] == "DE-BOStrab:v") // German Hl
+			{
+				$this->SignalDistant = new BOStrabH($this->tags);
 			}
 			else // unknown distant signal
 			{
@@ -393,7 +403,6 @@ Class Signals
 				$this->SignalMain->speed_distant = $this->SignalDistant->speed_distant;
 			}
 			
-			print_r($this->SignalMain);echo "<br><br>";
 			$this->SignalMain->getStateMain($mainDist);
 			if(isset($this->SignalSpeed))
 			{

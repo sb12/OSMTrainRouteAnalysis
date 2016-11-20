@@ -26,7 +26,7 @@
  * turn on and off error reporting
  */
 
-error_reporting(0);
+//error_reporting(0);
 
 /** 
  * Please enter the data for your mysql database here

@@ -35,6 +35,9 @@ include "../../functions/signals/hl_distant.php";
 include "../../functions/signals/hv_main_light.php";
 include "../../functions/signals/hv_main_semaphore.php";
 
+include "../../functions/signals/BOStrabH_main.php";
+include "../../functions/signals/BOStrabH_distant.php";
+
 include "../../functions/signals/hv_distant_light.php";
 include "../../functions/signals/hv_distant_semaphore.php";
 
@@ -115,6 +118,11 @@ if(isset($_GET["railway:signal:main"]))
 	elseif($_GET["railway:signal:main"] == "DE-ESO:ne1")
 	{
 		$result = Ne1::generateImage($height);
+		$valid_signal = true;
+	}
+	elseif($_GET["railway:signal:main"] == "DE-BOStrab:h")
+	{
+		$result = BOStrabH_main::generateImage($height);
 		$valid_signal = true;
 	}
 	else //fallback for unknown signals
@@ -202,6 +210,11 @@ if(isset($_GET["railway:signal:distant"]))
 	elseif($_GET["railway:signal:distant"] == "DE-ESO:db:ne2")
 	{
 		$result = Ne2::generateImage($height);
+		$valid_signal = true;
+	}
+	elseif($_GET["railway:signal:distant"] == "DE-BOStrab:v")
+	{
+		$result = BOStrabH_distant::generateImage($height);
 		$valid_signal = true;
 	}
 	else //fallback for unknown signals
