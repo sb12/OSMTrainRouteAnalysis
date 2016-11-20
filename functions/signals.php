@@ -165,7 +165,7 @@ Class Signals
 				$this->SignalMain = new SignalPart($this->tags);
 			}
 		}
-		elseif(isset($this->tags["railway:signal:main"]))
+		elseif(isset($this->tags["railway:signal:train_protection"]))
 		{
 			if($this->tags["railway:signal:train_protection"]=="DE-ESO:blockkennzeichen") // LZB Blockkennzeichen
 			{
@@ -247,7 +247,7 @@ Class Signals
 	 */
 	public function is_main()
 	{
-		if( isset($this->tags["railway:signal:main"]) || isset($this->tags["railway:signal:combined"]) || ( isset($this->tags["railway:signal:train_protection:type"]) && $this->tags["railway:signal:train_protection:type"] == "DE-ESO:blockkennzeichen" ) )
+		if( isset($this->tags["railway:signal:main"]) || isset($this->tags["railway:signal:combined"]) || ( isset($this->tags["railway:signal:train_protection:type"]) && $this->tags["railway:signal:train_protection:type"] == "block_marker" ) )
 		{
 			return true;
 		}
@@ -393,6 +393,7 @@ Class Signals
 				$this->SignalMain->speed_distant = $this->SignalDistant->speed_distant;
 			}
 			
+			print_r($this->SignalMain);echo "<br><br>";
 			$this->SignalMain->getStateMain($mainDist);
 			if(isset($this->SignalSpeed))
 			{
