@@ -199,7 +199,7 @@ Class KS_combined extends SignalPart
 		// signals with shortened distance to main
 		if( ( isset($_GET["railway:signal:combined:shortened"]) && $_GET["railway:signal:combined:shortened"] == "yes" ) )
 		{
-			if( ( $_GET["state_combined"] == "ks2" ) || ( $class_ks1 == "signal_blink" ) ) // only when Ks 1 is blinking or Ks 2 is shown
+			if( ( isset($_GET["state_combined"]) && $_GET["state_combined"] == "ks2" ) || ( $class_ks1 == "signal_blink" ) ) // only when Ks 1 is blinking or Ks 2 is shown
 			{
 				$colour_shortened = "&white;";
 			}

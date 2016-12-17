@@ -118,7 +118,7 @@ Class KS_distant extends SignalPart
 		// repeated signals: lower white additional light
 		if( ( isset($_GET["railway:signal:distant:repeated"]) && $_GET["railway:signal:distant:repeated"] == "yes" ) )
 		{
-			if( ( $_GET["state_distant"] == "ks2" ) || ( $class_ks1 == "signal_blink" ) ) // only when Ks 1 is blinking or Ks 2 is shown
+			if( ( isset($_GET["state_distant"]) && $_GET["state_distant"] == "ks2" ) || ( $class_ks1 == "signal_blink" ) ) // only when Ks 1 is blinking or Ks 2 is shown
 			{
 				$colour_additional_light_lower = "&white;";
 			}
