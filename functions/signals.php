@@ -434,8 +434,12 @@ Class Signals
 		return $speed_array;
 	}
 	
-	public function getPossibleSpeedsDistant()
+	public function getPossibleSpeedsDistant($next_speed="")
 	{
+		if(!$next_speed)
+		{
+			$next_speed=$this->next_speed;
+		}
 		$speed_array = Array();
 		if( isset($this->SignalSpeedDistant) )
 		{
@@ -443,7 +447,7 @@ Class Signals
 		}
 		if( isset($this->SignalDistant) )
 		{
-			$speed_array = array_merge($this->SignalDistant->possibleSpeedsDistant($this->next_speed), $speed_array); 
+			$speed_array = array_merge($this->SignalDistant->possibleSpeedsDistant($next_speed), $speed_array); 
 		}
 		return $speed_array;
 	}
@@ -488,7 +492,7 @@ Class Signals
 			$possible_speeds = $possible_speeds_main;
 		}
 		sort($possible_speeds);
-		$none = false;
+		$none = false;		
 		foreach($possible_speeds as $speed)
 		{
 			if($speed == "-1")
