@@ -806,7 +806,7 @@ Class Signals
 			if( !isset($this->tags["railway:signal:train_protection"]) || $this->tags["railway:signal:train_protection"] != "DE-ESO:blockkennzeichen" )
 			{
 				$result.='
-						<span class="signal_ref">' . $this->tags["ref"] . '</span>';
+						<span class="signal_ref">' . $this::showSignalRef( $this->tags["ref"] ) . '</span>';
 			}
 		}
 		$result.='</td>';
@@ -1020,6 +1020,52 @@ Class Signals
 		return $main_distance;
 	}
 	
+
+	/**
+	 * returns ref with line break between area code and signal number
+	 * if possible
+	 * @param String $ref ref as it is saved in OSM
+	 * @return ref with line break
+	 */
+	public static function showSignalRef($ref)
+	{		
+		// FIXME: This is optimized for German ESTW refs, 
+		// it should be tested for non-German and non-EBO signals as well
+		
+		if ( strlen($ref) <= 3 && !strstr($ref, " ") ) // number with 5 digits or less and no spaces
+		{
+			// works with 'normal' refs, fails with ESTW refs
+			// if len is 1, 2, 3, never do a new line
+			$ref_sign = $ref;
+		}
+		elseif(strstr($ref, " "))
+		{
+			// spaces in ref: often used way to separate area code and signal number
+			// only separate when there are only 2 parts and first part is a number
+			$refs = explode(" ", $ref);
+			if( count($refs) == 2 && $refs[0] > 0 && strlen ( $refs[0] ) < 4 && strlen ( $refs[1] ) <= 4 ) // 2 numbers with space in between with 4 digits or less each
+			{
+				$ref_sign = $refs[0] . '<br/>' . $refs[1];
+			}
+			else
+			{
+				$ref_sign=$ref;
+			}
+		}
+		else
+		{
+			// refs with len >= 3 and numbers at the beginning should 'normally' only occur with ESTWs
+			if(ctype_digit(substr($ref, 0, 2)))
+			{
+				$ref_sign = substr($ref, 0, 2) . '<br/>' . substr($ref, 2);
+			}
+			else
+			{
+				$ref_sign=$ref;
+			}
+		}
+		return $ref_sign;
+	}
 	
 	public static function signalStates($states,$prefix,$strict=true)
 	{
