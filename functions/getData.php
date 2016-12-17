@@ -3342,12 +3342,21 @@ if (  $this->relation_distance == 0 )
 			// only use nodes that are less than specified distance away
 			if ( $node_diff < $treshold && $node_diff > 0 )
 			{
-				// don't use nodes that are part of platforms
-				if( isset ( $this->way_tags[$this->node_way[$nodeid]]["public_transport"] ) && $this->way_tags[$this->node_way[$nodeid]]["public_transport"]=="platform" 
-				||	isset ( $this->way_tags[$this->node_way[$nodeid]]["railway"] ) && $this->way_tags[$this->node_way[$nodeid]]["railway"]=="platform")
+				
+				// don't use nodes that are not on railways
+				if ( !isset($this->way_tags[$this->node_way[$nodeid]]["railway"]) ||
+					( $this->way_tags[$this->node_way[$nodeid]]["railway"] != "rail" &&
+					$this->way_tags[$this->node_way[$nodeid]]["railway"] != "light_rail" &&
+					$this->way_tags[$this->node_way[$nodeid]]["railway"] != "tram" &&
+					$this->way_tags[$this->node_way[$nodeid]]["railway"] != "narrow_gauge" &&
+					$this->way_tags[$this->node_way[$nodeid]]["railway"] != "miniature" &&
+					$this->way_tags[$this->node_way[$nodeid]]["railway"] != "subway" &&
+					$this->way_tags[$this->node_way[$nodeid]]["railway"] != "ferry" &&
+					$this->way_tags[$this->node_way[$nodeid]]["railway"] != "construction" ) )
 				{
 					continue;
 				}
+				
 				// add node to array
 				$nodes_dis[$nodeid] = $node_diff;
 			}
