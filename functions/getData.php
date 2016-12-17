@@ -2128,6 +2128,7 @@ if (  $this->relation_distance == 0 )
 				<th><?php echo Lang::l_("Show on map")?></th>
 			</tr>
 		<?php
+		$s=0;
 		if(!$this->signals_array)
 		{
 			?>
@@ -2143,11 +2144,21 @@ if (  $this->relation_distance == 0 )
 				if($this->signal[$signals[1]])
 				{
 					echo $this->signal[$signals[1]]->showSignal();
+					if($this->signal[$signals[1]]->is_main() || $this->signal[$signals[1]]->is_distant())
+					{
+						$s++;
+					}
 				}
 			}
 		}
 		?>
 			</table>
+		</div>
+		<div class="panel-body">
+			<div class="col-md-12">
+				<strong><?php echo $s; ?></strong> <?php echo Lang::l_('signals found on this route.');?> <br />
+				<a data-toggle="collapse" href="#signalsTab" aria-expanded="false" aria-controls="signalsTab"><?php echo Lang::l_('Show signals');?></a>
+			</div>
 		</div>
 	</div>
 	
