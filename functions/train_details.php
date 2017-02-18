@@ -354,6 +354,20 @@ $tr_length["BR111"] = 0.017+5*0.027;
 $tr_image["BR111"] = "nWagenBR111.png";
 
 
+//DB BR 420 (Germany)
+$tr_name["BR420"] = "DB Baureihe 420";
+$tr_type["BR420"] = "regional";
+$tr_maxspeed["BR420"] = 120; // km/h
+$tr_mass_empty["BR420"] = 129; // t
+$tr_power["BR420"] = 2400; // kW
+$tr_torque["BR420"] = 145; // kN
+$tr_seats["BR420"] = 192;
+$tr_acc["BR420"] = 1;
+$tr_brake["BR420"] = 0.9;
+$tr_length["BR420"] = 0.067;
+$tr_image["BR420"] = "regional.svg"; // FIXME
+
+
 //DB BR 422 (Germany)
 $tr_name["BR422"] = "DB Baureihe 422";
 $tr_type["BR422"] = "regional";
@@ -472,6 +486,19 @@ $tr_acc["BR442.3"] = 1.1;
 $tr_brake["BR442.3"] = 0.9;
 $tr_length["BR442.3"] = 0.0884;
 $tr_image["BR442.3"] = "BR442.3.svg";
+
+//DB BR 612 (Germany)
+$tr_name["BR612"] = "DB Baureihe 612";
+$tr_type["BR612"] = "regional";
+$tr_maxspeed["BR612"] = 160; // km/h
+$tr_mass_empty["BR612"] = 116; // t
+$tr_power["BR612"] = 2*560; // kW
+$tr_torque["BR612"] = 100; // estimated
+$tr_seats["BR612"] = 156;
+$tr_acc["BR612"] = 0.6; // m/s²
+$tr_brake["BR612"] = 1; // m/s² estimated
+$tr_length["BR612"] = 0.052; //in Einzeltraktion
+$tr_image["BR612"] = "regional.svg"; //FIXME
 
 //DB BR 628.4 (Germany)
 $tr_name["BR628"] = "DB Baureihe 628";
