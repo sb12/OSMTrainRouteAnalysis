@@ -2042,7 +2042,7 @@ if (  $this->relation_distance == 0 )
 			<div class="col-md-6"><b><?php echo Lang::l_('Route Length');?>:</b> <?php echo $relation_distance_show;?> km</div> 
 			<div class="col-md-6"><b><?php echo Lang::l_('Travel Time');?>:</b> <?php echo round($travel_time);?> min</div> 
 			<div class="col-md-6"><b><?php echo Lang::l_('Average Speed');?>:</b> <?php echo round($average_speed);?> km/h</div>
-			<div class="col-md-6"><b><?php echo Lang::l_('Maximum Speed');?>:</b> <?php echo $this->maxspeed_max;?> km/h</div>
+			<div class="col-md-6"><b><?php echo Lang::l_('Maximum Speed');?>:</b> <?php echo round($this->maxspeed_max);?> km/h</div>
 			<div class="col-md-6"><b><?php echo Lang::l_('Known speed limits in OSM database');?>:</b> <?php echo round($speed_coverage*100,1);?> %</div>
 		</div>
 	</div>
