@@ -75,6 +75,10 @@ Class Speed_Distant
 		$this->speed_distant = $signal_speed;
 	}
 
+	public function getStateDistant()
+	{
+		$this->state_distant = "";
+	}
 
 	/**
 	 * set shown speed for signal

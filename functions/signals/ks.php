@@ -1,7 +1,7 @@
 <?php 
     /**
     
-    OSMTrainRouteAnalysis Copyright © 2014-2015 sb12 osm.mapper999@gmail.com
+    OSMTrainRouteAnalysis Copyright © 2014-2017 sb12 osm.mapper999@gmail.com
     
     This file is part of OSMTrainRouteAnalysis.
     
@@ -58,41 +58,6 @@ Class KS extends SignalPart
 		$speed_array[]=-1;
 		return $speed_array;
 	}
-	
-	/**
-	 * returns the state of the signals
-	 * @param $tags array tags of the signal
-	 * @param $next_speed int speed which is relevant for the signal
-	 * @param $main_distance int distance to next main signal
-	 */
-	public static function findState($tags, $next_speed_distant, $main_distance)
-	{
-		$state = "";
-		if(isset($tags["railway:signal:main:states"]))
-		{
-			if ( $next_speed == 0 && strpos($tags["railway:signal:main:states"], "hp0" )) // signal at end of route
-			{
-				$state = "hp0";
-			}
-			elseif ( strpos($tags["railway:signal:main:states"], "ks1" ) )
-			{
-				$state = "ks1";
-			}
-		}
-		if(isset($tags["railway:signal:distant:states"]) && $state != "hp0")
-		{
-			if ( $next_speed_distant == 0 && strstr($tags["railway:signal:distant:states"], "ks2" )) // signal at end of route
-			{
-				$state = "ks2";
-			}
-			elseif( strstr($tags["railway:signal:distant:states"], "ks1" ) ) // signal can not show vr2 or vr1
-			{
-				$state = "ks1";
-			}
-		}
-		return $state;
-	}
-	
 	
 	/**
 	 * returns description of the signals

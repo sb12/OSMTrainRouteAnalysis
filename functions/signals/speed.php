@@ -52,9 +52,29 @@ Class Speed
 	 */
 	protected $speed_main;
 	
+	/**
+	 * set speed for main signal
+	 * @var String
+	 */
+	public $state_main;
+	
 	public function __construct($tags)
 	{
 		$this->tags = $tags;
+	}
+
+	/**
+	 * return possible speeds the signal can show
+	 * @return Array(int)
+	 */
+	public function possibleSpeedsMain($speed)
+	{
+		return $this->possibleSpeeds();
+	}
+
+	public function getStateMain()
+	{
+		$this->state_main = "";
 	}
 
 	/**
@@ -117,18 +137,21 @@ Class Speed
 		}
 		$description .= $signal;
 		$description .= Lang::l_(" Speed Signal");
-		$description .= " (";
-		foreach($this->states as $speed)
+		if($this->states)
 		{
-			$speed = str_replace(-1, "off", $speed);
-			if($speed == $this->speed)
+			$description .= " (";
+			foreach($this->states as $speed)
 			{
-				$speed = "<b>" . $speed . "</b>";
+				$speed = str_replace(-1, "off", $speed);
+				if($speed == $this->speed)
+				{
+					$speed = "<b>" . $speed . "</b>";
+				}
+				$description .= $speed . ", ";
 			}
-			$description .= $speed . ", ";
+			$description = substr($description,0, strlen($description)-2); // remove commata
+			$description .= ")";
 		}
-		$description = substr($description,0, strlen($description)-2);
-		$description .= ")";
 		
 		return $description;
 	}

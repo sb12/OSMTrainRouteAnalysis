@@ -1,7 +1,7 @@
 <?php 
     /**
     
-    OSMTrainRouteAnalysis Copyright © 2014-2016 sb12 osm.mapper999@gmail.com
+    OSMTrainRouteAnalysis Copyright © 2014-2017 sb12 osm.mapper999@gmail.com
     
     This file is part of OSMTrainRouteAnalysis.
     
@@ -91,6 +91,24 @@ Class Signals
 	 * @var Signals
 	 */
 	protected $distantSignal;
+	
+	/**
+	 * corresponding speed signal
+	 * @var Signals
+	 */
+	protected $speedSignal;
+	
+	/**
+	 * next speed signal
+	 * @var Signals
+	 */
+	protected $nextSpeedSignal;
+	
+	/**
+	 * corresponding distant speed signal
+	 * @var Signals
+	 */
+	protected $distantSpeedSignal;
 
 
 	/**
@@ -282,6 +300,38 @@ Class Signals
 			return false;
 		}
 	}
+
+	/**
+	 * is the signal a speed signal?
+	 * @return boolean
+	 */
+	public function is_speed()
+	{
+		if( isset($this->tags["railway:signal:speed_limit"]) && $this->tags["railway:signal:speed_limit"] == "DE-ESO:zs3" )
+		{
+			return true;
+		}
+		else
+		{
+			return false;
+		}
+	}
+
+	/**
+	 * is the signal a distant speed signal?
+	 * @return boolean
+	 */
+	public function is_speed_distant()
+	{
+		if( isset($this->tags["railway:signal:speed_limit_distant"]) && $this->tags["railway:signal:speed_limit_distant"]=="DE-ESO:zs3v" )
+		{
+			return true;
+		}
+		else
+		{
+			return false;
+		}
+	}
 	
 	/**
 	 * set corresponding main signal
@@ -293,12 +343,39 @@ Class Signals
 	}
 	
 	/**
+	 * set corresponding speed signal
+	 * @param Signal $signal
+	 */
+	public function set_speedSignal($signal)
+	{
+		$this->speedSignal = $signal;
+	}
+	
+	/**
+	 * set corresponding distant speed signal
+	 * @param Signal $signal
+	 */
+	public function set_distantSpeedSignal($signal)
+	{
+		$this->distantSpeedSignal = $signal;
+	}
+	
+	/**
 	 * set next main signal
 	 * @param Signal $signal
 	 */
 	public function set_nextMainSignal($signal)
 	{
 		$this->nextMainSignal = $signal;
+	}
+	
+	/**
+	 * set next speed signal
+	 * @param Signal $signal
+	 */
+	public function set_nextSpeedSignal($signal)
+	{
+		$this->nextSpeedSignal = $signal;
 	}
 	
 	/**
@@ -404,10 +481,6 @@ Class Signals
 			}
 			
 			$this->SignalMain->getStateMain($mainDist);
-			if(isset($this->SignalSpeed))
-			{
-				$this->SignalSpeed->getSpeed();
-			}
 		}
 		//signal is a distant signal
 		if($this->is_distant())
@@ -417,6 +490,32 @@ Class Signals
 			{
 				$this->SignalSpeedDistant->getSpeedDistant();
 			}
+		}
+		//signal is a speed signal
+		if($this->is_speed())
+		{
+			$mainDist=0;
+			if(isset($this->nextSpeedSignal->pos))
+			{
+				$mainDist=$this->pos - $this->nextSpeedSignal->pos;
+			}
+			
+			//make distant speed available for main signal (needed for some combined signals)
+			if( isset ($this->SignalSpeedDistant) )
+			{
+				$this->SignalSpeed->speed_distant = $this->SignalSpeedDistant->speed_distant;
+			}
+			
+			$this->SignalSpeed->getStateMain($mainDist);
+			if(isset($this->SignalSpeed))
+			{
+				$this->SignalSpeed->getSpeed();
+			}
+		}
+		//signal is a distant speed signal
+		if($this->is_speed_distant())
+		{
+			$this->SignalSpeedDistant->getSpeedDistant();
 		}
 	}
 	
@@ -456,10 +555,18 @@ Class Signals
 	{
 		//get speed values
 		$this->getSpeed();
+
+		//Special case: distant signal is for different signal than distant speed signal:
+		$speedOnly = false;
+		if( !$this->is_main() && $this->is_speed() )
+		{
+			$speedOnly = true;
+		}
 		
 		$possible_speeds = Array();
 		$possible_speeds_main = $this->getPossibleSpeedsMain($this->next_speed);
-		if(isset($this->distantSignal))
+
+		if( isset($this->distantSignal) )
 		{
 			$possible_speeds_distant = $this->distantSignal->getPossibleSpeedsDistant($this->next_speed);
 			
@@ -487,12 +594,32 @@ Class Signals
 				$possible_speeds = $possible_speeds_main;
 			}
 		}
+		elseif( $speedOnly )
+		{
+			$possible_speeds_distant = $this->distantSpeedSignal->getPossibleSpeedsDistant($this->next_speed);
+				
+			$distSignal = $this->distantSpeedSignal;
+			if($possible_speeds_distant)
+			{
+				foreach($possible_speeds_main as $speed)
+				{
+					if(in_array($speed, $possible_speeds_distant))
+					{
+						$possible_speeds[] = $speed;
+					}
+				}
+			}
+			else
+			{
+				$possible_speeds = $possible_speeds_main;
+			}
+		}
 		else
 		{
 			$possible_speeds = $possible_speeds_main;
 		}
 		sort($possible_speeds);
-		$none = false;		
+		$none = false;
 		foreach($possible_speeds as $speed)
 		{
 			if($speed == "-1")
@@ -521,6 +648,10 @@ Class Signals
 		if(isset($this->SignalSpeed))
 		{
 			$this->SignalSpeed->setSpeedMain($signal_speed, $signal_speed_none);
+			if($speedOnly)
+			{
+				$this->distantSpeedSignal->SignalSpeedDistant->setSpeedDistant($signal_speed, $signal_speed_none);
+			}
 		}
 		if(isset($this->distantSignal))
 		{
@@ -532,16 +663,19 @@ Class Signals
 				{
 					$distSignal = $distSignal->RepeaterDistantSignal;
 					$distSignal->SignalDistant->setSpeedDistant($signal_speed, $signal_speed_none);
-					if(isset($distSignal->SignalSpeedDistant))
+					if( isset($distSignal->SignalSpeedDistant) )
 					{
 						
 						$distSignal->SignalSpeedDistant->setSpeedDistant($signal_speed, $signal_speed_none);
 					}
 				}
 			}
-			if(isset($this->distantSignal->SignalSpeedDistant))
+			if( isset($this->distantSignal->SignalSpeedDistant) )
 			{
-				$this->distantSignal->SignalSpeedDistant->setSpeedDistant($signal_speed, $signal_speed_none);
+				if(!isset($this->distantSignal->SignalSpeedDistant->speed_distant))
+				{
+					$this->distantSignal->SignalSpeedDistant->setSpeedDistant($signal_speed, $signal_speed_none);
+				}
 			}
 		}
 		if( isset($this->SignalMain->state_main) && $this->SignalMain->state_main == "kennlicht")
@@ -551,7 +685,7 @@ Class Signals
 		
 
 		// there is no main signal for this distant signal and signal can be off
-		if(isset($this->SignalDistant) && !isset($this->mainSignal) && isset($this->SignalDistant->states_distant) && in_array("off", $this->SignalDistant->states_distant))
+		if( isset($this->SignalDistant) && !isset($this->mainSignal) && isset($this->SignalDistant->states_distant) && in_array("off", $this->SignalDistant->states_distant) )
 		{
 			// signal should be off
 			$this->SignalDistant->state_distant = "off";
@@ -636,8 +770,10 @@ Class Signals
 			$Route->signal[$signal[1]]=new Signals($signal[1], $nodes[$signal[1]],  $signal[0]);
 		}
 		// construct arrays for main and distant signals
-		$distant_signals = Array();
 		$main_signals = Array();
+		$distant_signals = Array();
+		$speed_signals = Array();
+		$distant_speed_signals = Array();
 		foreach ($signals as $signal)
 		{
 			if( $Route->signal[$signal[1]]->is_main() ) 
@@ -649,7 +785,15 @@ Class Signals
 			{
 				$distant_signals[] = $signal;
 			}
-			//self::$signal_property[$signal[1]]["distance"] = $signal[0]; 
+			
+			if( $Route->signal[$signal[1]]->is_speed() )
+			{
+				$speed_signals[] = $signal;
+			}
+			if( $Route->signal[$signal[1]]->is_speed_distant() )
+			{
+				$distant_speed_signals[] = $signal;
+			}
 		}
 		
 		$i = 0;
@@ -693,6 +837,32 @@ Class Signals
 				$Route->signal[$signal[1]]->set_nextMainSignal($Route->signal[$main_signals[$i][1]]);
 			}
 		}
+		
+		$i = 0;
+		//attach speed signals to distant speed signals
+		$distant_speed_signals = array_reverse($distant_speed_signals); // reverse array
+		foreach ($speed_signals as $signal) // go through all speed signals
+		{
+			$repeater = false;
+			foreach ( $distant_speed_signals as $distant) // go through all distant speed signals
+			{
+				if ( $signal[0] - $distant[0] > 0 && $signal[0] - $distant[0] < 1.8 ) // distant signal is between 0 and 1800m from main signal and there's no main signal set yet..
+				{
+					//set distant signal for main signal
+					$Route->signal[$signal[1]]->set_distantSpeedSignal($Route->signal[$distant[1]]);
+					self::$signal_property[$signal[1]]["distant"] = $distant[1];
+					
+					// set main signal for distant signal
+					$Route->signal[$distant[1]]->set_speedSignal($Route->signal[$signal[1]]);
+					self::$signal_property[$distant[1]]["main"] = $signal[1];
+				}
+			}
+			$i++;
+			if( isset( $speed_signals[$i] ) )
+			{
+				$Route->signal[$signal[1]]->set_nextSpeedSignal($Route->signal[$main_signals[$i][1]]);
+			}
+		}
 		foreach ($signals as $signal)
 		{
 			$Route->signal[$signal[1]]->setSignalStateMain();
@@ -711,7 +881,7 @@ Class Signals
 	
 	public function showSignal()
 	{
-		if( !$this->is_main() && !$this->is_distant() )
+		if( !$this->is_main() && !$this->is_distant() && !$this->is_speed() && !$this->is_speed_distant() )
 		{
 			return;
 		}
