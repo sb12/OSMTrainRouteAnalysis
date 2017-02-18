@@ -568,6 +568,10 @@ Class Signals
 				{
 					
 					// set correct distant signal for the next main signal
+					if( isset($this->nextMainSignal->mainSignal->distantSignal->RepeaterDistantSignal) )
+					{
+						$this->RepeaterDistantSignal=$this->nextMainSignal->mainSignal->distantSignal->RepeaterDistantSignal;
+					}
 					$this->nextMainSignal->mainSignal->distantSignal = $this;
 					
 					// use distant signal as repeater if distance between signals is at least 300 m
@@ -588,6 +592,10 @@ Class Signals
 				if(isset($this->SignalDistant))
 				{
 					// set correct distant signal for the next main signal
+					if( isset($this->distantSignal->RepeaterDistantSignal) )
+					{
+						$this->distantSignal->RepeaterDistantSignal=$this->distantSignal->RepeaterDistantSignal;
+					}
 					$this->mainSignal->distantSignal = $this->distantSignal;
 					
 					// use distant signal as repeater if distance between signals is at least 300 m
