@@ -275,7 +275,7 @@ Class Signals
 	 */
 	public function is_main()
 	{
-		if( isset($this->tags["railway:signal:main"]) || isset($this->tags["railway:signal:combined"]) || ( isset($this->tags["railway:signal:train_protection:type"]) && $this->tags["railway:signal:train_protection:type"] == "block_marker" ) )
+		if( isset($this->tags["railway:signal:main"]) || isset($this->tags["railway:signal:combined"]) || ( isset($this->tags["railway:signal:train_protection:type"]) && $this->tags["railway:signal:train_protection:type"]=="DE-ESO:blockkennzeichen" && $this->tags["railway:signal:train_protection:type"] == "block_marker" ) )
 		{
 			return true;
 		}
@@ -558,7 +558,7 @@ Class Signals
 
 		//Special case: distant signal is for different signal than distant speed signal:
 		$speedOnly = false;
-		if( !$this->is_main() && $this->is_speed() )
+		if( !$this->is_main() && $this->is_speed() && isset($this->distantSpeedSignal->SignalSpeedDistant) )
 		{
 			$speedOnly = true;
 		}
