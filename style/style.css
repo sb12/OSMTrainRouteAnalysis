@@ -302,6 +302,15 @@ table.route_overview > tbody > tr > td.nowrap
 	color: #CCCCFF;
 }
 
+.station
+{
+	background-color: rgba(51,122,183,0.9);
+	padding:0px 5px;
+	font-weight:bolder;
+	color:#ffffff;
+	border-radius:5px;
+}
+
 /**
 * Pagination
 **/

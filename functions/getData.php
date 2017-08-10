@@ -854,6 +854,7 @@ Class Route
 				{
 					$this->node[$id]["name"] = Lang::l_("Ferry Terminal");
 				}
+				$this->node[$id]["name"] .= " &#9972;";
 
 				$id = $this->last_node[$b];
 				$this->relation_stops[] = $id;
@@ -863,6 +864,7 @@ Class Route
 				{
 					$this->node[$id]["name"] = Lang::l_("Ferry Terminal");
 				}
+				$this->node[$id]["name"] .= " &#9972;";
 			}
 			
 			// add way length to relation distance
@@ -1415,7 +1417,7 @@ $(function()
 		hoverable: true,
 	 	clickable: true,
 	 	color: "#CCCCFF",
-	 	lineWidth: 0.1
+	 	lineWidth: 0.1,
 	},
 	colors: ['#3333FF'],
 	selection: 
@@ -1430,6 +1432,7 @@ var startData = [[0,0],<?php
 	$real_average_speed = 0;
 	
     $this->maxspeed_point_array[-1] = $this->maxspeed_point_array[0];
+    $csv_export = "";
     for ( $i = 0; isset($this->maxspeed_point_array[$i]); $i++)
     {
     	//calculate average speed
@@ -1437,7 +1440,8 @@ var startData = [[0,0],<?php
     	
     	//add speed to javascript matrix
     	echo "[" . $this->maxspeed_point_array[$i][0] . "," . $this->maxspeed_point_array[$i][1] . ", 'real']";
-    	
+    	$csv_export .= $this->maxspeed_point_array[$i][0].";".$this->maxspeed_point_array[$i][1]."\n";
+
     	if ( isset($this->maxspeed_point_array[$i+1]) )// this is not the last value
        	{
        		echo ","; 
@@ -1445,6 +1449,9 @@ var startData = [[0,0],<?php
     }
     ?>];
     <?php 
+    // add an extra line
+    $csv_export .= "\n";
+    
     // add allowed maxspeed and distinguish between guessed and mapped values
     $k = 0;
     $l = 0;
@@ -1497,6 +1504,10 @@ var startData = [[0,0],<?php
     			echo "[" . $maxspeed_distance . "," . $this->maxspeed_array[$i-1][1] . ", 'allowed'],";
 		    }
     	}
+
+    	$csv_export .= $maxspeed_distance.";".$this->maxspeed_array[$i][1]."\n";
+    	$csv_export .= ($maxspeed_distance + $this->maxspeed_array[$i][0]).";".$this->maxspeed_array[$i][1]."\n";
+    	
     	//add speed to javascript matrix
     	echo "[" . $maxspeed_distance . "," . $this->maxspeed_array[$i][1] . ", 'allowed'],";
     	echo "[" . ($maxspeed_distance + $this->maxspeed_array[$i][0]) . "," . $this->maxspeed_array[$i][1] . ", 'allowed']";
@@ -1516,7 +1527,7 @@ var startData = [[0,0],<?php
     ?>];
 
     var stationData = [<?php 
-    
+
     //construct matrix for stations
     $j = 0;
     if ( isset($this->relation_stops[0]) )//stops exist
@@ -1565,17 +1576,17 @@ var startData = [[0,0],<?php
 
 	for ( var i = 0; stationData[i]; i++ )
 	{
- 		$("<div id='station" + i + "' class='hidden-xs'></div>").css({	
+ 		$("<div class='hidden-xs' id='station" + i + "'></div>").css({	
 	 		position: "absolute",
 	 		border: "none",
 	 		padding: "2px",
-	 		opacity: 0.80,
+	 		opacity: 0.8,
 	 		width: 300,
 	 		"border-radius": "2px",
 		 	"transform": "rotate(-90deg)",
 		 	"font-size": "0.6em",
 		 	height:20,
-		 	"z-index": "1"
+		 	"z-index": "3",
  		}).appendTo("body");
 	}
 	var stations = new Array();
@@ -1590,10 +1601,22 @@ var startData = [[0,0],<?php
 		{
 			var xpos = stationData[i][0];
 			var pO = plot.pointOffset({ x: xpos, y: 0 });
-			$("#station" + i).html(stationData[i][2])
+
+			real_offset = (pO.left-offset_left);
+			if (real_offset<=1 && real_offset >=-10)
+			{
+				pO.left = offset_left;
+			}
+
+			if ( (pO.left + 10 ) >= $("#maxspeed").width() && (pO.left ) < $("#maxspeed").width() )
+			{
+				pO.left = $("#maxspeed").width()-19;
+			}		 
+			
+			$("#station" + i).html('<span class="station">' + stationData[i][2] + '</span>')
 			.css({top: offset_top+$("#maxspeed").height()-200, left: (pO.left+offset_left-145)})
 			
-			if ( $('#maxspeed_labels:checked').length > 0 && ( pO.left + offset_left ) < $("#maxspeed").width() )
+			if ( $('#maxspeed_labels:checked').length > 0 && pO.left >= offset_left && ( pO.left + 18 ) <= $("#maxspeed").width() )
 			{
 				$("#station" + i).fadeIn(200);
 			}
@@ -2059,6 +2082,7 @@ if (  $this->relation_distance == 0 )
 				<div id="maxspeed_overview"></div>
 			</div>
 			<small id="flotversion"></small>
+			
 			<div class="btn-group hidden-xs">
 				<span class="input-group-addon">
 				<input type="checkbox" id="maxspeed_labels" checked="checked" aria-label="..."/>
@@ -2077,7 +2101,12 @@ if (  $this->relation_distance == 0 )
 				</span>
 				<label for="show_maxspeed" class="input-group-addon"><?php echo Lang::l_('Show Allowed Maxspeed');?></label>
 			</div>
+			<?php $this->downloadCSV($csv_export,$this->id);?>
+			
 			<div class="row"><small class="col-md-12"><b><?php echo Lang::l_('Please note');?>:</b> <?php echo Lang::l_('note_maxspeed');?></small></div>
+			
+			<div class="ct-chart ct-perfect-fourth"></div>
+			
 		</div>
 	</div>
 	
@@ -3623,6 +3652,21 @@ if (  $this->relation_distance == 0 )
 			}
 			$last_distance = $distance;
 		}
+	}
+	
+	function downloadCSV($csvData,$id)
+	{
+		$filename = 'osmdata/maxspeed'.$id.'.csv';
+		$fh = fopen( $filename, 'w+' ); // FIXME: add error message
+		
+		fwrite( $fh, $csvData );
+
+		fclose($fh);
+		
+		?>
+		<a class="btn btn-default" href="<?php echo $filename;?>">Download CSV File</a>
+		<?php
+		
 	}
 }
 ?>

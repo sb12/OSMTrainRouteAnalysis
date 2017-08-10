@@ -69,7 +69,7 @@ Lang::defineLanguage();
 
 <!-- Latest compiled and minified JavaScript -->
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/<?php echo $v_bootstrap;?>/js/bootstrap.min.js"></script>
-
+ 
 <!-- load javascript functions -->
 <script type="text/javascript" src="javascript/functions.js"></script>
 
