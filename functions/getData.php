@@ -931,19 +931,19 @@ Class Route
 			$maxspeed_total_max = max($maxspeed_total_max, $maxspeed);
 	
 			/*Set maxspeed matrix for average*/
-			if ( $maxspeed_before != $maxspeed && $maxspeed_before != 0 )
+			if ( ($maxspeed_before != $maxspeed && $maxspeed_before != 0) || $exact_before != $exact )
 			{
 				$maxspeed_array[] = Array($distance_before, $maxspeed_before, $exact_before);
 				$distance_before = 0;
 			}
 			/*Set maxspeed matrix for max*/
-			if( $maxspeed_before_max != $maxspeed && $maxspeed_before_max != 0 )
+			if ( ( $maxspeed_before_max != $maxspeed && $maxspeed_before_max != 0 ) || $exact_before != $exact )
 			{
 				$maxspeed_array_max[] = Array($distance_before_max, $maxspeed_before_max, $exact_before);
 				$distance_before_max = 0;
 			}
 			/*Set maxspeed matrix for min*/
-			if ( $maxspeed_before_min != $maxspeed && $maxspeed_before_min != 0 )
+			if ( ( $maxspeed_before_min != $maxspeed && $maxspeed_before_min != 0 ) || $exact_before != $exact )
 			{
 				$maxspeed_array_min[] = Array($distance_before_min, $maxspeed_before_min, $exact_before);
 				$distance_before_min = 0;
@@ -1392,7 +1392,6 @@ history.pushState(stateObj, "", "?id=<?php echo $this->custom_id;?>&train=<?php 
 <script type="text/javascript" src="flot/jquery.flot.selection.js"></script>
 <script type="text/javascript" src="flot/jquery.flot.resize.js"></script>
 
-  
 <script type="text/javascript">
 
 $(function() 
