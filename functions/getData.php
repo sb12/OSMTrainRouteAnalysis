@@ -1667,13 +1667,13 @@ var startData = [[0,0],<?php
 			show: true,
 	        fill: true,
 	        fillColor: "rgba(255, 168, 0, 0.06)",
-	        lineWidth: 0,
+	        lineWidth: 0.5,
 	    },
 	    dashes:
 	    {
 		    show: true,
  	 		lineWidth: 1,
- 	 		dashLength: 2,
+ 	 		dashLength: 1,
 	    },
 		color: "#FF8800"
 		}
