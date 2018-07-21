@@ -1332,7 +1332,12 @@ Class Route
 		
 		if(!isset($this->relation_tags["service"]))
 		{
-			$this->relation_tags["service"]="";
+		    $this->relation_tags["service"]="";
+		}
+		
+		if(!isset($this->relation_tags["highspeed"]))
+		{
+		    $this->relation_tags["highspeed"]="";
 		}
 
 		//set ref to N/A, when not available
