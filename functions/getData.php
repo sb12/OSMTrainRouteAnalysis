@@ -1378,7 +1378,7 @@ Class Route
 		}
 		
 		//get route type:
-		$route_type = Route::getRouteType($this->relation_tags["route"],$this->relation_tags["service"]);
+		$route_type = Route::getRouteType($this->relation_tags["route"],$this->relation_tags["service"],$this->relation_tags["highspeed"]);
 
 		//title
 		?>
@@ -3480,11 +3480,11 @@ if (  $this->relation_distance == 0 )
 			$css_ref_class = "ref_regional";
 			if ( $service )
 			{
-				if ( $service == "high_speed" || $service == "long_distance" || $service == "night" || $service == "car" || $service == "car_shuttle" )
+				if ( $service == "high_speed" || $service == "long_distance" || $service == "night" || $service == "car" || $service == "international" )
 				{
 					$css_ref_class = "ref_long_distance";
 				}
-				elseif ( $service == "regional" || $service == "commuter" )
+				elseif ( $service == "regional" || $service == "commuter" || $service == "car_shuttle" )
 				{
 					$css_ref_class = "ref_regional";
 				}
@@ -3536,7 +3536,16 @@ if (  $this->relation_distance == 0 )
 			$css_ref_style .= "color:" . $text_colour . ";";
 		}
 		
-		return '<span class="' . $css_ref_class . '" style="' . $css_ref_style . '">' . $ref . '</span>';
+		$ref_array = explode(";",$ref);
+		
+		$string = "";
+		foreach ($ref_array as $r )
+		{
+		    $string .= '<span class="' . $css_ref_class . '" style="' . $css_ref_style . '">' . $r . '</span> ';
+		}
+		
+		
+		return $string;
 		
 	}
 
@@ -3545,23 +3554,25 @@ if (  $this->relation_distance == 0 )
 	 * @param string $route route type
 	 * @param string $service service type
 	 */	
-	static function getRouteType($route,$service="")
+	static function getRouteType($route,$service="",$highspeed="")
 	{
 		$route_type_lang = Array(
-		"high_speed"    => Lang::l_('Highspeed Train'),
-		"long_distance" => Lang::l_('Long Distance Train'),
-		"car"           => Lang::l_('Motorail Train'),
-		"car_shuttle"   => Lang::l_('Car Shuttle Train'),
-		"night"         => Lang::l_('Night Train'),
-		"regional"      => Lang::l_('Regional Train'),
-		"commuter"      => Lang::l_('Commuter Train'),
-        "train"         => Lang::l_('Unspecified Train'),
-        "light_rail"    => Lang::l_('Light Rail'),
-		"tram"			=> Lang::l_('Tram'),
-		"subway"		=> Lang::l_('Subway'),
-		"tourism"		=> Lang::l_('Tourist Train'),
-		"tourism_tram"  => Lang::l_('Tourist Tram'),
-		"unknown"       => Lang::l_('N/A'),
+		    "highspeed"               => Lang::l_('Highspeed Train'),
+		    "long_distance"           => Lang::l_('Long Distance Train'),
+		    "international"           => Lang::l_('International Train'),
+		    "highspeed_international" => Lang::l_('International Highspeed Train'),
+    		"car"                     => Lang::l_('Motorail Train'),
+    		"car_shuttle"             => Lang::l_('Car Shuttle Train'),
+    		"night"                   => Lang::l_('Night Train'),
+    		"regional"                => Lang::l_('Regional Train'),
+    		"commuter"                => Lang::l_('Commuter Train'),
+            "train"                   => Lang::l_('Unspecified Train'),
+            "light_rail"              => Lang::l_('Light Rail'),
+    		"tram"		              => Lang::l_('Tram'),
+    		"subway"		          => Lang::l_('Subway'),
+    		"tourism"		          => Lang::l_('Tourist Train'),
+    		"tourism_tram"            => Lang::l_('Tourist Tram'),
+    		"unknown"                 => Lang::l_('N/A'),
 		);
 		
 		if ( $route == "train" )
@@ -3569,11 +3580,29 @@ if (  $this->relation_distance == 0 )
 			$route_type = "train";
 			if ( $service == "high_speed" )
 			{
-				$route_type = "high_speed";
+				$route_type = "highspeed";
 			}
 			elseif ( $service == "long_distance" )
 			{
-				$route_type = "long_distance";
+			    if ($highspeed == "yes")
+			    {
+			        $route_type = "highspeed";
+			    }
+			    else
+			    {
+			        $route_type = "long_distance";
+			    }
+			}
+			elseif ( $service == "international")
+			{
+			    if ($highspeed == "yes")
+			    {
+			        $route_type = "highspeed_international";
+			    }
+			    else
+			    {
+			        $route_type = "international";
+			    }
 			}
 			elseif ( $service == "night" )
 			{
@@ -3597,7 +3626,7 @@ if (  $this->relation_distance == 0 )
 			}
 			elseif ( $service == "tourism")
 			{
-				$route_type = "tourism";
+			    $route_type = "tourism";
 			}
 		}
 		elseif ( $route == "tram" )
