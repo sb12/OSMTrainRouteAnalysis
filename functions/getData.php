@@ -1005,9 +1005,17 @@ Class Route
 					{
 						$this->way_tags[$b]["voltage"] = Lang::l_('N/A');
 					}
+					else
+					{
+					    $this->way_tags[$b]["voltage"] = str_replace(";", "/", $this->way_tags[$b]["voltage"]);
+					}
 					if ( !isset($this->way_tags[$b]["frequency"]) )
 					{
 						$this->way_tags[$b]["frequency"] = Lang::l_('N/A');
+					}
+					else
+					{
+					    $this->way_tags[$b]["frequency"] = str_replace(";", "/", $this->way_tags[$b]["frequency"]);
 					}
 					if ( !isset($this->electrified[$this->way_tags[$b]["voltage"] . ";" . $this -> way_tags[$b]["frequency"]]) )
 					{
