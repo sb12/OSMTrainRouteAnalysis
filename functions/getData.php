@@ -423,9 +423,19 @@ Class Route
 						'node(r.r:"stop");rel(bn:"stop")["type"="public_transport"]["public_transport"="stop_area"];out;';
 				if( Overpass::sendRequest($overpass_query) )
 				{
-					$this->refresh_success = true;
-					file_put_contents($file_name, Overpass::$result);
-					$this->filemtime = time();
+				    
+				    if(@file_put_contents($file_name, Overpass::$result))
+				    {
+				        $this->refresh_success = true;
+				        $this->filemtime = time();
+				    }
+				    else
+				    {
+				        $this->refresh_success = false;
+				        $error = error_get_last();
+				        log_error("Saving XML file for route " . $get_id . " failed: " . $error["message"] . " in " . $error["file"] . " on line " . $error["line"] );
+				    }
+		
 				}
 				else
 				{
