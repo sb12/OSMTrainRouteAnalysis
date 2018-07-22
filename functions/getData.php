@@ -2276,43 +2276,6 @@ if (  $this->relation_distance == 0 )
 		</div>
 	</div>
 	
-		<?php
-		//connect to database
-		$con = connectToDB();
-
-		if( !$this->custom )
-		{
-			// add route to database
-			$query = "SELECT id FROM osm_train_details WHERE id=" . @$con->real_escape_string($this->id);
-			$result = @$con->query($query) or log_error(@$con->error);
-			while ( $row = @$result->fetch_array() )
-			{
-				$mysql_id = $row["id"];
-			}
-			if ( isset($mysql_id) && $mysql_id == $this->id )
-			{
-				if ( $this->relation_distance > 0 ) //only update when route includes ways
-				{
-					$query2 = "UPDATE osm_train_details SET id=" . @$con->real_escape_string($this->id) . ", ref='" . @$con->real_escape_string($this->relation_tags["ref"]) . "', ref_colour='" . @$con->real_escape_string($this->relation_tags["colour"]) . "', ref_textcolour='" . @$con->real_escape_string($this->relation_tags["text_colour"]) . "', `from`='" . @$con->real_escape_string($this->relation_tags["from"]) . "', `to`='" . @$con->real_escape_string($this->relation_tags["to"]) . "', operator='" . @$con->real_escape_string($this->relation_tags["operator"]) . "', route='" . @$con->real_escape_string($this->relation_tags["route"]) . "', service='" . @$con->real_escape_string($this->relation_tags["service"]) . "', length='" . @$con->real_escape_string($this->relation_distance) . "', time='" . @$con->real_escape_string($travel_time) . "', ave_speed='" . @$con->real_escape_string($average_speed) . "',max_speed='" . @$con->real_escape_string($this->maxspeed_max) . "', date='" . @$con->real_escape_string($this->filemtime) . "' WHERE id=" . @$con->real_escape_string($this->id) . ";";
-				}
-				else // delete otherwise
-				{
-					$query2 = "DELETE FROM osm_train_details WHERE id=" . @$con->real_escape_string($this->id) . ";";
-				}
-				@$con->query($query2) or log_error(@$con->error);
-			}
-			else
-			{
-				if ( $this->relation_distance > 0 ) //only add when route includes ways
-				{
-					$query2 = "INSERT INTO osm_train_details VALUES( '" . @$con->real_escape_string($this->id) . "','" . @$con->real_escape_string($this->relation_tags["ref"]). "','" . @$con->real_escape_string($this->relation_tags["colour"]) . "','" . @$con->real_escape_string($this->relation_tags["text_colour"]) . "','" . @$con->real_escape_string($this->relation_tags["from"]) . "','" . @$con->real_escape_string($this->relation_tags["to"]) . "', '" . @$con->real_escape_string($this->relation_tags["operator"]) . "', '" . @$con->real_escape_string($this->relation_tags["route"]) . "', '" . @$con->real_escape_string($this->relation_tags["service"]) . "','" . @$con->real_escape_string($this->relation_distance) . "','" . @$con->real_escape_string($travel_time) . "', '" . @$con->real_escape_string($average_speed) . "','" . @$con->real_escape_string($this->maxspeed_max) . "','" . @$con->real_escape_string($this->train->ref) . "','" . @$con->real_escape_string($this->filemtime) . "');";
-					@$con->query($query2) or log_error(@$con->error);
-	
-					Train::setDefaultTrain($this->train->ref, $this->id, $this->relation_tags["service"], $this->relation_tags["route"], true);
-				}
-			}
-		}
-		?>
 	<div class="panel panel-primary">
 		<div class="panel-heading">
 			<h4 class="panel-title"><?php echo Lang::l_('Train details');?>:</h4>
@@ -2342,6 +2305,7 @@ if (  $this->relation_distance == 0 )
 			<div class="col-md-4"><b><?php echo Lang::l_('Seats');?>:</b> <?php echo $this->train->seats;?></div>
 
 		<?php
+		$this->sqlSaveRoute($average_speed, $travel_time);
 		$default_train = false;
 		$train_def = Train::getDefaultTrain($this->id);
 		if ( $train_def == $this->train->ref )
@@ -2441,6 +2405,53 @@ if (  $this->relation_distance == 0 )
 <script async defer id="github-bjs" src="https://buttons.github.io/buttons.js"></script>
 		<?php 
 	}
+    /**
+        save route to SQL database
+    */
+    public function sqlSaveRoute($average_speed, $travel_time)
+    {
+        //connect to database
+		$con = connectToDB();
+
+		if( !$this->custom )
+		{
+			// add route to database
+			$query = "SELECT id FROM osm_train_details WHERE id=" . @$con->real_escape_string($this->id);
+			$result = @$con->query($query) or log_error(@$con->error);
+			while ( $row = @$result->fetch_array() )
+			{
+				$mysql_id = $row["id"];
+			}
+			if ( isset($mysql_id) && $mysql_id == $this->id )
+			{
+			    $default_train = Train::getDefaultTrain($this->id);
+	
+    			if ( $default_train == $this->train->ref )
+    			{
+    				if ( $this->relation_distance > 0 ) //only update when route includes ways
+    				{
+    					$query2 = "UPDATE osm_train_details SET id=" . @$con->real_escape_string($this->id) . ", ref='" . @$con->real_escape_string($this->relation_tags["ref"]) . "', ref_colour='" . @$con->real_escape_string($this->relation_tags["colour"]) . "', ref_textcolour='" . @$con->real_escape_string($this->relation_tags["text_colour"]) . "', `from`='" . @$con->real_escape_string($this->relation_tags["from"]) . "', `to`='" . @$con->real_escape_string($this->relation_tags["to"]) . "', operator='" . @$con->real_escape_string($this->relation_tags["operator"]) . "', route='" . @$con->real_escape_string($this->relation_tags["route"]) . "', service='" . @$con->real_escape_string($this->relation_tags["service"]) . "', length='" . @$con->real_escape_string($this->relation_distance) . "', time='" . @$con->real_escape_string($travel_time) . "', ave_speed='" . @$con->real_escape_string($average_speed) . "',max_speed='" . @$con->real_escape_string($this->maxspeed_max) . "', date='" . @$con->real_escape_string($this->filemtime) . "' WHERE id=" . @$con->real_escape_string($this->id) . ";";
+    				}
+    				else // delete otherwise
+    				{
+    					$query2 = "DELETE FROM osm_train_details WHERE id=" . @$con->real_escape_string($this->id) . ";";
+    				}
+    				@$con->query($query2) or log_error(@$con->error);
+    			}
+			}
+			else
+			{
+				if ( $this->relation_distance > 0 ) //only add when route includes ways
+				{
+					$query2 = "INSERT INTO osm_train_details VALUES( '" . @$con->real_escape_string($this->id) . "','" . @$con->real_escape_string($this->relation_tags["ref"]). "','" . @$con->real_escape_string($this->relation_tags["colour"]) . "','" . @$con->real_escape_string($this->relation_tags["text_colour"]) . "','" . @$con->real_escape_string($this->relation_tags["from"]) . "','" . @$con->real_escape_string($this->relation_tags["to"]) . "', '" . @$con->real_escape_string($this->relation_tags["operator"]) . "', '" . @$con->real_escape_string($this->relation_tags["route"]) . "', '" . @$con->real_escape_string($this->relation_tags["service"]) . "','" . @$con->real_escape_string($this->relation_distance) . "','" . @$con->real_escape_string($travel_time) . "', '" . @$con->real_escape_string($average_speed) . "','" . @$con->real_escape_string($this->maxspeed_max) . "','" . @$con->real_escape_string($this->train->ref) . "','" . @$con->real_escape_string($this->filemtime) . "');";
+					@$con->query($query2) or log_error(@$con->error);
+	
+					Train::setDefaultTrain($this->train->ref, $this->id, $this->relation_tags["service"], $this->relation_tags["route"], true);
+				}
+			}
+		}
+    }
+
 	
 	/**
 	 * calculates speeds for maxspeed matrix

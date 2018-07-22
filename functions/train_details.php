@@ -842,4 +842,18 @@ $tr_acc["BVG-H"] = 1.5;// m/s²
 $tr_brake["BVG-H"] = 1.6;// m/s²
 $tr_length["BVG-H"] = 0.0987; //in Einzeltraktion
 $tr_image["BVG-H"] = "BVG-H.svg"; //in Einzeltraktion
+
+
+//BVG Großprofil-Baureihe H (Germany -> Berlin)
+$tr_name["Greif"] = "Dampflokomotive \"Greif\"";
+$tr_type["Greif"] = "tourism";
+$tr_maxspeed["Greif"] = 15;// km/h
+$tr_mass_empty["Greif"] = 30;// t
+$tr_power["Greif"] = 51;// kW //Stundenleistung
+$tr_torque["Greif"] = 10;// kN (geschätzt)
+$tr_seats["Greif"] = 120; // 4* 30
+$tr_acc["Greif"] = 0.3;// m/s²
+$tr_brake["Greif"] = 0.3;// m/s²
+$tr_length["Greif"] = 0.02; //mit 4 Wagen
+$tr_image["Greif"] = "Schlossgartenbahn.svg"; //in Einzeltraktion
 ?>

@@ -287,7 +287,7 @@ Class Train
 		
 		$default_allowed = false;
 		//highspeed and long distance trains
-		if( ( $train_type == "highspeed" || $train_type == "long_distance" || $train_type == "night" ) && $route == "train" && ( !$service || $service == "high_speed" || $service == "long_distance" || $service == "night" || $service == "car" ) )
+		if( ( $train_type == "highspeed" || $train_type == "long_distance" || $train_type == "night" ) && $route == "train" && ( !$service || $service == "high_speed" || $service == "long_distance" || $service == "night" || $service == "car" || $service == "international" ) )
 		{
 			$default_allowed = true;
 		}
@@ -304,7 +304,12 @@ Class Train
 		//tram and subway
 		if( ( $train_type == "light_rail"|| $train_type =="tram"|| $train_type =="subway" ) && ( $route == "tram" || $route == "subway" ) )
 		{
-			$default_allowed = true;
+		    $default_allowed = true;
+		}
+		//tourist trains
+		if( ( $train_type == "tourism" || $train_type == "tram" || $train_type == "regional" ) && ( ( $route == "tram" || $route == "train" ) && $service == "tourism" ) )
+		{
+		    $default_allowed = true;
 		}
 		
 		// set generic train, when train is needed and given train is not allowed
@@ -312,7 +317,7 @@ Class Train
 		{
 			if($route == "train")
 			{
-				if($service == "highspeed" || $service == "long_distance" || $service == "night" || $service == "car")
+				if($service == "highspeed" || $service == "long_distance" || $service == "night" || $service == "car" || $service == "international")
 				{
 					$train = "highspeed";
 				}
@@ -385,13 +390,14 @@ Class Train
 
 //define Train types
 Train::$train_type = Array(
-		"highspeed"     => Lang::l_('Highspeed train'),
-		"long_distance" => Lang::l_('Long distance train'),
-		"night"         => Lang::l_('Night train'),
-		"regional"      => Lang::l_('Regional train'),
-		"light_rail"    => Lang::l_('Light rail'),
+		"highspeed"     => Lang::l_('Highspeed Train'),
+		"long_distance" => Lang::l_('Long Distance Train'),
+		"night"         => Lang::l_('Night Train'),
+		"regional"      => Lang::l_('Regional Train'),
+		"light_rail"    => Lang::l_('Light Rail'),
 		"tram"          => Lang::l_('Tram'),
 		"subway"        => Lang::l_('Subway'),
-		"freight"       => Lang::l_('Freight train')
+		"freight"       => Lang::l_('Freight Train'),
+		"tourism"       => Lang::l_('Tourist Train')
 );
 ?>
