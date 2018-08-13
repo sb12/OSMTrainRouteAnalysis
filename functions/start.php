@@ -309,7 +309,7 @@ function showRoutes($amount = 50)
 								<td><?php echo $row["to"];?></td>
 								<td><?php echo $row["operator"];?></td>
 								<td class="nowrap"><?php echo round($row["length"], 1);?> km</td>
-								<td class="nowrap"><?php echo round($row["time"], 0);?> min</td>
+								<td class="nowrap"><?php echo showMinH($row["time"]);?></td>
 								<td class="nowrap"><?php echo round($row["ave_speed"]);?> km/h</td>
 								<td class="nowrap"><?php echo round($row["max_speed"]);?> km/h</td>
 								<td style="width:150px"><div style="height:50px;width:150px;display:inline-block;background-image:url('img/trains/<?php echo $train->image;?>');background-repeat:no-repeat;background-position:right;background-size:auto 50px" title="<?php echo $train->name;?>"></div></td>
@@ -653,6 +653,7 @@ function showAbout()
 </div>
 	<?php
 }
+
 function parseChangelog()
 {
 	$i=0;
@@ -671,5 +672,24 @@ function parseChangelog()
 		}
 	}
 	return $changelog;
+}
+
+/**
+ * format times into h and min
+ * @param double min
+ */
+function showMinH($min)
+{
+    if($min >= 60)
+    {
+        $h = floor( $min / 60 );
+        $min = round( $min - $h * 60 );
+        $MinH = $h . " h " . $min . " min";
+    }
+    else
+    {
+        $MinH = round( $min ) . " min";
+    }
+    return $MinH;
 }
 ?>
