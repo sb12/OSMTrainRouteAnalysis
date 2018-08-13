@@ -292,7 +292,7 @@ Class Train
 			$default_allowed = true;
 		}
 		//regional trains
-		if( ( $train_type == "regional" || $train_type == "light_rail" ) && $route == "train" && ( !$service || $service == "regional" || $service == "commuter" ) )
+		if( ( $train_type == "regional" || $train_type == "light_rail" ) && $route == "train" && ( !$service || $service == "regional" || $service == "commuter" || $service == "event" ) )
 		{
 			$default_allowed = true;
 		}

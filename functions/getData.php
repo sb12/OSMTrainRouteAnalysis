@@ -3594,8 +3594,9 @@ if (  $this->relation_distance == 0 )
             "light_rail"              => Lang::l_('Light Rail'),
     		"tram"		              => Lang::l_('Tram'),
     		"subway"		          => Lang::l_('Subway'),
-    		"tourism"		          => Lang::l_('Tourist Train'),
-    		"tourism_tram"            => Lang::l_('Tourist Tram'),
+		    "tourism"		          => Lang::l_('Tourist Train'),
+		    "tourism_tram"            => Lang::l_('Tourist Tram'),
+		    "event"                   => Lang::l_('Events Train Service'),
     		"unknown"                 => Lang::l_('N/A'),
 		);
 		
@@ -3652,6 +3653,10 @@ if (  $this->relation_distance == 0 )
 			{
 			    $route_type = "tourism";
 			}
+			elseif ( $service == "event")
+			{
+			    $route_type = "event";
+			}
 		}
 		elseif ( $route == "tram" )
 		{
@@ -3673,6 +3678,10 @@ if (  $this->relation_distance == 0 )
 		{
 			$route_type = "subway";
 		}
+		elseif ( $service == "event")
+		{
+		    $route_type = "event";
+		}
 		return $route_type_lang[$route_type];
 	}
 
@@ -3682,14 +3691,14 @@ if (  $this->relation_distance == 0 )
 	 */
 	function sortStops()
 	{
-		$x = 0;
-		while($x==0)
+		while(true)
 		{
+		    print_r($this->relation_stops);
 			$save_relation_stops = $this->relation_stops;
 			$this->sortRelationStops();
 			if($this->relation_stops == $save_relation_stops) //nothing changed
 			{
-				$x++;
+				break;
 			}
 		}
 	}
