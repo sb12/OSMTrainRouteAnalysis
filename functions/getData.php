@@ -624,8 +624,8 @@ Class Route
 					//do not overwrite tags for route_master when tag is already set in route
 					if ( $temp_relation_array["type"] != "route_master" || !isset($this -> relation_tags[$c]) )
 					{
-						// type tag should only be route
-						if ( $c != "type" || $d == "route" )
+						// do not override route value
+						if ( !isset($this->relation_tags["type"] ) )
 						{
 							// add tags to relation
 							$this->relation_tags[$c] = $d;
@@ -760,411 +760,414 @@ Class Route
 		$this->trafficmode_distance = $this->operator_distance = $this->tunnel_distance = $this->cutting_distance = $this->embankment_distance = $this->bridge_distance = $this->building_distance = $this->electrified_distance = 0;
 		
 		// go through all relation ways
-		foreach ( $this->relation_ways as $a => $b )
+		if ( isset($this->relation_ways) && sizeof($this->relation_ways) > 0 )
 		{
-			//exlude platforms and stops
-			if ( strstr($this->role_way[$b], "stop") || strstr($this->role_way[$b], "platform") )
-			{
-				continue;
-			}
-			//forward or backward?
-			if ( isset($last_last_node) )
-			{
-				$gap[$b] = false;
-				if ( $this->first_node[$b] == $last_last_node || $this->first_node[$b] == $last_first_node )
-				{
-					$direction[$b] = "forward";
-				}
-				elseif ( $this->last_node[$b] == $last_last_node || $this->last_node[$b] == $last_first_node )
-				{
-					$direction[$b] = "backward";
-				}
-				else // there's a hole in the relation
-				{
-					$this->count_holes++;
-					$direction[$b] = "unknown";
-					$gap[$b] = true;
-				}
-			}
-			else
-			{
-				$direction[$b] = "unknown";
-				$gap[$b] = true;
-			}
-				
-			// add way direction to way before if needed
-			if( isset($direction[$last_id]) && $direction[$last_id] == "unknown" && $direction[$b] != "unknown" )
-			{
-				if ( ( $direction[$b] == "forward" && $this->first_node[$b] == $last_last_node) || ( $direction[$b] == "backward" && $this->last_node[$b] == $last_last_node))
-				{
-					$direction[$last_id] = "forward";
-				}
-				elseif ( ( $direction[$b] == "forward" && $this->first_node[$b] == $last_first_node) || ( $direction[$b] == "backward" && $this->last_node[$b] == $last_first_node))
-				{
-					$direction[$last_id] = "backward";
-				}
-			}
-			$last_last_node = $this->last_node[$b];
-			$last_first_node = $this->first_node[$b];
-			$last_id = $b;
-		}
-		
-		$s = 0; //counter for signals
-		$distance_node = 0;
-		// go through all relation ways
-		foreach ( $this->relation_ways as $a => $b )
-		{
-			//exlude platforms and stops
-			if ( strstr($this->role_way[$b], "stop") || strstr($this->role_way[$b], "platform") )
-			{
-				continue;
-			}
-				
-			// check if way is railway
-			if ( !isset($this->way_tags[$b]["railway"]) ||
-				( $this->way_tags[$b]["railway"] != "rail" &&
-				$this->way_tags[$b]["railway"] != "light_rail" &&
-				$this->way_tags[$b]["railway"] != "tram" &&
-				$this->way_tags[$b]["railway"] != "narrow_gauge" &&
-				$this->way_tags[$b]["railway"] != "miniature" &&
-				$this->way_tags[$b]["railway"] != "subway" &&
-				$this->way_tags[$b]["railway"] != "ferry" &&
-				$this->way_tags[$b]["railway"] != "construction" ) )
-			{
-				continue;
-			}
-
-			// distance from beginning of relation to beginning of way
-			$this->way_start_distance[$b] = $this->relation_distance;
-			
-			// get distance from beginning for each node in the way
-			// FIXME: This fails when the route is going through the same way twice!!
-			foreach ( $this->node_distance as $id => $distance ) // go through all nodes
-			{
-				if ( $this->node_way[$id] == $b ) //node is in this way
-				{
-					//adjust node distance if way is backward
-					if ( $direction[$b] == "backward" )
-					{
-						$this->node_distance[$id] = $this->way_length[$b] - $this->node_distance[$id];
-					}
-					//get distance from beginning of route
-					$this->stop_node_distance[$id] = $this->way_start_distance[$this->node_way[$id]] + $this->node_distance[$id];
-
-				}
-			}
-
-			if ( $this->way_tags[$b]["railway"] == "ferry" )
-			{
-				$id = $this->first_node[$b];
-				$this->relation_stops[] = $id;
-				$this->relation_stops_type[] = "n";
-				$this->node[$id]["ferry_terminal"] = "yes";
-				if(!isset($this->node[$id]["name"]) && !$this->node[$id]["name"])
-				{
-					$this->node[$id]["name"] = Lang::l_("Ferry Terminal");
-				}
-				$this->node[$id]["name"] .= " &#9972;";
-
-				$id = $this->last_node[$b];
-				$this->relation_stops[] = $id;
-				$this->relation_stops_type[] = "n";
-				$this->node[$id]["ferry_terminal"] = "yes";
-				if(!isset($this->node[$id]["name"]) && !$this->node[$id]["name"])
-				{
-					$this->node[$id]["name"] = Lang::l_("Ferry Terminal");
-				}
-				$this->node[$id]["name"] .= " &#9972;";
-			}
-			
-			// add way length to relation distance
-			$this->relation_distance += $this->way_length[$b];
-
-			// convert mph if necessary
-			if ( isset($this->way_tags[$b]["maxspeed"]) && substr($this->way_tags[$b]["maxspeed"], -3) == "mph" )
-			{
-				//delete mph string and convert to number
-				$this->way_tags[$b]["maxspeed"] = trim(substr($this->way_tags[$b]["maxspeed"], 0, strlen($this->way_tags[$b]["maxspeed"]) - 3));
-				if ( is_numeric($this->way_tags[$b]["maxspeed"]) )
-				{
-					//convert to km/h
-					$this->way_tags[$b]["maxspeed"] = round($this->way_tags[$b]["maxspeed"] * 1.609);
-				}
-				else
-				{
-					//not a valid mph speed limit
-					unset($this->way_tags[$b]["maxspeed"]);
-				}
-			}			
-			
-			// delete non numeric maxspeed values
-			if ( isset($this->way_tags[$b]["maxspeed"]) && !is_numeric($this->way_tags[$b]["maxspeed"]) )
-			{
-				unset($this->way_tags[$b]["maxspeed"]);
-			}
-			
-			// set maxspeed 
-			// maxspeed tag is set
-			if ( isset($this->way_tags[$b]["maxspeed"]) || (isset($this->way_tags[$b]["maxspeed:forward"]) && $direction[$b]=="forward") || ( isset($this->way_tags[$b]["maxspeed:backward"]) && $direction[$b] == "backward" ) )
-			{
-				//set maxspeed according to way direction
-				if ( isset($this->way_tags[$b]["maxspeed:forward"]) && $direction[$b] == "forward" )
-				{
-					$maxspeed = $this->way_tags[$b]["maxspeed:forward"];
-				}
-				elseif ( isset($this->way_tags[$b]["maxspeed:backward"]) && $direction[$b] == "backward" )
-				{
-					$maxspeed = $this->way_tags[$b]["maxspeed:backward"];
-				}
-				else
-				{
-					$maxspeed = $this->way_tags[$b]["maxspeed"];
-				}
-				$exact = true;
-				$maxspeed_max = $maxspeed_min = $maxspeed;
-			}
-			//maxspeed tag is not set
-			else
-			{
-				$maxspeeds = $this->getMaxspeed($b);
-				$maxspeed = $maxspeeds[0];
-				$maxspeed_min = $maxspeeds[1];
-				$maxspeed_max = $maxspeeds[2];
-				$exact = false;
-			}
-			//maxspeeds can not be higher than train maxspeed
-			$maxspeed = min($maxspeed, $maxspeed_train);
-			$maxspeed_min = min($maxspeed_min, $maxspeed_train);
-			$maxspeed_max = min($maxspeed_max, $maxspeed_train);
-				
-			// get total maximum speed for whole route
-			$maxspeed_total_max = max($maxspeed_total_max, $maxspeed);
-	
-			/*Set maxspeed matrix for average*/
-			if ( ($maxspeed_before != $maxspeed && $maxspeed_before != 0) || $exact_before != $exact )
-			{
-				$maxspeed_array[] = Array($distance_before, $maxspeed_before, $exact_before);
-				$distance_before = 0;
-			}
-			/*Set maxspeed matrix for max*/
-			if ( ( $maxspeed_before_max != $maxspeed && $maxspeed_before_max != 0 ) || $exact_before != $exact )
-			{
-				$maxspeed_array_max[] = Array($distance_before_max, $maxspeed_before_max, $exact_before);
-				$distance_before_max = 0;
-			}
-			/*Set maxspeed matrix for min*/
-			if ( ( $maxspeed_before_min != $maxspeed && $maxspeed_before_min != 0 ) || $exact_before != $exact )
-			{
-				$maxspeed_array_min[] = Array($distance_before_min, $maxspeed_before_min, $exact_before);
-				$distance_before_min = 0;
-			}
-
-			$distance_before += $this->way_length[$b];
-			$distance_before_min += $this->way_length[$b];
-			$distance_before_max += $this->way_length[$b];
-			$maxspeed_before = $maxspeed;
-			$maxspeed_before_max = $maxspeed;
-			$maxspeed_before_min = $maxspeed;
-			$exact_before = $exact;
-							
-			// handle operators
-			// FIXME: how to handle name differences for operators?
-			if ( isset($this->way_tags[$b]["operator"]) )
-			{
-				$this->operator_distance += $this->way_length[$b];
-				if ( !isset($this->operator[$this->way_tags[$b]["operator"]]) )
-				{
-					$this->operator[$this->way_tags[$b]["operator"]] = 0;
-				}
-				$this->operator[$this->way_tags[$b]["operator"]] += $this->way_length[$b];
-			}
-			
-			// handle traffic_modes
-			// default for tram and light rail without traffic_mode tag
-			if ( !isset($this->way_tags[$b]["railway:traffic_mode"]) && ( $this->way_tags[$b]["railway"] == "tram" || $this->way_tags[$b]["railway"] == "light_rail" || $this->way_tags[$b]["railway"] == "subway" ) )
-			{
-				$this->way_tags[$b]["railway:traffic_mode"] = "passenger";
-			}
-			// traffic mode is set
-			if ( isset($this->way_tags[$b]["railway:traffic_mode"]) )
-			{
-				$this->trafficmode_distance += $this->way_length[$b];
-				if ( !isset($this->trafficmode[$this->way_tags[$b]["railway:traffic_mode"]]) )
-				{
-					$this->trafficmode[$this->way_tags[$b]["railway:traffic_mode"]] = 0;
-				}
-				$this->trafficmode[$this->way_tags[$b]["railway:traffic_mode"]] += $this->way_length[$b];
-			}
-			
-			// handle electrification
-			if ( isset($this->way_tags[$b]["electrified"]) )
-			{
-				if ( $this->way_tags[$b]["electrified"] != "no" )
-				{
-					if ( !isset($this->way_tags[$b]["voltage"]) )
-					{
-						$this->way_tags[$b]["voltage"] = Lang::l_('N/A');
-					}
-					else
-					{
-					    $this->way_tags[$b]["voltage"] = str_replace(";", "/", $this->way_tags[$b]["voltage"]);
-					}
-					if ( !isset($this->way_tags[$b]["frequency"]) )
-					{
-						$this->way_tags[$b]["frequency"] = Lang::l_('N/A');
-					}
-					else
-					{
-					    $this->way_tags[$b]["frequency"] = str_replace(";", "/", $this->way_tags[$b]["frequency"]);
-					}
-					if ( !isset($this->electrified[$this->way_tags[$b]["voltage"] . ";" . $this -> way_tags[$b]["frequency"]]) )
-					{
-						$this->electrified[$this->way_tags[$b]["voltage"] . ";" . $this->way_tags[$b]["frequency"]] = 0;
-					}
-					$this->electrified[$this->way_tags[$b]["voltage"] . ";" . $this->way_tags[$b]["frequency"]] += $this->way_length[$b];
-				}
-				else
-				{
-					if ( !isset($this->electrified["no"]) )
-					{
-						$this->electrified["no"] = 0;
-					}
-					$this->electrified["no"] += $this->way_length[$b];
-				}
-				$this->electrified_distance += $this->way_length[$b];
-			}
-			
-			// handle building structures
-			// bridges
-			if ( isset($this->way_tags[$b]["bridge"]) )
-			{
-				if ( $this->way_tags[$b]["bridge"] != "no" )
-				{
-					$this->bridge_distance += $this->way_length[$b];
-					$this->building_distance += $this->way_length[$b];
-				}
-			}
-			
-			// tunnels
-			if ( isset($this->way_tags[$b]["tunnel"]) )
-			{
-				if ( $this->way_tags[$b]["tunnel"] != "no" )
-				{
-					$this->tunnel_distance += $this->way_length[$b];
-					$this->building_distance += $this->way_length[$b];
-				}
-			}
-			
-			// embankments
-			if ( isset($this->way_tags[$b]["embankment"]) )
-			{
-				if ( $this->way_tags[$b]["embankment"] != "no" )
-				{
-					$this->embankment_distance += $this->way_length[$b];
-					$this->building_distance += $this->way_length[$b];
-				}
-			}
-			
-			//cuttings
-			if(isset($this -> way_tags[$b]["cutting"]))
-			{
-				if($this -> way_tags[$b]["cutting"]!="no")
-				{
-					$this -> cutting_distance+=$this -> way_length[$b];
-					$this -> building_distance+=$this -> way_length[$b];
-				}
-			}
-			
-			//copy way nodes in a temporary array
-			$temp_way_nodes = $this->way_nodes[$b];
-			
-			//reverse nodes in case direction is backward
-			if ( $direction[$b] == "backward" )
-			{
-				$temp_way_nodes = array_reverse($temp_way_nodes);
-			}
-			if ( $gap[$b] == true )//gap in the route
-			{
-				$this->map_node[$l]["lat"] = 0;
-				$this->map_node[$l]["lon"] = 0;
-				$l++;
-			}
-			$old_lat = $old_lon = 0;
-			foreach ( $temp_way_nodes as $node_ref => $node_id )
-			{
-				//add nodes to array for drawing the route later;
-				$this->map_node[$l]["lat"] = $this->node[$node_id]["lat"];
-				$this->map_node[$l]["lon"] = $this->node[$node_id]["lon"];
-				
-				//get bounds for map
-				if ( !isset($this->min_lat_bounds) )
-				{
-					$this->min_lat_bounds = $this->node[$node_id]["lat"];
-				}
-				if ( !isset($this->min_lon_bounds) )
-				{
-					$this->min_lon_bounds = $this->node[$node_id]["lon"];
-				}
-				if ( !isset($this->max_lat_bounds) )
-				{
-					$this->max_lat_bounds = $this->node[$node_id]["lat"];
-				}
-				if ( !isset($this->max_lon_bounds) )
-				{
-					$this->max_lon_bounds = $this->node[$node_id]["lon"];
-				}
-				$this->min_lat_bounds = min($this->min_lat_bounds, $this->node[$node_id]["lat"]);
-				$this->max_lat_bounds = max($this->max_lat_bounds, $this->node[$node_id]["lat"]);
-				$this->min_lon_bounds = min($this->min_lon_bounds, $this->node[$node_id]["lon"]);
-				$this->max_lon_bounds = max($this->max_lon_bounds, $this->node[$node_id]["lon"]);
-				
-				// find signals on the route
-				if($old_lat != 0 && $old_lon != 0)
-				{
-					$distance_node += $this->getDistance($old_lat,$old_lon,$this->node[$node_id]["lat"],$this->node[$node_id]["lon"]);
-				}
-				if(($old_lat != 0 && $old_lon != 0) || $distance_node == 0)
-				{
-					if(isset($this->node[$node_id]["railway"]) && $this->node[$node_id]["railway"] == "signal")
-					{
-						if(isset($this->node[$node_id]["railway:signal:direction"]) && $this->node[$node_id]["railway:signal:direction"] == $direction[$b])
-						{
-							if( $direction[$b] == "backward" )
-							{
-								if( isset( $this->node[$node_id]["railway:signal:position"] ) )
-								{
-									if( $this->node[$node_id]["railway:signal:position"] == "right" )
-									{
-										$this->node[$node_id]["railway:signal:position"] = "left";
-									}
-									if( $this->node[$node_id]["railway:signal:position"] == "left" )
-									{
-										$this->node[$node_id]["railway:signal:position"] = "right";
-									}
-								}
-								if( isset( $this->node[$node_id]["railway:signal:expected_position"] ) )
-								{
-									if( $this->node[$node_id]["railway:signal:expected_position"] == "right" )
-									{
-										$this->node[$node_id]["railway:signal:expected_position"] = "left";
-									}
-									if( $this->node[$node_id]["railway:signal:expected_position"] == "left" )
-									{
-										$this->node[$node_id]["railway:signal:expected_position"] = "right";
-									}
-								}
-							}
-							$this->signals_array[$s][0] = $distance_node;
-							$this->signals_array[$s][1] = $node_id; 
-							$s++;
-						}
-					}
-				}
-				$l++;
-				$old_lat = $this->node[$node_id]["lat"];
-				$old_lon = $this->node[$node_id]["lon"];
-				
-			}
+    		foreach ( $this->relation_ways as $a => $b )
+    		{
+    			//exlude platforms and stops
+    			if ( strstr($this->role_way[$b], "stop") || strstr($this->role_way[$b], "platform") )
+    			{
+    				continue;
+    			}
+    			//forward or backward?
+    			if ( isset($last_last_node) )
+    			{
+    				$gap[$b] = false;
+    				if ( $this->first_node[$b] == $last_last_node || $this->first_node[$b] == $last_first_node )
+    				{
+    					$direction[$b] = "forward";
+    				}
+    				elseif ( $this->last_node[$b] == $last_last_node || $this->last_node[$b] == $last_first_node )
+    				{
+    					$direction[$b] = "backward";
+    				}
+    				else // there's a hole in the relation
+    				{
+    					$this->count_holes++;
+    					$direction[$b] = "unknown";
+    					$gap[$b] = true;
+    				}
+    			}
+    			else
+    			{
+    				$direction[$b] = "unknown";
+    				$gap[$b] = true;
+    			}
+    				
+    			// add way direction to way before if needed
+    			if( isset($direction[$last_id]) && $direction[$last_id] == "unknown" && $direction[$b] != "unknown" )
+    			{
+    				if ( ( $direction[$b] == "forward" && $this->first_node[$b] == $last_last_node) || ( $direction[$b] == "backward" && $this->last_node[$b] == $last_last_node))
+    				{
+    					$direction[$last_id] = "forward";
+    				}
+    				elseif ( ( $direction[$b] == "forward" && $this->first_node[$b] == $last_first_node) || ( $direction[$b] == "backward" && $this->last_node[$b] == $last_first_node))
+    				{
+    					$direction[$last_id] = "backward";
+    				}
+    			}
+    			$last_last_node = $this->last_node[$b];
+    			$last_first_node = $this->first_node[$b];
+    			$last_id = $b;
+    		}
+    		
+    		$s = 0; //counter for signals
+    		$distance_node = 0;
+    		// go through all relation ways
+    		foreach ( $this->relation_ways as $a => $b )
+    		{
+    			//exlude platforms and stops
+    			if ( strstr($this->role_way[$b], "stop") || strstr($this->role_way[$b], "platform") )
+    			{
+    				continue;
+    			}
+    				
+    			// check if way is railway
+    			if ( !isset($this->way_tags[$b]["railway"]) ||
+    				( $this->way_tags[$b]["railway"] != "rail" &&
+    				$this->way_tags[$b]["railway"] != "light_rail" &&
+    				$this->way_tags[$b]["railway"] != "tram" &&
+    				$this->way_tags[$b]["railway"] != "narrow_gauge" &&
+    				$this->way_tags[$b]["railway"] != "miniature" &&
+    				$this->way_tags[$b]["railway"] != "subway" &&
+    				$this->way_tags[$b]["railway"] != "ferry" &&
+    				$this->way_tags[$b]["railway"] != "construction" ) )
+    			{
+    				continue;
+    			}
+    
+    			// distance from beginning of relation to beginning of way
+    			$this->way_start_distance[$b] = $this->relation_distance;
+    			
+    			// get distance from beginning for each node in the way
+    			// FIXME: This fails when the route is going through the same way twice!!
+    			foreach ( $this->node_distance as $id => $distance ) // go through all nodes
+    			{
+    				if ( $this->node_way[$id] == $b ) //node is in this way
+    				{
+    					//adjust node distance if way is backward
+    					if ( $direction[$b] == "backward" )
+    					{
+    						$this->node_distance[$id] = $this->way_length[$b] - $this->node_distance[$id];
+    					}
+    					//get distance from beginning of route
+    					$this->stop_node_distance[$id] = $this->way_start_distance[$this->node_way[$id]] + $this->node_distance[$id];
+    
+    				}
+    			}
+    
+    			if ( $this->way_tags[$b]["railway"] == "ferry" )
+    			{
+    				$id = $this->first_node[$b];
+    				$this->relation_stops[] = $id;
+    				$this->relation_stops_type[] = "n";
+    				$this->node[$id]["ferry_terminal"] = "yes";
+    				if(!isset($this->node[$id]["name"]) && !$this->node[$id]["name"])
+    				{
+    					$this->node[$id]["name"] = Lang::l_("Ferry Terminal");
+    				}
+    				$this->node[$id]["name"] .= " &#9972;";
+    
+    				$id = $this->last_node[$b];
+    				$this->relation_stops[] = $id;
+    				$this->relation_stops_type[] = "n";
+    				$this->node[$id]["ferry_terminal"] = "yes";
+    				if(!isset($this->node[$id]["name"]) && !$this->node[$id]["name"])
+    				{
+    					$this->node[$id]["name"] = Lang::l_("Ferry Terminal");
+    				}
+    				$this->node[$id]["name"] .= " &#9972;";
+    			}
+    			
+    			// add way length to relation distance
+    			$this->relation_distance += $this->way_length[$b];
+    
+    			// convert mph if necessary
+    			if ( isset($this->way_tags[$b]["maxspeed"]) && substr($this->way_tags[$b]["maxspeed"], -3) == "mph" )
+    			{
+    				//delete mph string and convert to number
+    				$this->way_tags[$b]["maxspeed"] = trim(substr($this->way_tags[$b]["maxspeed"], 0, strlen($this->way_tags[$b]["maxspeed"]) - 3));
+    				if ( is_numeric($this->way_tags[$b]["maxspeed"]) )
+    				{
+    					//convert to km/h
+    					$this->way_tags[$b]["maxspeed"] = round($this->way_tags[$b]["maxspeed"] * 1.609);
+    				}
+    				else
+    				{
+    					//not a valid mph speed limit
+    					unset($this->way_tags[$b]["maxspeed"]);
+    				}
+    			}			
+    			
+    			// delete non numeric maxspeed values
+    			if ( isset($this->way_tags[$b]["maxspeed"]) && !is_numeric($this->way_tags[$b]["maxspeed"]) )
+    			{
+    				unset($this->way_tags[$b]["maxspeed"]);
+    			}
+    			
+    			// set maxspeed 
+    			// maxspeed tag is set
+    			if ( isset($this->way_tags[$b]["maxspeed"]) || (isset($this->way_tags[$b]["maxspeed:forward"]) && $direction[$b]=="forward") || ( isset($this->way_tags[$b]["maxspeed:backward"]) && $direction[$b] == "backward" ) )
+    			{
+    				//set maxspeed according to way direction
+    				if ( isset($this->way_tags[$b]["maxspeed:forward"]) && $direction[$b] == "forward" )
+    				{
+    					$maxspeed = $this->way_tags[$b]["maxspeed:forward"];
+    				}
+    				elseif ( isset($this->way_tags[$b]["maxspeed:backward"]) && $direction[$b] == "backward" )
+    				{
+    					$maxspeed = $this->way_tags[$b]["maxspeed:backward"];
+    				}
+    				else
+    				{
+    					$maxspeed = $this->way_tags[$b]["maxspeed"];
+    				}
+    				$exact = true;
+    				$maxspeed_max = $maxspeed_min = $maxspeed;
+    			}
+    			//maxspeed tag is not set
+    			else
+    			{
+    				$maxspeeds = $this->getMaxspeed($b);
+    				$maxspeed = $maxspeeds[0];
+    				$maxspeed_min = $maxspeeds[1];
+    				$maxspeed_max = $maxspeeds[2];
+    				$exact = false;
+    			}
+    			//maxspeeds can not be higher than train maxspeed
+    			$maxspeed = min($maxspeed, $maxspeed_train);
+    			$maxspeed_min = min($maxspeed_min, $maxspeed_train);
+    			$maxspeed_max = min($maxspeed_max, $maxspeed_train);
+    				
+    			// get total maximum speed for whole route
+    			$maxspeed_total_max = max($maxspeed_total_max, $maxspeed);
+    	
+    			/*Set maxspeed matrix for average*/
+    			if ( ($maxspeed_before != $maxspeed && $maxspeed_before != 0) || $exact_before != $exact )
+    			{
+    				$maxspeed_array[] = Array($distance_before, $maxspeed_before, $exact_before);
+    				$distance_before = 0;
+    			}
+    			/*Set maxspeed matrix for max*/
+    			if ( ( $maxspeed_before_max != $maxspeed && $maxspeed_before_max != 0 ) || $exact_before != $exact )
+    			{
+    				$maxspeed_array_max[] = Array($distance_before_max, $maxspeed_before_max, $exact_before);
+    				$distance_before_max = 0;
+    			}
+    			/*Set maxspeed matrix for min*/
+    			if ( ( $maxspeed_before_min != $maxspeed && $maxspeed_before_min != 0 ) || $exact_before != $exact )
+    			{
+    				$maxspeed_array_min[] = Array($distance_before_min, $maxspeed_before_min, $exact_before);
+    				$distance_before_min = 0;
+    			}
+    
+    			$distance_before += $this->way_length[$b];
+    			$distance_before_min += $this->way_length[$b];
+    			$distance_before_max += $this->way_length[$b];
+    			$maxspeed_before = $maxspeed;
+    			$maxspeed_before_max = $maxspeed;
+    			$maxspeed_before_min = $maxspeed;
+    			$exact_before = $exact;
+    							
+    			// handle operators
+    			// FIXME: how to handle name differences for operators?
+    			if ( isset($this->way_tags[$b]["operator"]) )
+    			{
+    				$this->operator_distance += $this->way_length[$b];
+    				if ( !isset($this->operator[$this->way_tags[$b]["operator"]]) )
+    				{
+    					$this->operator[$this->way_tags[$b]["operator"]] = 0;
+    				}
+    				$this->operator[$this->way_tags[$b]["operator"]] += $this->way_length[$b];
+    			}
+    			
+    			// handle traffic_modes
+    			// default for tram and light rail without traffic_mode tag
+    			if ( !isset($this->way_tags[$b]["railway:traffic_mode"]) && ( $this->way_tags[$b]["railway"] == "tram" || $this->way_tags[$b]["railway"] == "light_rail" || $this->way_tags[$b]["railway"] == "subway" ) )
+    			{
+    				$this->way_tags[$b]["railway:traffic_mode"] = "passenger";
+    			}
+    			// traffic mode is set
+    			if ( isset($this->way_tags[$b]["railway:traffic_mode"]) )
+    			{
+    				$this->trafficmode_distance += $this->way_length[$b];
+    				if ( !isset($this->trafficmode[$this->way_tags[$b]["railway:traffic_mode"]]) )
+    				{
+    					$this->trafficmode[$this->way_tags[$b]["railway:traffic_mode"]] = 0;
+    				}
+    				$this->trafficmode[$this->way_tags[$b]["railway:traffic_mode"]] += $this->way_length[$b];
+    			}
+    			
+    			// handle electrification
+    			if ( isset($this->way_tags[$b]["electrified"]) )
+    			{
+    				if ( $this->way_tags[$b]["electrified"] != "no" )
+    				{
+    					if ( !isset($this->way_tags[$b]["voltage"]) )
+    					{
+    						$this->way_tags[$b]["voltage"] = Lang::l_('N/A');
+    					}
+    					else
+    					{
+    					    $this->way_tags[$b]["voltage"] = str_replace(";", "/", $this->way_tags[$b]["voltage"]);
+    					}
+    					if ( !isset($this->way_tags[$b]["frequency"]) )
+    					{
+    						$this->way_tags[$b]["frequency"] = Lang::l_('N/A');
+    					}
+    					else
+    					{
+    					    $this->way_tags[$b]["frequency"] = str_replace(";", "/", $this->way_tags[$b]["frequency"]);
+    					}
+    					if ( !isset($this->electrified[$this->way_tags[$b]["voltage"] . ";" . $this -> way_tags[$b]["frequency"]]) )
+    					{
+    						$this->electrified[$this->way_tags[$b]["voltage"] . ";" . $this->way_tags[$b]["frequency"]] = 0;
+    					}
+    					$this->electrified[$this->way_tags[$b]["voltage"] . ";" . $this->way_tags[$b]["frequency"]] += $this->way_length[$b];
+    				}
+    				else
+    				{
+    					if ( !isset($this->electrified["no"]) )
+    					{
+    						$this->electrified["no"] = 0;
+    					}
+    					$this->electrified["no"] += $this->way_length[$b];
+    				}
+    				$this->electrified_distance += $this->way_length[$b];
+    			}
+    			
+    			// handle building structures
+    			// bridges
+    			if ( isset($this->way_tags[$b]["bridge"]) )
+    			{
+    				if ( $this->way_tags[$b]["bridge"] != "no" )
+    				{
+    					$this->bridge_distance += $this->way_length[$b];
+    					$this->building_distance += $this->way_length[$b];
+    				}
+    			}
+    			
+    			// tunnels
+    			if ( isset($this->way_tags[$b]["tunnel"]) )
+    			{
+    				if ( $this->way_tags[$b]["tunnel"] != "no" )
+    				{
+    					$this->tunnel_distance += $this->way_length[$b];
+    					$this->building_distance += $this->way_length[$b];
+    				}
+    			}
+    			
+    			// embankments
+    			if ( isset($this->way_tags[$b]["embankment"]) )
+    			{
+    				if ( $this->way_tags[$b]["embankment"] != "no" )
+    				{
+    					$this->embankment_distance += $this->way_length[$b];
+    					$this->building_distance += $this->way_length[$b];
+    				}
+    			}
+    			
+    			//cuttings
+    			if(isset($this -> way_tags[$b]["cutting"]))
+    			{
+    				if($this -> way_tags[$b]["cutting"]!="no")
+    				{
+    					$this -> cutting_distance+=$this -> way_length[$b];
+    					$this -> building_distance+=$this -> way_length[$b];
+    				}
+    			}
+    			
+    			//copy way nodes in a temporary array
+    			$temp_way_nodes = $this->way_nodes[$b];
+    			
+    			//reverse nodes in case direction is backward
+    			if ( $direction[$b] == "backward" )
+    			{
+    				$temp_way_nodes = array_reverse($temp_way_nodes);
+    			}
+    			if ( $gap[$b] == true )//gap in the route
+    			{
+    				$this->map_node[$l]["lat"] = 0;
+    				$this->map_node[$l]["lon"] = 0;
+    				$l++;
+    			}
+    			$old_lat = $old_lon = 0;
+    			foreach ( $temp_way_nodes as $node_ref => $node_id )
+    			{
+    				//add nodes to array for drawing the route later;
+    				$this->map_node[$l]["lat"] = $this->node[$node_id]["lat"];
+    				$this->map_node[$l]["lon"] = $this->node[$node_id]["lon"];
+    				
+    				//get bounds for map
+    				if ( !isset($this->min_lat_bounds) )
+    				{
+    					$this->min_lat_bounds = $this->node[$node_id]["lat"];
+    				}
+    				if ( !isset($this->min_lon_bounds) )
+    				{
+    					$this->min_lon_bounds = $this->node[$node_id]["lon"];
+    				}
+    				if ( !isset($this->max_lat_bounds) )
+    				{
+    					$this->max_lat_bounds = $this->node[$node_id]["lat"];
+    				}
+    				if ( !isset($this->max_lon_bounds) )
+    				{
+    					$this->max_lon_bounds = $this->node[$node_id]["lon"];
+    				}
+    				$this->min_lat_bounds = min($this->min_lat_bounds, $this->node[$node_id]["lat"]);
+    				$this->max_lat_bounds = max($this->max_lat_bounds, $this->node[$node_id]["lat"]);
+    				$this->min_lon_bounds = min($this->min_lon_bounds, $this->node[$node_id]["lon"]);
+    				$this->max_lon_bounds = max($this->max_lon_bounds, $this->node[$node_id]["lon"]);
+    				
+    				// find signals on the route
+    				if($old_lat != 0 && $old_lon != 0)
+    				{
+    					$distance_node += $this->getDistance($old_lat,$old_lon,$this->node[$node_id]["lat"],$this->node[$node_id]["lon"]);
+    				}
+    				if(($old_lat != 0 && $old_lon != 0) || $distance_node == 0)
+    				{
+    					if(isset($this->node[$node_id]["railway"]) && $this->node[$node_id]["railway"] == "signal")
+    					{
+    						if(isset($this->node[$node_id]["railway:signal:direction"]) && $this->node[$node_id]["railway:signal:direction"] == $direction[$b])
+    						{
+    							if( $direction[$b] == "backward" )
+    							{
+    								if( isset( $this->node[$node_id]["railway:signal:position"] ) )
+    								{
+    									if( $this->node[$node_id]["railway:signal:position"] == "right" )
+    									{
+    										$this->node[$node_id]["railway:signal:position"] = "left";
+    									}
+    									if( $this->node[$node_id]["railway:signal:position"] == "left" )
+    									{
+    										$this->node[$node_id]["railway:signal:position"] = "right";
+    									}
+    								}
+    								if( isset( $this->node[$node_id]["railway:signal:expected_position"] ) )
+    								{
+    									if( $this->node[$node_id]["railway:signal:expected_position"] == "right" )
+    									{
+    										$this->node[$node_id]["railway:signal:expected_position"] = "left";
+    									}
+    									if( $this->node[$node_id]["railway:signal:expected_position"] == "left" )
+    									{
+    										$this->node[$node_id]["railway:signal:expected_position"] = "right";
+    									}
+    								}
+    							}
+    							$this->signals_array[$s][0] = $distance_node;
+    							$this->signals_array[$s][1] = $node_id; 
+    							$s++;
+    						}
+    					}
+    				}
+    				$l++;
+    				$old_lat = $this->node[$node_id]["lat"];
+    				$old_lon = $this->node[$node_id]["lon"];
+    				
+    			}
+    		}
 		}
 		//add last value to maxspeed_array:
 		if($distance_before && $maxspeed_before)
@@ -2367,7 +2370,7 @@ if (  $this->relation_distance == 0 )
 </div>
     <nav class="navbar" id=footer>
 		<div class="container">
-			<small><strong><?php echo Lang::l_('Data date');?>:</strong> <?php echo  date ("F d Y H:i:s", $this->filemtime);?> (<a href="?id=<?php echo $this->id?>&train=<?php echo $this->train->ref?>&rf=1" title="<?php echo Lang::l_('Update data');?>"><?php echo Lang::l_('Update data');?></a>) | <?php echo Lang::l_('Route Data');?> © <a href="http://www.openstreetmap.org/copyright" title="OpenStreetMap <?php echo Lang::l_('licence');?>">OpenStreetMap</a><?php echo Lang::l_(' contributors');?> | <a id="josmLink" href="http://127.0.0.1:8111/load_object?objects=r<?php echo $this->id;?>&relation_members=true" data-editor="remote"><?php echo Lang::l_('Load relation in JOSM');?></a></small>
+			<small><strong><?php echo Lang::l_('Data date');?>:</strong> <?php echo  date ("F d Y H:i:s", $this->filemtime);?> (<a href="?id=<?php echo $this->id?>&train=<?php echo $this->train->ref?>&rf=1" title="<?php echo Lang::l_('Update data');?>"><?php echo Lang::l_('Update data');?></a>) | <?php echo Lang::l_('Route Data');?> © <a href="http://www.openstreetmap.org/copyright" title="OpenStreetMap <?php echo Lang::l_('licence');?>">OpenStreetMap</a><?php echo Lang::l_(' contributors');?> | <a id="josmLink" href="http://127.0.0.1:8111/load_object?objects=r<?php echo $this->id;?>&relation_members=true" data-editor="remote"><?php echo Lang::l_('Load relation in JOSM');?></a> | <a id="osmLink" href="https://openstreetmap.org/relation/<?php echo $this->id;?>"><?php echo Lang::l_('Show relation in OSM');?></a></small>
 			<div class="navbar-right">
 <?php 
 /** Flattr-Button, feel free to add your own flattr username or delete it **/
@@ -2584,6 +2587,11 @@ if (  $this->relation_distance == 0 )
 		
 		$i = $j = -1;
 		$k = 0;
+		$exmaxarray[$j][0] = 0;
+		$exmaxarray[$j][1] = 0;
+		$exmaxarray[$j][2] = 1;
+		$j++;
+		
 		$this->relation_distance_ms = 0;//way of relation up to this point
 
 		//go through all maxspeed sections
@@ -2611,7 +2619,7 @@ if (  $this->relation_distance == 0 )
 					//Stop (0 km/h, length 0)
 					$exmaxarray[$j][0] = 0;
 					$exmaxarray[$j][1] = 0;
-					$exmaxarray[$j][2] = true;
+					$exmaxarray[$j][2] = 1;
 					$j++;
 					
 					//remaining part of section
@@ -2625,7 +2633,7 @@ if (  $this->relation_distance == 0 )
 			}
 			
 			//section for remaining part of old section (original value, when no stop)
-			if ( $way_remaining >= 0 )
+			if ( $way_remaining > 0 )
 			{
 				$exmaxarray[$j][0] = $way_remaining;
 				$exmaxarray[$j][1] = $maxspeed_this;
@@ -2923,7 +2931,7 @@ if (  $this->relation_distance == 0 )
 			{
 				//set maxspeed of first acceleration to lower speed
 				$accbrake_array[$i][3] = $accbrake_array[$i + 1][2];
-				echo "-".$accbrake_array[$i][1]."|".$accbrake_array[$i][2]."|".$accbrake_array[$i][3];
+				//echo "-".$accbrake_array[$i][1]."|".$accbrake_array[$i][2]."|".$accbrake_array[$i][3];
 			}
 			//two brakings with different in-between speeds and no acceleration (next speed is smaller than current speed)
 			if ( $accbrake_array[$i + 1][2] < $accbrake_array[$i][3] && $accbrake_array[$i][4] == "brake" && $accbrake_array[$i + 1][4] == "brake")
@@ -3406,7 +3414,8 @@ if (  $this->relation_distance == 0 )
 			{
 				
 				// don't use nodes that are not on railways
-				if ( !isset($this->way_tags[$this->node_way[$nodeid]]["railway"]) ||
+			    if ( !isset($this->node_way[$nodeid]) ||
+			        !isset($this->way_tags[$this->node_way[$nodeid]]["railway"]) ||
 					( $this->way_tags[$this->node_way[$nodeid]]["railway"] != "rail" &&
 					$this->way_tags[$this->node_way[$nodeid]]["railway"] != "light_rail" &&
 					$this->way_tags[$this->node_way[$nodeid]]["railway"] != "tram" &&
@@ -3693,7 +3702,6 @@ if (  $this->relation_distance == 0 )
 	{
 		while(true)
 		{
-		    print_r($this->relation_stops);
 			$save_relation_stops = $this->relation_stops;
 			$this->sortRelationStops();
 			if($this->relation_stops == $save_relation_stops) //nothing changed
@@ -3709,6 +3717,10 @@ if (  $this->relation_distance == 0 )
 	function sortRelationStops()
 	{
 		$last_distance = 0;
+		if( !isset($this->relation_stops) || sizeof($this->relation_stops) == 0)
+		{
+		    return;
+		}
 		foreach($this->relation_stops as $nr=>$ref)
 		{
 			$distance = $this->way_start_distance[$this->node_way[$ref]]+$this->node_distance[$ref];
